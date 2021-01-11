@@ -4,4 +4,7 @@
 # COMPOSER #
 composer.phar
 vendor
+
+# PHPUNIT #
 .phpunit.result.cache
+.phpunit.cache/
