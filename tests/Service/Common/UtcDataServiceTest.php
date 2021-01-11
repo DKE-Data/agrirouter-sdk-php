@@ -4,7 +4,9 @@ use PHPUnit\Framework\TestCase;
 
 class UtcDataServiceTest extends TestCase
 {
-
+    /**
+     * @covers \Service\Common\UtcDataService::now
+     */
     function testGivenAnyPointInTimeThenAskingTheUtcDataServiceForTheCurrentTimeThenTheResultShouldHaveFixedLength()
     {
         $utcDataService = new UtcDataService();
