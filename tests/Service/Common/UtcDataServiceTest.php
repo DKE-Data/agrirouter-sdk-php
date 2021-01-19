@@ -1,17 +1,18 @@
-<?php namespace Service\Common;
+<?php namespace Lib\Tests\Service\Common {
 
-use PHPUnit\Framework\TestCase;
+    use App\Service\Common\UtcDataService;
+    use PHPUnit\Framework\TestCase;
 
-class UtcDataServiceTest extends TestCase
-{
-    /**
-     * @covers \Service\Common\UtcDataService::now
-     */
-    function testGivenAnyPointInTimeThenAskingTheUtcDataServiceForTheCurrentTimeThenTheResultShouldHaveFixedLength()
+    class UtcDataServiceTest extends TestCase
     {
-        $utcDataService = new UtcDataService();
-        $timestamp = $utcDataService->now();
-        self::assertEquals(24, strlen($timestamp));
-    }
+        /**
+         * @covers \App\Service\Common\UtcDataService::now
+         */
+        function testGivenAnyPointInTimeThenAskingTheUtcDataServiceForTheCurrentTimeThenTheResultShouldHaveFixedLength()
+        {
+            $timestamp = UtcDataService::now();
+            self::assertEquals(24, strlen($timestamp));
+        }
 
+    }
 }
