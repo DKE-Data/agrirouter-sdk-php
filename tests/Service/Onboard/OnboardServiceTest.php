@@ -8,6 +8,8 @@ namespace Lib\Tests\Service\Onboard {
     use App\Service\Common\UuidService;
     use App\Service\Onboard\OnboardService;
     use App\Service\OnboardParameters;
+    use DateTime;
+    use DateTimeZone;
     use Lib\Tests\Applications\CommunicationUnit;
     use PHPUnit\Framework\TestCase;
 
@@ -29,6 +31,7 @@ namespace Lib\Tests\Service\Onboard {
             $onboardingParameters->setCertificationType(CertificationTypeDefinitions::pem());
             $onboardingParameters->setGatewayId(GatewayTypeDefinitions::http());
             $onboardingParameters->setRegistrationCode("INVALID");
+            $onboardingParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
             $onboardingResponse = $onboardService->onboard($onboardingParameters);
             self::assertNotNull($onboardingResponse);
         }

@@ -15,6 +15,7 @@ namespace App\Service {
         private string $CertificationType;
         private string $applicationType;
         private string $registrationCode;
+        private int $offset;
 
         public function getApplicationId(): string
         {
@@ -86,6 +87,15 @@ namespace App\Service {
             $this->registrationCode = $registrationCode;
         }
 
+        public function getOffset(): int
+        {
+            return $this->offset;
+        }
+
+        public function setOffset(int $offset): void
+        {
+            $this->offset = $offset;
+        }
 
     }
 }
