@@ -7,12 +7,18 @@
 
     class UtcDataServiceTest extends TestCase
     {
+        /**
+         * @covers UtcDataService::now()
+         */
         function testGivenAnyPointInTimeThenAskingTheUtcDataServiceForTheCurrentTimeThenTheResultShouldHaveFixedLength()
         {
             $timestamp = UtcDataService::now();
             self::assertEquals(24, strlen($timestamp));
         }
 
+        /**
+         * @covers UtcDataService::timeZone()
+         */
         function testGivenValidOffsetWhenAskingTheUtcDataServiceForTheTimeZOneThenTheResultShouldBeAvailable()
         {
             $offset = timezone_offset_get(new DateTimeZone('Pacific/Kiritimati'), new DateTime());

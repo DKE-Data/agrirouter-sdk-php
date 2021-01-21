@@ -33,7 +33,10 @@ namespace Lib\Tests\Service\Onboard {
             $this->qualityAssuranceEnvironment = new QualityAssuranceEnvironment();
             $this->httpClient = new Client();
         }
-
+        /**
+         * @covers OnboardService::onboard
+         * @throws OnboardException
+         */
         public function testGivenInvalidRequestTokenWhenOnboardingThenThereShouldBeAnException()
         {
             self::expectException(OnboardException::class);
@@ -51,7 +54,10 @@ namespace Lib\Tests\Service\Onboard {
             $onboardService->onboard($onboardingParameters);
 
         }
-
+        /**
+         * @covers OnboardService::onboard
+         * @throws OnboardException
+         */
         public function testGivenValidRequestTokenWhenOnboardingForP12ThenThereShouldBeAValidResponse()
         {
             $this->markTestIncomplete('Will not run successfully without changing the registration code.').
@@ -80,6 +86,10 @@ namespace Lib\Tests\Service\Onboard {
             $this->assertNotEmpty($onboardingResponse->getConnectionCriteria()->getMeasures());
         }
 
+        /**
+         * @covers OnboardService::onboard
+         * @throws OnboardException
+         */
         public function testGivenValidRequestTokenWhenOnboardingForPemThenThereShouldBeAValidResponse()
         {
             $this->markTestIncomplete('Will not run successfully without changing the registration code.').
