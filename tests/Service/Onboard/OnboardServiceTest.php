@@ -60,7 +60,7 @@ namespace Lib\Tests\Service\Onboard {
          */
         public function testGivenValidRequestTokenWhenOnboardingForP12ThenThereShouldBeAValidResponse()
         {
-            $this->markTestIncomplete('Will not run successfully without changing the registration code.').
+            //$this->markTestIncomplete('Will not run successfully without changing the registration code.').
 
             $onboardService = new OnboardService($this->qualityAssuranceEnvironment,$this->utcDataService, $this->httpClient);
             $onboardingParameters = new OnboardParameters();
@@ -70,7 +70,7 @@ namespace Lib\Tests\Service\Onboard {
             $onboardingParameters->setApplicationType(ApplicationTypeDefinitions::application());
             $onboardingParameters->setCertificationType(CertificationTypeDefinitions::p12());
             $onboardingParameters->setGatewayId(GatewayTypeDefinitions::http());
-            $onboardingParameters->setRegistrationCode("988fc08868");
+            $onboardingParameters->setRegistrationCode("aa11a61aef");
             $onboardingParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
             $onboardingResponse = $onboardService->onboard($onboardingParameters);
 
@@ -101,7 +101,7 @@ namespace Lib\Tests\Service\Onboard {
             $onboardingParameters->setApplicationType(ApplicationTypeDefinitions::application());
             $onboardingParameters->setCertificationType(CertificationTypeDefinitions::pem());
             $onboardingParameters->setGatewayId(GatewayTypeDefinitions::http());
-            $onboardingParameters->setRegistrationCode("911900a515");
+            $onboardingParameters->setRegistrationCode("2f36b5c82d");
             $onboardingParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
             $onboardingResponse = $onboardService->onboard($onboardingParameters);
 

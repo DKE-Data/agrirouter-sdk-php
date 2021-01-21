@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Dto\Onboard\Inner {
+namespace App\Dto\Onboard {
 
 
     use JetBrains\PhpStorm\ArrayShape;
@@ -8,7 +8,7 @@ namespace App\Dto\Onboard\Inner {
 
     /**
      * Class Authentication - Data transfer object for the communication.
-     * @package App\Dto\Onboard\Inner
+     * @package App\Dto\Onboard
      */
     class Authentication implements JsonSerializable
     {
@@ -63,14 +63,17 @@ namespace App\Dto\Onboard\Inner {
          */
         public static function createFromArray(array $data): self
         {
-            $authentication = new self();
+            $onboardingResponse = new self();
             foreach ($data as $key => $value) {
-
                 $setterToCall = "set" . ucfirst($key);
-                $authentication->$setterToCall($value);
-
+                if (is_array($value)) {
+                    $classname = __NAMESPACE__ . '\\' .ucfirst($key);
+                    $onboardingResponse->$setterToCall($classname::createFromArray($value));
+                } else {
+                    $onboardingResponse->$setterToCall($value);
+                }
             }
-            return $authentication;
+            return $onboardingResponse;
         }
     }
 }

@@ -11,7 +11,8 @@
       "App\\Dto\\": "src/Dto",
       "App\\Service\\": "src/Service",
       "App\\Environment\\": "src/Environment",
-      "App\\Exception\\": "src/Exception"
+      "App\\Exception\\": "src/Exception",
+      "App\\Dto\\Onboard\\": "src/Dto/Onboard/Inner"
     }
   },
   "autoload-dev": {

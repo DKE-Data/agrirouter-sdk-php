@@ -2,8 +2,6 @@
 
 namespace App\Dto\Onboard {
 
-    use App\Dto\Onboard\Inner\Authentication;
-    use App\Dto\Onboard\Inner\ConnectionCriteria;
     use JetBrains\PhpStorm\ArrayShape;
     use JsonSerializable;
 
@@ -142,15 +140,8 @@ namespace App\Dto\Onboard {
             foreach ($data as $key => $value) {
                 $setterToCall = "set" . ucfirst($key);
                 if (is_array($value)) {
-                    switch (ucfirst($key)) {
-                        case "Authentication":
-                            $onboardingResponse->$setterToCall(Authentication::createFromArray($value));
-                            break;
-                        case "ConnectionCriteria";
-                            $onboardingResponse->$setterToCall(ConnectionCriteria::createFromArray($value));
-                            break;
-                        default:
-                    }
+                    $classname = __NAMESPACE__ . '\\' .ucfirst($key);
+                    $onboardingResponse->$setterToCall($classname::createFromArray($value));
                 } else {
                     $onboardingResponse->$setterToCall($value);
                 }
