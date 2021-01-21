@@ -12,12 +12,12 @@ namespace App\Dto\Onboard\Inner {
      */
     class ConnectionCriteria implements JsonSerializable
     {
-        public string $gatewayId;
-        public string $measures;
-        public string $commands;
-        public string $host;
-        public string $port;
-        public string $clientId;
+        private string $gatewayId;
+        private string $measures;
+        private string $commands;
+        private string $host;
+        private string $port;
+        private string $clientId;
 
         public function getGatewayId(): string
         {

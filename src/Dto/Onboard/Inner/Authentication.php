@@ -12,9 +12,9 @@ namespace App\Dto\Onboard\Inner {
      */
     class Authentication implements JsonSerializable
     {
-        public string $type;
-        public string $secret;
-        public string $certificate;
+        private string $type;
+        private string $secret;
+        private string $certificate;
 
         public function getType(): string
         {
