@@ -7,7 +7,7 @@ namespace App\Dto\Onboard\Inner {
     use JsonSerializable;
 
     /**
-     * Class Authentication
+     * Class Authentication - Data transfer object for the communication.
      * @package App\Dto\Onboard\Inner
      */
     class Authentication implements JsonSerializable
@@ -16,49 +16,30 @@ namespace App\Dto\Onboard\Inner {
         public string $secret;
         public string $certificate;
 
-        /**
-         * @return string
-         */
         public function getType(): string
         {
             return $this->type;
         }
 
-        /**
-         * @param string $type
-         */
         public function setType(string $type): void
         {
             $this->type = $type;
         }
 
-        /**
-         * @return string
-         */
         public function getSecret(): string
         {
             return $this->secret;
         }
 
-        /**
-         * @param string $secret
-         */
         public function setSecret(string $secret): void
         {
             $this->secret = $secret;
         }
 
-        /**
-         * @return string
-         */
         public function getCertificate(): string
         {
             return $this->certificate;
         }
-
-        /**
-         * @param string $certificate
-         */
 
         public function setCertificate(string $certificate): void
         {
@@ -75,6 +56,11 @@ namespace App\Dto\Onboard\Inner {
             ];
         }
 
+        /**
+         * Creates an object of type Authentication from a given data array
+         * @param array $data
+         * @return Authentication
+         */
         public static function createFromArray(array $data): self
         {
             $authentication = new self();
@@ -86,7 +72,5 @@ namespace App\Dto\Onboard\Inner {
             }
             return $authentication;
         }
-
-
     }
 }

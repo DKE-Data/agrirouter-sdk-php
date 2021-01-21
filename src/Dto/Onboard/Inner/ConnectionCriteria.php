@@ -6,6 +6,10 @@ namespace App\Dto\Onboard\Inner {
     use JetBrains\PhpStorm\ArrayShape;
     use JsonSerializable;
 
+    /**
+     * Class ConnectionCriteria - Data transfer object for the communication.
+     * @package App\Dto\Onboard\Inner
+     */
     class ConnectionCriteria implements JsonSerializable
     {
         public string $gatewayId;
@@ -15,97 +19,61 @@ namespace App\Dto\Onboard\Inner {
         public string $port;
         public string $clientId;
 
-        /**
-         * @return string
-         */
         public function getGatewayId(): string
         {
             return $this->gatewayId;
         }
 
-        /**
-         * @param string $gatewayId
-         */
         public function setGatewayId(string $gatewayId): void
         {
             $this->gatewayId = $gatewayId;
         }
 
-        /**
-         * @return string
-         */
         public function getMeasures(): string
         {
             return $this->measures;
         }
 
-        /**
-         * @param string $measures
-         */
         public function setMeasures(string $measures): void
         {
             $this->measures = $measures;
         }
 
-        /**
-         * @return string
-         */
         public function getCommands(): string
         {
             return $this->commands;
         }
 
-        /**
-         * @param string $commands
-         */
         public function setCommands(string $commands): void
         {
             $this->commands = $commands;
         }
 
-        /**
-         * @return string
-         */
         public function getHost(): string
         {
             return $this->host;
         }
 
-        /**
-         * @param string $host
-         */
         public function setHost(string $host): void
         {
             $this->host = $host;
         }
 
-        /**
-         * @return string
-         */
         public function getPort(): string
         {
             return $this->port;
         }
 
-        /**
-         * @param string $port
-         */
         public function setPort(string $port): void
         {
             $this->port = $port;
         }
 
-        /**
-         * @return string
-         */
         public function getClientId(): string
         {
             return $this->clientId;
         }
 
-        /**
-         * @param string $clientId
-         */
         public function setClientId(string $clientId): void
         {
             $this->clientId = $clientId;
@@ -124,6 +92,11 @@ namespace App\Dto\Onboard\Inner {
             ];
         }
 
+        /**
+         * Creates an object of type ConnectionCriteria from a given data array
+         * @param array $data
+         * @return ConnectionCriteria
+         */
         public static function createFromArray(array $data): self
         {
             $connectionCriteria = new self();
