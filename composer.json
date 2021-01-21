@@ -10,7 +10,8 @@
       "App\\Definitions\\": "src/Definitions",
       "App\\Dto\\": "src/Dto",
       "App\\Service\\": "src/Service",
-      "App\\Environment\\": "src/Environment"
+      "App\\Environment\\": "src/Environment",
+      "App\\Exception\\": "src/Exception"
     }
   },
   "autoload-dev": {
@@ -19,7 +20,8 @@
     }
   },
   "require": {
-    "google/protobuf": "^3.11"
+    "google/protobuf": "^3.11",
+    "guzzlehttp/guzzle": "^7.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5.0"

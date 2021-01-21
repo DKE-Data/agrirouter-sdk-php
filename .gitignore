@@ -2,9 +2,11 @@
 .idea
 
 # COMPOSER #
-composer.phar
+/composer.phar
+/composer.lock
 vendor
 
 # PHPUNIT #
 .phpunit.result.cache
 .phpunit.cache/
+/phpunit.phar

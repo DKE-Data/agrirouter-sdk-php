@@ -3,8 +3,13 @@
 namespace App\Dto\Requests {
 
     use JetBrains\PhpStorm\ArrayShape;
+    use JsonSerializable;
 
-    class OnboardRequest implements \JsonSerializable
+    /**
+     * Class OnboardRequest - Data transfer object for the communication.
+     * @package App\Dto\Requests
+     */
+    class OnboardRequest implements JsonSerializable
     {
         private string $externalId;
         private string $applicationId;
@@ -85,11 +90,11 @@ namespace App\Dto\Requests {
             $this->certificateType = $certificateType;
         }
 
-        #[ArrayShape(['externalId' => "string", 'applicationId' => "string", 'certificationVersionId' => "string", 'gatewayId' => "string", 'utcTimestamp' => "string", 'timezone' => "string", 'certificateType' => "string"])]
+        #[ArrayShape(['id' => "string", 'applicationId' => "string", 'certificationVersionId' => "string", 'gatewayId' => "string", 'utcTimestamp' => "string", 'timezone' => "string", 'certificateType' => "string"])]
         public function jsonSerialize(): array
         {
             return [
-                'externalId' => $this->getExternalId(),
+                'id' => $this->getExternalId(),
                 'applicationId' => $this->getApplicationId(),
                 'certificationVersionId' => $this->getCertificationVersionId(),
                 'gatewayId' => $this->getGatewayId(),
