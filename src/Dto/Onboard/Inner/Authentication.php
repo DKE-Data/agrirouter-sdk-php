@@ -3,6 +3,8 @@
 namespace App\Dto\Onboard {
 
 
+    use App\Helper\JsonDeserializable;
+    use Exception;
     use JetBrains\PhpStorm\ArrayShape;
     use JsonSerializable;
 
@@ -10,7 +12,7 @@ namespace App\Dto\Onboard {
      * Class Authentication - Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
-    class Authentication implements JsonSerializable
+    class Authentication implements JsonSerializable,JsonDeserializable
     {
         private string $type;
         private string $secret;
@@ -56,24 +58,16 @@ namespace App\Dto\Onboard {
             ];
         }
 
-        /**
-         * Creates an object of type Authentication from a given data array
-         * @param array $data
-         * @return Authentication
-         */
-        public static function createFromArray(array $data): self
+        public function jsonDeserialize(array $data): self
         {
-            $onboardingResponse = new self();
             foreach ($data as $key => $value) {
-                $setterToCall = "set" . ucfirst($key);
-                if (is_array($value)) {
-                    $classname = __NAMESPACE__ . '\\' .ucfirst($key);
-                    $onboardingResponse->$setterToCall($classname::createFromArray($value));
-                } else {
-                    $onboardingResponse->$setterToCall($value);
+                try {
+                    $this->$key = $value;
+                } catch (Exception $ex) {
+                    echo $ex;
                 }
             }
-            return $onboardingResponse;
+            return $this;
         }
     }
 }

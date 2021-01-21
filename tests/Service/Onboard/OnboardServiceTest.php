@@ -33,6 +33,7 @@ namespace Lib\Tests\Service\Onboard {
             $this->qualityAssuranceEnvironment = new QualityAssuranceEnvironment();
             $this->httpClient = new Client();
         }
+
         /**
          * @covers OnboardService::onboard
          * @throws OnboardException
@@ -41,7 +42,7 @@ namespace Lib\Tests\Service\Onboard {
         {
             self::expectException(OnboardException::class);
 
-            $onboardService = new OnboardService($this->qualityAssuranceEnvironment,$this->utcDataService, $this->httpClient);
+            $onboardService = new OnboardService($this->qualityAssuranceEnvironment, $this->utcDataService, $this->httpClient);
             $onboardingParameters = new OnboardParameters();
             $onboardingParameters->setUuid(UuidService::newUuid());
             $onboardingParameters->setApplicationId(CommunicationUnit::applicationId());
@@ -54,15 +55,16 @@ namespace Lib\Tests\Service\Onboard {
             $onboardService->onboard($onboardingParameters);
 
         }
+
         /**
          * @covers OnboardService::onboard
          * @throws OnboardException
          */
         public function testGivenValidRequestTokenWhenOnboardingForP12ThenThereShouldBeAValidResponse()
         {
-            //$this->markTestIncomplete('Will not run successfully without changing the registration code.').
+            $this->markTestIncomplete('Will not run successfully without changing the registration code.');
 
-            $onboardService = new OnboardService($this->qualityAssuranceEnvironment,$this->utcDataService, $this->httpClient);
+            $onboardService = new OnboardService($this->qualityAssuranceEnvironment, $this->utcDataService, $this->httpClient);
             $onboardingParameters = new OnboardParameters();
             $onboardingParameters->setUuid(UuidService::newUuid());
             $onboardingParameters->setApplicationId(CommunicationUnit::applicationId());
@@ -70,7 +72,7 @@ namespace Lib\Tests\Service\Onboard {
             $onboardingParameters->setApplicationType(ApplicationTypeDefinitions::application());
             $onboardingParameters->setCertificationType(CertificationTypeDefinitions::p12());
             $onboardingParameters->setGatewayId(GatewayTypeDefinitions::http());
-            $onboardingParameters->setRegistrationCode("aa11a61aef");
+            $onboardingParameters->setRegistrationCode("be7cdc7c09");
             $onboardingParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
             $onboardingResponse = $onboardService->onboard($onboardingParameters);
 
@@ -92,8 +94,9 @@ namespace Lib\Tests\Service\Onboard {
          */
         public function testGivenValidRequestTokenWhenOnboardingForPemThenThereShouldBeAValidResponse()
         {
-            $this->markTestIncomplete('Will not run successfully without changing the registration code.').
-            $onboardService = new OnboardService($this->qualityAssuranceEnvironment,$this->utcDataService, $this->httpClient);
+            $this->markTestIncomplete('Will not run successfully without changing the registration code.');
+
+            $onboardService = new OnboardService($this->qualityAssuranceEnvironment, $this->utcDataService, $this->httpClient);
             $onboardingParameters = new OnboardParameters();
             $onboardingParameters->setUuid(UuidService::newUuid());
             $onboardingParameters->setApplicationId(CommunicationUnit::applicationId());
@@ -101,7 +104,7 @@ namespace Lib\Tests\Service\Onboard {
             $onboardingParameters->setApplicationType(ApplicationTypeDefinitions::application());
             $onboardingParameters->setCertificationType(CertificationTypeDefinitions::pem());
             $onboardingParameters->setGatewayId(GatewayTypeDefinitions::http());
-            $onboardingParameters->setRegistrationCode("2f36b5c82d");
+            $onboardingParameters->setRegistrationCode("d773852334");
             $onboardingParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
             $onboardingResponse = $onboardService->onboard($onboardingParameters);
 

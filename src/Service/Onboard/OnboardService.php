@@ -72,7 +72,9 @@ namespace App\Service\Onboard {
                 throw new OnboardException($result->getMessage(), $result->getCode());
             } else {
                 $object = json_decode($result, true);
-                return OnboardingResponse::createFromArray($object);
+                $onboardingResponse = new OnboardingResponse();
+                $onboardingResponse = $onboardingResponse->jsonDeserialize($object);
+                return $onboardingResponse;
             }
         }
     }
