@@ -11,7 +11,7 @@ namespace App\Dto\Onboard {
      * Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
-    class OnboardingResponse implements JsonSerializable,JsonDeserializable
+    class OnboardResponse implements JsonSerializable,JsonDeserializable
     {
         private string $deviceAlternateId;
 
