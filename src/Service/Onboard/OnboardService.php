@@ -2,7 +2,7 @@
 
 namespace App\Service\Onboard {
 
-    use App\Dto\Onboard\OnboardingResponse;
+    use App\Dto\Onboard\OnboardResponse;
     use App\Dto\Requests\OnboardRequest;
     use App\Environment\AbstractEnvironment;
     use App\Exception\OnboardException;
@@ -38,10 +38,10 @@ namespace App\Service\Onboard {
         /**
          * Onboard an endpoint using the simple onboarding procedure and the given parameters.
          * @param OnboardParameters $onboardParameters The onboarding parameters.
-         * @return OnboardingResponse|null
+         * @return OnboardResponse|null
          * @throws OnboardException Will be thrown if the onboarding was not successful.
          */
-        public function onboard(OnboardParameters $onboardParameters): ?OnboardingResponse
+        public function onboard(OnboardParameters $onboardParameters): ?OnboardResponse
         {
             $onboardRequest = new OnboardRequest();
             $onboardRequest->setExternalId($onboardParameters->getUuid());
@@ -72,7 +72,7 @@ namespace App\Service\Onboard {
                 throw new OnboardException($result->getMessage(), $result->getCode());
             } else {
                 $object = json_decode($result, true);
-                $onboardingResponse = new OnboardingResponse();
+                $onboardingResponse = new OnboardResponse();
                 $onboardingResponse = $onboardingResponse->jsonDeserialize($object);
                 return $onboardingResponse;
             }
