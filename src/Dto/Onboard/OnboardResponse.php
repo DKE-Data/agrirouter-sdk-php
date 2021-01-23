@@ -2,7 +2,7 @@
 
 namespace App\Dto\Onboard {
 
-    use App\Helper\JsonDeserializable;
+    use App\Api\Dto\JsonDeserializable;
     use Exception;
     use JetBrains\PhpStorm\ArrayShape;
     use JsonSerializable;
@@ -11,7 +11,7 @@ namespace App\Dto\Onboard {
      * Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
-    class OnboardResponse implements JsonSerializable,JsonDeserializable
+    class OnboardResponse implements JsonSerializable, JsonDeserializable
     {
         private string $deviceAlternateId;
 
@@ -94,13 +94,13 @@ namespace App\Dto\Onboard {
         {
             foreach ($data as $key => $value) {
                 if (is_array($value)) {
-                    $classname = __NAMESPACE__ . '\\' .ucfirst($key);
+                    $classname = __NAMESPACE__ . '\\' . ucfirst($key);
                     $object = new $classname();
                     $this->$key = $object->jsonDeserialize($value);
                 } else {
                     try {
                         $this->$key = $value;
-                    } catch (Exception $ex){
+                    } catch (Exception $ex) {
                         echo $ex;
                     }
                 }

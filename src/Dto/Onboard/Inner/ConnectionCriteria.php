@@ -3,7 +3,7 @@
 namespace App\Dto\Onboard {
 
 
-    use App\Helper\JsonDeserializable;
+    use App\Api\Dto\JsonDeserializable;
     use Exception;
     use JetBrains\PhpStorm\ArrayShape;
     use JsonSerializable;

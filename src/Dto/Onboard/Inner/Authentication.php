@@ -3,7 +3,7 @@
 namespace App\Dto\Onboard {
 
 
-    use App\Helper\JsonDeserializable;
+    use App\Api\Dto\JsonDeserializable;
     use Exception;
     use JetBrains\PhpStorm\ArrayShape;
     use JsonSerializable;
@@ -12,7 +12,7 @@ namespace App\Dto\Onboard {
      * Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
-    class Authentication implements JsonSerializable,JsonDeserializable
+    class Authentication implements JsonSerializable, JsonDeserializable
     {
         private string $type;
         private string $secret;

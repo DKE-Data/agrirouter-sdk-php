@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Helper;
+namespace App\Api\Dto;
 
 /**
  * Interface JsonDeserializable - Classes that implement this Interface deserialize itself out of json data
