@@ -2,6 +2,8 @@
 
 namespace App\Service\Common {
 
+    use JetBrains\PhpStorm\Pure;
+
     /**
      * Service to generate UUIDs.
      * @package App\Service\Common
@@ -13,7 +15,7 @@ namespace App\Service\Common {
          * Generate a new UUID.
          * @return string -
          */
-        public static function newUuid(): string
+        #[Pure] public static function newUuid(): string
         {
             return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
                 mt_rand(0, 0xffff), mt_rand(0, 0xffff),
