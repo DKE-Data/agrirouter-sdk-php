@@ -41,6 +41,8 @@ namespace Lib\Tests\Service\Onboard {
         public function testGivenInvalidRequestTokenWhenOnboardingThenThereShouldBeAnException()
         {
             self::expectException(OnboardException::class);
+            self::expectExceptionCode(401);
+            self::expectExceptionMessage("Bearer not found.");
 
             $onboardService = new OnboardService($this->qualityAssuranceEnvironment, $this->utcDataService, $this->httpClient);
             $onboardingParameters = new OnboardParameters();
@@ -59,6 +61,7 @@ namespace Lib\Tests\Service\Onboard {
         /**
          * @covers OnboardService::onboard
          * @throws OnboardException
+         * @noinspection PhpUnreachableStatementInspection
          */
         public function testGivenValidRequestTokenWhenOnboardingForP12ThenThereShouldBeAValidResponse()
         {
@@ -91,6 +94,7 @@ namespace Lib\Tests\Service\Onboard {
         /**
          * @covers OnboardService::onboard
          * @throws OnboardException
+         * @noinspection PhpUnreachableStatementInspection
          */
         public function testGivenValidRequestTokenWhenOnboardingForPemThenThereShouldBeAValidResponse()
         {
