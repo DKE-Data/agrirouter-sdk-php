@@ -3,6 +3,7 @@
 namespace App\Service\Common {
 
     use DateTime;
+    use JetBrains\PhpStorm\Pure;
 
     /**
      * Service to generate timestamps and hold UTC specific functions.
@@ -28,7 +29,7 @@ namespace App\Service\Common {
          * @param int $offset -
          * @return string -
          */
-        public static function timeZone(int $offset): string
+        #[Pure] public static function timeZone(int $offset): string
         {
             return sprintf("%s%02d:00", ($offset >= 0) ? '+' : '-', abs($offset / 3600));
         }
