@@ -9,7 +9,7 @@ namespace App\Dto\Onboard {
     use JsonSerializable;
 
     /**
-     * Class ConnectionCriteria - Data transfer object for the communication.
+     * Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
     class ConnectionCriteria implements JsonSerializable, JsonDeserializable

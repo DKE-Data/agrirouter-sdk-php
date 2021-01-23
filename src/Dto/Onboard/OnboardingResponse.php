@@ -8,107 +8,66 @@ namespace App\Dto\Onboard {
     use JsonSerializable;
 
     /**
-     * Class OnboardingResponse - Data transfer object for the communication.
+     * Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
     class OnboardingResponse implements JsonSerializable,JsonDeserializable
     {
-        /**
-         * @var string Device alternate ID.
-         */
-        public string $deviceAlternateId;
-        /**
-         * @var string Capability alternate ID.
-         */
-        public string $capabilityAlternateId;
-        /**
-         * @var string Sensor alternate ID.
-         */
-        public string $sensorAlternateId;
-        /**
-         * @var ConnectionCriteria Connection criteria.
-         */
-        public ConnectionCriteria $connectionCriteria;
-        /**
-         * @var Authentication Authentication.
-         */
-        public Authentication $authentication;
+        private string $deviceAlternateId;
 
-        /**
-         * @return string
-         */
+        private string $capabilityAlternateId;
+
+        private string $sensorAlternateId;
+
+        private ConnectionCriteria $connectionCriteria;
+
+        private Authentication $authentication;
+
         public function getDeviceAlternateId(): string
         {
             return $this->deviceAlternateId;
         }
 
-        /**
-         * @param string $deviceAlternateId
-         */
         public function setDeviceAlternateId(string $deviceAlternateId): void
         {
             $this->deviceAlternateId = $deviceAlternateId;
         }
 
-        /**
-         * @return string
-         */
         public function getCapabilityAlternateId(): string
         {
             return $this->capabilityAlternateId;
         }
 
-        /**
-         * @param string $capabilityAlternateId
-         */
         public function setCapabilityAlternateId(string $capabilityAlternateId): void
         {
             $this->capabilityAlternateId = $capabilityAlternateId;
         }
 
-        /**
-         * @return string
-         */
         public function getSensorAlternateId(): string
         {
             return $this->sensorAlternateId;
         }
 
-        /**
-         * @param string $sensorAlternateId
-         */
         public function setSensorAlternateId(string $sensorAlternateId): void
         {
             $this->sensorAlternateId = $sensorAlternateId;
         }
 
-        /**
-         * @return ConnectionCriteria
-         */
         public function getConnectionCriteria(): ConnectionCriteria
         {
             return $this->connectionCriteria;
         }
 
-        /**
-         * @param ConnectionCriteria $connectionCriteria
-         */
         public function setConnectionCriteria(ConnectionCriteria $connectionCriteria): void
         {
             $this->connectionCriteria = $connectionCriteria;
         }
 
-        /**
-         * @return Authentication
-         */
         public function getAuthentication(): Authentication
         {
             return $this->authentication;
         }
 
-        /**
-         * @param Authentication $authentication
-         */
         public function setAuthentication(Authentication $authentication): void
         {
             $this->authentication = $authentication;

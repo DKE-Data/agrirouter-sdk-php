@@ -9,7 +9,7 @@ namespace App\Dto\Onboard {
     use JsonSerializable;
 
     /**
-     * Class Authentication - Data transfer object for the communication.
+     * Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
     class Authentication implements JsonSerializable,JsonDeserializable
