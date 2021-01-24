@@ -33,5 +33,14 @@ namespace App\Service\Common {
         {
             return sprintf("%s%02d:00", ($offset >= 0) ? '+' : '-', abs($offset / 3600));
         }
+
+        /**
+         * Delivering the current date using a unix timestamp format.
+         * @return string
+         */
+        public static function nowAsUnixTimestamp(): string
+        {
+            return strftime(time());
+        }
     }
 }
