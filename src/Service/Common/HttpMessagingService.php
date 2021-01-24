@@ -30,7 +30,7 @@ class HttpMessagingService implements MessagingService
 
     /**
      * Send message to the AR using the given message parameters.
-     * @param MessagingParameters $parameters Messaging paramters.
+     * @param MessagingParameters $parameters Messaging parameters.
      * @return MessagingResult -
      */
     public function send($parameters): MessagingResult
