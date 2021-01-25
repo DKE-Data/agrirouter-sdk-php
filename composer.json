@@ -7,13 +7,11 @@
   ],
   "autoload": {
     "psr-4": {
+      "App\\Api\\": "src/Api",
       "App\\Definitions\\": "src/Definitions",
       "App\\Dto\\": "src/Dto",
-      "App\\Service\\": "src/Service",
       "App\\Environment\\": "src/Environment",
-      "App\\Exception\\": "src/Exception",
-      "App\\Dto\\Onboard\\": "src/Dto/Onboard/Inner",
-      "App\\Helper\\": "src/Helper"
+      "App\\Service\\": "src/Service"
     }
   },
   "autoload-dev": {

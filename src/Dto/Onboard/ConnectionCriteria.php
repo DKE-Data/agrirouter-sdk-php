@@ -2,7 +2,6 @@
 
 namespace App\Dto\Onboard {
 
-
     use App\Api\Dto\JsonDeserializable;
     use Exception;
     use JetBrains\PhpStorm\ArrayShape;

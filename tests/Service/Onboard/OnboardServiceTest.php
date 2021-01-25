@@ -2,11 +2,12 @@
 
 namespace Lib\Tests\Service\Onboard {
 
+    use App\Api\Exceptions\ErrorCodes;
+    use App\Api\Exceptions\OnboardException;
     use App\Definitions\ApplicationTypeDefinitions;
     use App\Definitions\CertificationTypeDefinitions;
     use App\Definitions\GatewayTypeDefinitions;
     use App\Environment\QualityAssuranceEnvironment;
-    use App\Exception\OnboardException;
     use App\Service\Common\UtcDataService;
     use App\Service\Common\UuidService;
     use App\Service\Onboard\OnboardService;
@@ -36,13 +37,11 @@ namespace Lib\Tests\Service\Onboard {
 
         /**
          * @covers OnboardService::onboard
-         * @throws OnboardException
          */
         public function testGivenInvalidRequestTokenWhenOnboardingThenThereShouldBeAnException()
         {
             self::expectException(OnboardException::class);
-            self::expectExceptionCode(401);
-            self::expectExceptionMessage("Bearer not found.");
+            self::expectExceptionCode(ErrorCodes::BEARER_NOT_FOUND);
 
             $onboardService = new OnboardService($this->qualityAssuranceEnvironment, $this->utcDataService, $this->httpClient);
             $onboardingParameters = new OnboardParameters();

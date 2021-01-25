@@ -8,10 +8,10 @@ namespace App\Environment {
      */
     class QualityAssuranceEnvironment extends AbstractEnvironment
     {
-        const API_PREFIX = "/api/v1.0";
-        const REGISTRATION_SERVICE_URL =
+        private const API_PREFIX = "/api/v1.0";
+        private const REGISTRATION_SERVICE_URL =
             "https://agrirouter-registration-service-hubqa-eu10.cfapps.eu10.hana.ondemand.com";
-        const AUTHORIZATION_SERVICE_URL = "https://agrirouter-qa.cfapps.eu10.hana.ondemand.com";
+        private const AUTHORIZATION_SERVICE_URL = "https://agrirouter-qa.cfapps.eu10.hana.ondemand.com";
 
 
         public function apiPrefix(): string
