@@ -9,6 +9,7 @@ use App\Dto\Messaging\MessageRequest;
 use App\Dto\Messaging\MessagingResult;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use function PHPUnit\Framework\isNull;
 
 /**
  * Service to send messages to the AR.

@@ -2,11 +2,14 @@
 
 namespace App\Api\Service\Parameters {
 
+    use App\Api\Exceptions\ValidationException;
+    use function PHPUnit\Framework\isNull;
+
     /**
      * Parameter container definition.
      * @package App\Api\Service\Parameters
      */
-    abstract class Parameters
+    abstract class Parameters implements Validatable
     {
         private string $applicationMessageSeqNo;
         private string $applicationMessageId;
@@ -41,6 +44,17 @@ namespace App\Api\Service\Parameters {
         {
             $this->applicationMessageSeqNo = $applicationMessageSeqNo;
         }
+
+        public function validate(): void
+        {
+            if (isNull($this->applicationMessageSeqNo)) {
+                throw new ValidationException("applicationMessageSeqNo");
+            }
+            if (isNull($this->applicationMessageId)) {
+                throw new ValidationException("onboardResponse");
+            }
+        }
+
 
     }
 }

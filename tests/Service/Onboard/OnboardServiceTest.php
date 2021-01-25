@@ -2,11 +2,11 @@
 
 namespace Lib\Tests\Service\Onboard {
 
+    use App\Api\Exceptions\OnboardException;
     use App\Definitions\ApplicationTypeDefinitions;
     use App\Definitions\CertificationTypeDefinitions;
     use App\Definitions\GatewayTypeDefinitions;
     use App\Environment\QualityAssuranceEnvironment;
-    use App\Exception\OnboardException;
     use App\Service\Common\UtcDataService;
     use App\Service\Common\UuidService;
     use App\Service\Onboard\OnboardService;
@@ -36,7 +36,6 @@ namespace Lib\Tests\Service\Onboard {
 
         /**
          * @covers OnboardService::onboard
-         * @throws OnboardException
          */
         public function testGivenInvalidRequestTokenWhenOnboardingThenThereShouldBeAnException()
         {

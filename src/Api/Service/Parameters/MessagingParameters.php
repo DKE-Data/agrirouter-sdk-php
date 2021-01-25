@@ -1,12 +1,15 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Api\Service\Parameters {
+
+    use App\Api\Exceptions\ValidationException;
+    use function PHPUnit\Framework\isNull;
 
     /**
      * Parameter container definition.
      * @package App\Api\Service\Parameters
      */
-    class MessagingParameters extends MessageParameters
+    class MessagingParameters extends MessageParameters implements Validatable
     {
         private array $encodedMessages = [];
 
@@ -20,5 +23,12 @@ namespace App\Api\Service\Parameters {
             $this->encodedMessages = $encodedMessages;
         }
 
+        public function validate(): void
+        {
+            parent::validate();
+            if (isNull($this->encodedMessages) || array_count_values($this->encodedMessages)) {
+                throw new ValidationException("encodedMessages");
+            }
+        }
     }
 }
