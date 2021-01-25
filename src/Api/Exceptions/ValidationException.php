@@ -12,7 +12,7 @@ namespace App\Api\Exceptions {
     {
 
         /**
-         * ValidationException constructor.
+         * Constructor.
          * @param string $invalidParameter Invalid parameter
          */
         #[Pure] public function __construct(string $invalidParameter)

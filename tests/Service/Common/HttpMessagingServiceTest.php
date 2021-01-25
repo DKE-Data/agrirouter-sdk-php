@@ -4,6 +4,8 @@
 namespace Lib\Tests\Service\Common {
 
 
+    use App\Api\Exceptions\ErrorCodes;
+    use App\Api\Exceptions\MessagingException;
     use App\Api\Service\Parameters\MessagingParameters;
     use App\Service\Common\HttpMessagingService;
     use Error;
@@ -30,8 +32,11 @@ namespace Lib\Tests\Service\Common {
         /**
          * @covers HttpMessagingService::send()
          */
-        function testGivenInvalidMessageFormatWhenSendingMessageViaHttpThenTheServiceShouldThrowAnException()
+        function testGivenInvalidMessageWhenSendingMessageViaHttpThenTheServiceShouldThrowAnException()
         {
+            self::expectException(MessagingException::class);
+            self::expectExceptionCode(ErrorCodes::INVALID_MESSAGE);
+
             $onboardResponse = OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT);
 
             $httpMessagingService = new HttpMessagingService(HttpClientFactory::httpClient());

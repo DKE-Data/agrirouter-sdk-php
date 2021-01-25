@@ -1,14 +1,10 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace App\Api\Exceptions {
 
     use JetBrains\PhpStorm\Pure;
 
-    /**
-     * Will be thrown if there is an error during the onboard process.
-     * @package App\Exception
-     */
-    class OnboardException extends BusinessException
+    class MessagingException extends BusinessException
     {
 
         /**
@@ -22,4 +18,3 @@ namespace App\Api\Exceptions {
         }
     }
 }
-

@@ -4,6 +4,7 @@ namespace App\Service\Common;
 
 use App\Api\Common\MessagingService;
 use App\Api\Exceptions\ErrorCodes;
+use App\Api\Exceptions\MessagingException;
 use App\Api\Exceptions\OnboardException;
 use App\Api\Service\Parameters\MessagingParameters;
 use App\Dto\Messaging\Inner\Message;
@@ -74,10 +75,10 @@ class HttpMessagingService implements MessagingService
         $result = $promise->wait();
 
         if ($result instanceof Exception) {
-            if ($result->getCode() == 401) {
-                throw new OnboardException($result->getMessage(), ErrorCodes::BEARER_NOT_FOUND);
+            if ($result->getCode() == 400) {
+                throw new MessagingException($result->getMessage(), ErrorCodes::INVALID_MESSAGE);
             } else {
-                throw new OnboardException($result->getMessage(), ErrorCodes::UNDEFINED);
+                throw new MessagingException($result->getMessage(), ErrorCodes::UNDEFINED);
             }
         } else {
             return new MessagingResult();
