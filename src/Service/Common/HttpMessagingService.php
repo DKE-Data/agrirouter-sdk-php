@@ -3,13 +3,16 @@
 namespace App\Service\Common;
 
 use App\Api\Common\MessagingService;
+use App\Api\Exceptions\ErrorCodes;
+use App\Api\Exceptions\OnboardException;
 use App\Api\Service\Parameters\MessagingParameters;
 use App\Dto\Messaging\Inner\Message;
 use App\Dto\Messaging\MessageRequest;
 use App\Dto\Messaging\MessagingResult;
+use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
-use function PHPUnit\Framework\isNull;
+use GuzzleHttp\RequestOptions;
 
 /**
  * Service to send messages to the AR.
@@ -41,7 +44,7 @@ class HttpMessagingService implements MessagingService
         $messageRequest->setCapabilityAlternateId($parameters->getOnboardResponse()->getCapabilityAlternateId());
 
         $messages = [];
-        foreach ($messageRequest->getMessages() as $encodedMessage) {
+        foreach ($parameters->getEncodedMessages() as $encodedMessage) {
             $message = new Message();
             $message->setContent($encodedMessage);
             $message->setTimestamp(UtcDataService::nowAsUnixTimestamp());
@@ -55,13 +58,28 @@ class HttpMessagingService implements MessagingService
         ];
 
         $request = new Request('POST', $parameters->getOnboardResponse()->getConnectionCriteria()->getMeasures(), $headers, $requestBody);
-        $promise = $this->httpClient->sendAsync($request)->
+
+        $promise = $this->httpClient->sendAsync($request,
+            [
+                RequestOptions::CERT => [CertificateService::createCertificateFile($parameters->getOnboardResponse()), $parameters->getOnboardResponse()->getAuthentication()->getSecret()],
+                RequestOptions::SSL_KEY => [CertificateService::createCertificateFile($parameters->getOnboardResponse()), $parameters->getOnboardResponse()->getAuthentication()->getSecret()]
+            ])->
         then(function ($response) {
             return (string)$response->getBody();
         }, function ($exception) {
             return $exception;
         });
 
-        return $promise->wait();
+        $result = $promise->wait();
+
+        if ($result instanceof Exception) {
+            if ($result->getCode() == 401) {
+                throw new OnboardException($result->getMessage(), ErrorCodes::BEARER_NOT_FOUND);
+            } else {
+                throw new OnboardException($result->getMessage(), ErrorCodes::UNDEFINED);
+            }
+        } else {
+            return new MessagingResult();
+        }
     }
 }

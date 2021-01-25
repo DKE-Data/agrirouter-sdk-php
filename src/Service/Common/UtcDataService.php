@@ -40,7 +40,7 @@ namespace App\Service\Common {
          */
         public static function nowAsUnixTimestamp(): string
         {
-            return strftime(time());
+            return sprintf("%s", time());
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Lib\Tests\Service\Common {
 
-    use App\Dto\Onboard\Inner\Authentication;
+    use App\Dto\Onboard\Authentication;
     use App\Dto\Onboard\OnboardResponse;
     use App\Service\Common\CertificateService;
     use App\Service\Common\UuidService;

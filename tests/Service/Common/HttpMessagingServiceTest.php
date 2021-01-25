@@ -4,11 +4,12 @@
 namespace Lib\Tests\Service\Common {
 
 
-    use App\Api\Exceptions\ErrorCodes;
-    use App\Api\Exceptions\ValidationException;
     use App\Api\Service\Parameters\MessagingParameters;
     use App\Service\Common\HttpMessagingService;
+    use Error;
     use Lib\Tests\Helper\HttpClientFactory;
+    use Lib\Tests\Helper\Identifier;
+    use Lib\Tests\Helper\OnboardResponseRepository;
     use PHPUnit\Framework\TestCase;
 
     class HttpMessagingServiceTest extends TestCase
@@ -19,10 +20,25 @@ namespace Lib\Tests\Service\Common {
          */
         function testGivenInvalidParametersWhenSendingMessageViaHttpThenTheServiceShouldThrowAnException()
         {
-            self::expectException(\Error::class);
+            self::expectException(Error::class);
 
             $httpMessagingService = new HttpMessagingService(HttpClientFactory::httpClient());
             $parameters = new MessagingParameters();
+            $httpMessagingService->send($parameters);
+        }
+
+        /**
+         * @covers HttpMessagingService::send()
+         */
+        function testGivenInvalidMessageFormatWhenSendingMessageViaHttpThenTheServiceShouldThrowAnException()
+        {
+            $onboardResponse = OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT);
+
+            $httpMessagingService = new HttpMessagingService(HttpClientFactory::httpClient());
+
+            $parameters = new MessagingParameters();
+            $parameters->setOnboardResponse($onboardResponse);
+            $parameters->setEncodedMessages(["SOME_ENCODED_MESSAGE"]);
             $httpMessagingService->send($parameters);
         }
 

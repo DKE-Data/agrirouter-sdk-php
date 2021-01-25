@@ -77,9 +77,9 @@ namespace App\Service\Onboard {
                 }
             } else {
                 $object = json_decode($result, true);
-                $onboardingResponse = new OnboardResponse();
-                $onboardingResponse = $onboardingResponse->jsonDeserialize($object);
-                return $onboardingResponse;
+                $onboardResponse = new OnboardResponse();
+                $onboardResponse = $onboardResponse->jsonDeserialize($object);
+                return $onboardResponse;
             }
         }
     }
