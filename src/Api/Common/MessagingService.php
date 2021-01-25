@@ -18,6 +18,5 @@ namespace App\Api\Common {
          */
         public function send($parameters): MessagingResult;
 
-
     }
 }

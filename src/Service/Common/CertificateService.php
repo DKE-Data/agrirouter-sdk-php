@@ -2,7 +2,6 @@
 
 namespace App\Service\Common {
 
-    use App\Api\Exceptions\ValidationException;
     use App\Dto\Onboard\OnboardResponse;
 
     /**

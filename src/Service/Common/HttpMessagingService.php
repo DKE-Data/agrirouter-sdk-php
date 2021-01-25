@@ -36,6 +36,7 @@ class HttpMessagingService implements MessagingService
      * Send message to the AR using the given message parameters.
      * @param MessagingParameters $parameters Messaging parameters.
      * @return MessagingResult -
+     * @throws OnboardException Will be thrown in case of an error.
      */
     public function send($parameters): MessagingResult
     {

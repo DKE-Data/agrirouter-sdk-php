@@ -10,7 +10,7 @@ namespace App\Environment {
     {
 
         /**
-         * Returning the API prefix for several AR URLs, like the onboarding URL for example.
+         * Returning the API prefix for several AR URLs, like the onboard URL for example.
          * @return string -
          */
         public abstract function apiPrefix(): string;
@@ -28,10 +28,10 @@ namespace App\Environment {
         public abstract function authorizationServiceUrl(): string;
 
         /**
-         * URL for the onboarding request.
+         * URL for the onboard request.
          * @return string -
          */
-        public function securedOnboardingUrl(): string
+        public function securedOnboardUrl(): string
         {
             return $this->registrationServiceUrl() . $this->apiPrefix() . "/registration/onboard/request";
         }
@@ -46,16 +46,16 @@ namespace App\Environment {
         }
 
         /**
-         * URL for the onboarding request.
+         * URL for the onboard request.
          * @return string -
          */
-        public function onboardingUrl(): string
+        public function onboardUrl(): string
         {
             return $this->registrationServiceUrl() . $this->apiPrefix() . "/registration/onboard";
         }
 
         /**
-         * URL for the onboarding request.
+         * URL for the onboard request.
          * @return string -
          */
         public function verificationUrl(): string

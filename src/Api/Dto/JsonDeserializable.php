@@ -11,7 +11,7 @@ interface JsonDeserializable
     /**
      * Creates a new object of itself with the data of a given array
      * @param array $data Array with object data.
-     * @return self New onboarding response created from data array
+     * @return self New onboard response created from data array
      */
     public function jsonDeserialize(array $data): self;
 }
