@@ -3,6 +3,8 @@
 namespace App\Dto\Onboard {
 
     use App\Api\Dto\JsonDeserializable;
+    use App\Dto\Onboard\Inner\Authentication;
+    use App\Dto\Onboard\Inner\ConnectionCriteria;
     use Exception;
     use JetBrains\PhpStorm\ArrayShape;
     use JsonSerializable;

@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Dto\Onboard {
+namespace App\Dto\Onboard\Inner {
 
 
     use App\Api\Dto\JsonDeserializable;
