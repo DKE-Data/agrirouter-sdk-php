@@ -14,7 +14,7 @@ namespace App\Api\Service\Parameters {
          * Will validate the parameters.
          * In case of an error the method should throw an exception.
          */
-        public function validate():void;
+        public function validate(): void;
 
     }
 }
