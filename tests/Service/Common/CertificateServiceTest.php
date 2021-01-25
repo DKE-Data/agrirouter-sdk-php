@@ -14,6 +14,9 @@ namespace Lib\Tests\Service\Common {
     class CertificateServiceTest extends TestCase
     {
 
+        /**
+         * @covers CertificateService::createCertificateFile()
+         */
         function testGivenValidOnboardResponseWhenCreatingTheCertificateFileThenTheServiceShouldReturnAValidPath()
         {
             $onboardResponse = new OnboardResponse();
@@ -25,6 +28,9 @@ namespace Lib\Tests\Service\Common {
             assertTrue(file_exists($certificateFile));
         }
 
+        /**
+         * @covers CertificateService::createCertificateFile()
+         */
         function testGivenValidOnboardResponseWhenCreatingTheCertificateFileAgainThenTheServiceShouldReturnAValidPath()
         {
             $onboardResponse = new OnboardResponse();
@@ -39,6 +45,9 @@ namespace Lib\Tests\Service\Common {
             assertTrue(file_exists($certificateFile));
         }
 
+        /**
+         * @covers CertificateService::createCertificateFile()
+         */
         function testGivenInvalidOnboardResponseWhenCreatingTheCertificateFileThenTheServiceShouldThrowAnException()
         {
             self::expectException(Error::class);
@@ -51,6 +60,9 @@ namespace Lib\Tests\Service\Common {
             assertTrue(file_exists($certificateFile));
         }
 
+        /**
+         * @covers CertificateService::createCertificateFile()
+         */
         function testGivenNullValueForOnboardResponseWhenCreatingTheCertificateFileThenTheServiceShouldThrowAnException()
         {
             self::expectException(TypeError::class);
