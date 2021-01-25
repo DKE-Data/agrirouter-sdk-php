@@ -2,10 +2,11 @@
 
 namespace App\Service\Onboard {
 
+    use App\Api\Exceptions\ErrorCodes;
+    use App\Api\Exceptions\OnboardException;
     use App\Dto\Onboard\OnboardResponse;
     use App\Dto\Requests\OnboardRequest;
     use App\Environment\AbstractEnvironment;
-    use App\Exception\OnboardException;
     use App\Service\Common\UtcDataService;
     use App\Service\Parameters\OnboardParameters;
     use Exception;
@@ -36,10 +37,10 @@ namespace App\Service\Onboard {
         }
 
         /**
-         * Onboard an endpoint using the simple onboarding procedure and the given parameters.
-         * @param OnboardParameters $onboardParameters The onboarding parameters.
+         * Onboard an endpoint using the simple onboard procedure and the given parameters.
+         * @param OnboardParameters $onboardParameters The onboard parameters.
          * @return OnboardResponse|null
-         * @throws OnboardException Will be thrown if the onboarding was not successful.
+         * @throws OnboardException Will be thrown if the onboard was not successful.
          */
         public function onboard(OnboardParameters $onboardParameters): ?OnboardResponse
         {
@@ -58,7 +59,7 @@ namespace App\Service\Onboard {
                 'Authorization' => 'Bearer ' . $onboardParameters->getRegistrationCode(),
             ];
 
-            $request = new Request('POST', $this->environment->onboardingUrl(), $headers, $requestBody);
+            $request = new Request('POST', $this->environment->onboardUrl(), $headers, $requestBody);
             $promise = $this->httpClient->sendAsync($request)->
             then(function ($response) {
                 return (string)$response->getBody();
@@ -69,12 +70,16 @@ namespace App\Service\Onboard {
             $result = $promise->wait();
 
             if ($result instanceof Exception) {
-                throw new OnboardException($result->getMessage(), $result->getCode());
+                if ($result->getCode() == 401) {
+                    throw new OnboardException($result->getMessage(), ErrorCodes::BEARER_NOT_FOUND);
+                } else {
+                    throw new OnboardException($result->getMessage(), ErrorCodes::UNDEFINED);
+                }
             } else {
                 $object = json_decode($result, true);
-                $onboardingResponse = new OnboardResponse();
-                $onboardingResponse = $onboardingResponse->jsonDeserialize($object);
-                return $onboardingResponse;
+                $onboardResponse = new OnboardResponse();
+                $onboardResponse = $onboardResponse->jsonDeserialize($object);
+                return $onboardResponse;
             }
         }
     }
