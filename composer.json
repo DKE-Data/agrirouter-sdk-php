@@ -13,7 +13,7 @@
       "App\\Environment\\": "src/Environment",
       "App\\Exception\\": "src/Exception",
       "App\\Dto\\Onboard\\": "src/Dto/Onboard/Inner",
-      "App\\Helper\\": "src/Helper"
+      "App\\Api\\Dto\\": "src/Api/Dto"
     }
   },
   "autoload-dev": {
@@ -23,7 +23,10 @@
   },
   "require": {
     "google/protobuf": "^3.11",
-    "guzzlehttp/guzzle": "^7.0"
+    "guzzlehttp/guzzle": "^7.0",
+    "phpseclib/phpseclib": "^3.0.0",
+    "monolog/monolog": "^2.2.0",
+    "ext-openssl": "*"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.5.0"

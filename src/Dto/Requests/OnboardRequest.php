@@ -15,8 +15,8 @@ namespace App\Dto\Requests {
         private string $applicationId;
         private string $certificationVersionId;
         private string $gatewayId;
-        private string $utcTimestamp;
-        private string $timezone;
+        private string $UTCTimestamp;
+        private string $timeZone;
         private string $certificateType;
 
         public function getExternalId(): string
@@ -59,25 +59,25 @@ namespace App\Dto\Requests {
             $this->gatewayId = $gatewayId;
         }
 
-        public function getUtcTimestamp(): string
+        public function getUTCTimestamp(): string
         {
-            return $this->utcTimestamp;
+            return $this->UTCTimestamp;
         }
 
-        public function setUtcTimestamp(string $utcTimestamp): void
+        public function setUTCTimestamp(string $UTCTimestamp): void
         {
-            $this->utcTimestamp = $utcTimestamp;
+            $this->UTCTimestamp = $UTCTimestamp;
         }
 
 
-        public function getTimezone(): string
+        public function getTimeZone(): string
         {
-            return $this->timezone;
+            return $this->timeZone;
         }
 
-        public function setTimezone(string $timezone): void
+        public function setTimeZone(string $timeZone): void
         {
-            $this->timezone = $timezone;
+            $this->timeZone = $timeZone;
         }
 
         public function getCertificateType(): string
@@ -90,7 +90,7 @@ namespace App\Dto\Requests {
             $this->certificateType = $certificateType;
         }
 
-        #[ArrayShape(['id' => "string", 'applicationId' => "string", 'certificationVersionId' => "string", 'gatewayId' => "string", 'utcTimestamp' => "string", 'timezone' => "string", 'certificateType' => "string"])]
+        #[ArrayShape(['id' => "string", 'applicationId' => "string", 'certificationVersionId' => "string", 'gatewayId' => "string", 'UTCTimestamp' => "string", 'timeZone' => "string", 'certificateType' => "string"])]
         public function jsonSerialize(): array
         {
             return [
@@ -98,8 +98,8 @@ namespace App\Dto\Requests {
                 'applicationId' => $this->getApplicationId(),
                 'certificationVersionId' => $this->getCertificationVersionId(),
                 'gatewayId' => $this->getGatewayId(),
-                'utcTimestamp' => $this->getUtcTimestamp(),
-                'timezone' => $this->getTimezone(),
+                'UTCTimestamp' => $this->getUTCTimestamp(),
+                'timeZone' => $this->getTimeZone(),
                 'certificateType' => $this->getCertificateType()
             ];
         }

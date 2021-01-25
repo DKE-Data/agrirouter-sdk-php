@@ -6,6 +6,7 @@ namespace App\Service\Onboard {
     use App\Dto\Requests\OnboardRequest;
     use App\Environment\AbstractEnvironment;
     use App\Exception\OnboardException;
+    use App\Service\Common\SignatureService;
     use App\Service\Common\UtcDataService;
     use App\Service\Parameters\OnboardParameters;
     use Exception;
@@ -16,7 +17,7 @@ namespace App\Service\Onboard {
      * Service for all onboard purposes.
      * @package App\Service\Onboard
      */
-    class OnboardService
+    class SecuredOnboardingService
     {
         private AbstractEnvironment $environment;
         private Client $httpClient;
@@ -41,7 +42,7 @@ namespace App\Service\Onboard {
          * @return OnboardResponse|null
          * @throws OnboardException Will be thrown if the onboarding was not successful.
          */
-        public function onboard(OnboardParameters $onboardParameters): ?OnboardResponse
+        public function onboard(?OnboardParameters $onboardParameters, ?string $privateKey): ?OnboardResponse
         {
             $onboardRequest = new OnboardRequest();
             $onboardRequest->setExternalId($onboardParameters->getUuid());
@@ -56,9 +57,13 @@ namespace App\Service\Onboard {
             $headers = [
                 'Content-type' => 'application/json',
                 'Authorization' => 'Bearer ' . $onboardParameters->getRegistrationCode(),
+                'X-Agrirouter-ApplicationId' => $onboardParameters->getApplicationId(),
+                'X-Agrirouter-Signature' => SignatureService::createXAgrirouterSignature($requestBody,$privateKey)
             ];
 
-            $request = new Request('POST', $this->environment->onboardingUrl(), $headers, $requestBody);
+            $request = new Request('POST', $this->environment->securedOnboardingUrl(), $headers, $requestBody);
+
+            // Send Request
             $promise = $this->httpClient->sendAsync($request)->
             then(function ($response) {
                 return (string)$response->getBody();

@@ -5,7 +5,6 @@ namespace Lib\Tests\Service\Onboard {
     use App\Definitions\ApplicationTypeDefinitions;
     use App\Definitions\CertificationTypeDefinitions;
     use App\Definitions\GatewayTypeDefinitions;
-    use App\Environment\QualityAssuranceEnvironment;
     use App\Exception\OnboardException;
     use App\Service\Common\UtcDataService;
     use App\Service\Common\UuidService;
@@ -14,23 +13,20 @@ namespace Lib\Tests\Service\Onboard {
     use DateTime;
     use DateTimeZone;
     use Lib\Tests\Applications\CommunicationUnit;
-    use PHPUnit\Framework\TestCase;
     use GuzzleHttp\Client;
 
     /**
      * Class OnboardServiceTest
      * @package Lib\Tests\Service\Onboard
      */
-    class OnboardServiceTest extends TestCase
+    class OnboardServiceTest extends AbstractIntegrationTestForServices
     {
         private UtcDataService $utcDataService;
-        private QualityAssuranceEnvironment $qualityAssuranceEnvironment;
         private Client $httpClient;
 
         public function setUp(): void
         {
             $this->utcDataService = new UtcDataService();
-            $this->qualityAssuranceEnvironment = new QualityAssuranceEnvironment();
             $this->httpClient = new Client();
         }
 
@@ -38,13 +34,13 @@ namespace Lib\Tests\Service\Onboard {
          * @covers OnboardService::onboard
          * @throws OnboardException
          */
-        public function testGivenInvalidRequestTokenWhenOnboardingThenThereShouldBeAnException()
+        public function testGivenInvalidRequestTokenWhenOnboardingCUThenThereShouldBeAnException()
         {
             self::expectException(OnboardException::class);
             self::expectExceptionCode(401);
             self::expectExceptionMessage("Bearer not found.");
 
-            $onboardService = new OnboardService($this->qualityAssuranceEnvironment, $this->utcDataService, $this->httpClient);
+            $onboardService = new OnboardService($this->getEnvironment(), $this->utcDataService, $this->httpClient);
             $onboardingParameters = new OnboardParameters();
             $onboardingParameters->setUuid(UuidService::newUuid());
             $onboardingParameters->setApplicationId(CommunicationUnit::applicationId());
@@ -63,11 +59,11 @@ namespace Lib\Tests\Service\Onboard {
          * @throws OnboardException
          * @noinspection PhpUnreachableStatementInspection
          */
-        public function testGivenValidRequestTokenWhenOnboardingForP12ThenThereShouldBeAValidResponse()
+        public function testGivenValidRequestTokenWhenOnboardingCUForP12ThenThereShouldBeAValidResponse()
         {
             $this->markTestIncomplete('Will not run successfully without changing the registration code.');
 
-            $onboardService = new OnboardService($this->qualityAssuranceEnvironment, $this->utcDataService, $this->httpClient);
+            $onboardService = new OnboardService($this->getEnvironment(), $this->utcDataService, $this->httpClient);
             $onboardingParameters = new OnboardParameters();
             $onboardingParameters->setUuid(UuidService::newUuid());
             $onboardingParameters->setApplicationId(CommunicationUnit::applicationId());
@@ -96,11 +92,11 @@ namespace Lib\Tests\Service\Onboard {
          * @throws OnboardException
          * @noinspection PhpUnreachableStatementInspection
          */
-        public function testGivenValidRequestTokenWhenOnboardingForPemThenThereShouldBeAValidResponse()
+        public function testGivenValidRequestTokenWhenOnboardingCUForPemThenThereShouldBeAValidResponse()
         {
             $this->markTestIncomplete('Will not run successfully without changing the registration code.');
 
-            $onboardService = new OnboardService($this->qualityAssuranceEnvironment, $this->utcDataService, $this->httpClient);
+            $onboardService = new OnboardService($this->getEnvironment(), $this->utcDataService, $this->httpClient);
             $onboardingParameters = new OnboardParameters();
             $onboardingParameters->setUuid(UuidService::newUuid());
             $onboardingParameters->setApplicationId(CommunicationUnit::applicationId());
