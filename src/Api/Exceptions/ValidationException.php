@@ -2,8 +2,6 @@
 
 namespace App\Api\Exceptions {
 
-    use App\Exception\BusinessException;
-    use App\Exception\ErrorCodes;
     use JetBrains\PhpStorm\Pure;
 
     /**

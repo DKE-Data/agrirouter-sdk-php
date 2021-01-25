@@ -2,9 +2,7 @@
 
 namespace App\Api\Service\Parameters {
 
-    use App\Api\Exceptions\ValidationException;
     use App\Dto\Onboard\OnboardResponse;
-    use function PHPUnit\Framework\isNull;
 
     /**
      * Parameter container definition.
@@ -27,9 +25,6 @@ namespace App\Api\Service\Parameters {
         public function validate(): void
         {
             parent::validate();
-            if (isNull($this->onboardResponse)) {
-                throw new ValidationException("onboardResponse");
-            }
         }
     }
 }

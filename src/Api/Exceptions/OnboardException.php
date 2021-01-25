@@ -1,24 +1,25 @@
 <?php declare(strict_types=1);
 
-namespace App\Api\Exceptions;
+namespace App\Api\Exceptions {
 
-use JetBrains\PhpStorm\Pure;
-
-/**
- * Will be thrown if there is an error during the onboarding process.
- * @package App\Exception
- */
-class OnboardException extends BusinessException
-{
+    use JetBrains\PhpStorm\Pure;
 
     /**
-     * OnboardException constructor.
-     * @param string $message The message.
-     * @param string $code The code.
+     * Will be thrown if there is an error during the onboarding process.
+     * @package App\Exception
      */
-    #[Pure] public function __construct(string $message, string $code)
+    class OnboardException extends BusinessException
     {
-        parent::__construct($message, $code);
+
+        /**
+         * OnboardException constructor.
+         * @param string $message The message.
+         * @param int $code The code.
+         */
+        #[Pure] public function __construct(string $message, int $code)
+        {
+            parent::__construct($message, $code);
+        }
     }
 }
 

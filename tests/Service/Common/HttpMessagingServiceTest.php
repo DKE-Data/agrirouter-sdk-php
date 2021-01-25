@@ -4,9 +4,9 @@
 namespace Lib\Tests\Service\Common {
 
 
+    use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\ValidationException;
     use App\Api\Service\Parameters\MessagingParameters;
-    use App\Exception\ErrorCodes;
     use App\Service\Common\HttpMessagingService;
     use Lib\Tests\Helper\HttpClientFactory;
     use PHPUnit\Framework\TestCase;
@@ -19,10 +19,9 @@ namespace Lib\Tests\Service\Common {
          */
         function testGivenInvalidParametersWhenSendingMessageViaHttpThenTheServiceShouldThrowAnException()
         {
-            self::expectException(ValidationException::class);
-            self::expectExceptionCode(ErrorCodes::PARAMETER_INVALID);
+            self::expectException(\Error::class);
 
-            $httpMessagingService = new HttpMessagingService(HttpClientFactory::authenticatedHttpClient());
+            $httpMessagingService = new HttpMessagingService(HttpClientFactory::httpClient());
             $parameters = new MessagingParameters();
             $httpMessagingService->send($parameters);
         }

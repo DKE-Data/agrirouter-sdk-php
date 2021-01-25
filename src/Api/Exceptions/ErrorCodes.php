@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exception {
+namespace App\Api\Exceptions {
 
     /**
      * All error code definitions.
@@ -8,6 +8,8 @@ namespace App\Exception {
      */
     class ErrorCodes
     {
-        public const PARAMETER_INVALID = "ERR_00001";
+        public const UNDEFINED = -1;
+        public const PARAMETER_INVALID = 1;
+        public const BEARER_NOT_FOUND = 2;
     }
 }

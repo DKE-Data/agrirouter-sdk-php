@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Exception {
+namespace App\Api\Exceptions {
 
     use Exception;
     use JetBrains\PhpStorm\Pure;
@@ -14,12 +14,13 @@ namespace App\Exception {
         /**
          * Constructor.
          * @param string $message Message for the exception.
-         * @param string $code Internal code.
+         * @param int $code Internal code.
          * @param Exception|null $previous Previous exception.
          */
-        #[Pure] public function __construct(string $message, string $code, Exception $previous = null)
+        #[Pure] public function __construct(string $message, int $code, Exception $previous = null)
         {
-            parent::__construct($message, $code, $previous);
+            parent::__construct($message,
+                $code, $previous);
         }
 
         /**

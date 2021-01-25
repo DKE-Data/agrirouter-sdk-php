@@ -2,10 +2,11 @@
 
 namespace App\Service\Onboard {
 
+    use App\Api\Exceptions\ErrorCodes;
+    use App\Api\Exceptions\OnboardException;
     use App\Dto\Onboard\OnboardResponse;
     use App\Dto\Requests\OnboardRequest;
     use App\Environment\AbstractEnvironment;
-    use App\Exception\OnboardException;
     use App\Service\Common\UtcDataService;
     use App\Service\Parameters\OnboardParameters;
     use Exception;
@@ -69,7 +70,11 @@ namespace App\Service\Onboard {
             $result = $promise->wait();
 
             if ($result instanceof Exception) {
-                throw new OnboardException($result->getMessage(), $result->getCode());
+                if ($result->getCode() == 401) {
+                    throw new OnboardException($result->getMessage(), ErrorCodes::BEARER_NOT_FOUND);
+                }else{
+                    throw new OnboardException($result->getMessage(), ErrorCodes::UNDEFINED);
+                }
             } else {
                 $object = json_decode($result, true);
                 $onboardingResponse = new OnboardResponse();

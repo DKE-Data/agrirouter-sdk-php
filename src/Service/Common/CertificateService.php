@@ -2,6 +2,7 @@
 
 namespace App\Service\Common {
 
+    use App\Api\Exceptions\ValidationException;
     use App\Dto\Onboard\OnboardResponse;
 
     /**
@@ -16,7 +17,7 @@ namespace App\Service\Common {
          * @param OnboardResponse $onboardResponse The onboard response with the certificate.
          * @return string Path of the file.
          */
-        public static function createCertificateFile(OnboardResponse $onboardResponse): string
+        static function createCertificateFile(OnboardResponse $onboardResponse): string
         {
             $filePath = sprintf("%s/%s", sys_get_temp_dir(), $onboardResponse->getSensorAlternateId());
             if (!file_exists($filePath)) {

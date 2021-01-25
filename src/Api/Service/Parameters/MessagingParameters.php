@@ -3,7 +3,6 @@
 namespace App\Api\Service\Parameters {
 
     use App\Api\Exceptions\ValidationException;
-    use function PHPUnit\Framework\isNull;
 
     /**
      * Parameter container definition.
@@ -26,7 +25,7 @@ namespace App\Api\Service\Parameters {
         public function validate(): void
         {
             parent::validate();
-            if (isNull($this->encodedMessages) || array_count_values($this->encodedMessages)) {
+            if (array_count_values($this->encodedMessages)) {
                 throw new ValidationException("encodedMessages");
             }
         }
