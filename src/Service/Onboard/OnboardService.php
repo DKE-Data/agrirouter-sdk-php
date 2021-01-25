@@ -72,7 +72,7 @@ namespace App\Service\Onboard {
             if ($result instanceof Exception) {
                 if ($result->getCode() == 401) {
                     throw new OnboardException($result->getMessage(), ErrorCodes::BEARER_NOT_FOUND);
-                }else{
+                } else {
                     throw new OnboardException($result->getMessage(), ErrorCodes::UNDEFINED);
                 }
             } else {
