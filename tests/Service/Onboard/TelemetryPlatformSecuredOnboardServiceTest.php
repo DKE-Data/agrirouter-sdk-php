@@ -2,15 +2,16 @@
 
 namespace Lib\Tests\Service\Onboard {
 
+    use App\Api\Exceptions\ErrorCodes;
+    use App\Api\Exceptions\OnboardException;
     use App\Definitions\ApplicationTypeDefinitions;
     use App\Definitions\CertificationTypeDefinitions;
     use App\Definitions\GatewayTypeDefinitions;
     use App\Environment\QualityAssuranceEnvironment;
-    use App\Exception\OnboardException;
     use App\Service\Common\UtcDataService;
     use App\Service\Common\UuidService;
     use App\Service\Onboard\AuthorizationService;
-    use App\Service\Onboard\SecuredOnboardingService;
+    use App\Service\Onboard\SecuredOnboardService;
     use App\Service\Parameters\OnboardParameters;
     use DateTime;
     use DateTimeZone;
@@ -21,7 +22,7 @@ namespace Lib\Tests\Service\Onboard {
      * Class OnboardServiceTest
      * @package Lib\Tests\Service\Onboard
      */
-    class TelemetryPlatformSecuredOnboardingServiceTest extends AbstractIntegrationTestForServices
+    class TelemetryPlatformSecuredOnboardServiceTest extends AbstractIntegrationTestForServices
     {
         private UtcDataService $utcDataService;
         private Client $httpClient;
@@ -33,16 +34,15 @@ namespace Lib\Tests\Service\Onboard {
         }
 
         /**
-         * @covers \App\Service\Onboard\SecuredOnboardingService::onboard
+         * @covers \App\Service\Onboard\SecuredOnboardService::onboard
          * @throws OnboardException
          */
         public function testGivenInvalidRequestTokenWhenOnboardingTPThenThereShouldBeAnException()
         {
             self::expectException(OnboardException::class);
-            self::expectExceptionCode(401);
-            self::expectExceptionMessage("Bearer not found.");
+            self::expectExceptionCode(ErrorCodes::BEARER_NOT_FOUND);
 
-            $onboardService = new SecuredOnboardingService($this->getEnvironment(), $this->utcDataService, $this->httpClient);
+            $onboardService = new SecuredOnboardService($this->getEnvironment(), $this->utcDataService, $this->httpClient);
             $onboardingParameters = new OnboardParameters();
             $onboardingParameters->setUuid(UuidService::newUuid());
             $onboardingParameters->setApplicationId(TelemetryPlatform::applicationId());
@@ -65,7 +65,7 @@ namespace Lib\Tests\Service\Onboard {
         {
             $this->markTestSkipped('Will not run successfully without changing the registration code.');
 
-            $onboardService = new SecuredOnboardingService($this->getEnvironment(), $this->utcDataService, $this->httpClient);
+            $onboardService = new SecuredOnboardService($this->getEnvironment(), $this->utcDataService, $this->httpClient);
             $onboardingParameters = new OnboardParameters();
             $onboardingParameters->setUuid(UuidService::newUuid());
             $onboardingParameters->setApplicationId(TelemetryPlatform::applicationId());
@@ -115,7 +115,7 @@ namespace Lib\Tests\Service\Onboard {
             $uri = "PASTE URI HERE";
 
             $authorizationService = new AuthorizationService($this->getEnvironment());
-            $authorizationResult = $authorizationService->parseauthorizationResult($uri);
+            $authorizationResult = $authorizationService->parseAuthorizationResult($uri);
             $authorizationToken = $authorizationService->parseAuthorizationToken($authorizationResult);
             $this->getLogger()->info("RegCode: " . $authorizationToken->getRegcode());
             $this->assertNotNull($authorizationToken->getRegcode());

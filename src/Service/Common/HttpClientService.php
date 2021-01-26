@@ -12,6 +12,10 @@ use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 
+/**
+ * Class HttpClientService - Manages the HttpClient with Logging
+ * @package App\Service\Common
+ */
 class HttpClientService
 {
     private Client $httpClient;
@@ -27,6 +31,11 @@ class HttpClientService
         ]);
     }
 
+    /**
+     * Creates a standard logging Handler for logging requests and responses to the console
+     * @param string $channel
+     * @return Logger
+     */
     private function createConsoleHandler(string $channel = 'HttpClientConsole'):Logger
     {
         $logger = new Logger($channel);
@@ -39,13 +48,21 @@ class HttpClientService
         return $logger;
     }
 
+    /**
+     * Creates the handler stack
+     * @return HandlerStack
+     */
     protected function createHandlerStack()
     {
         $stack = HandlerStack::create();
-        //$stack->push(Middleware::retry($this->retryDecider(), $this->retryDelay()));
         return $this->createLoggingHandlerStack($stack);
     }
 
+    /**
+     * Cretes the guzzle logging stack for logging requests/responses
+     * @param HandlerStack $stack
+     * @return HandlerStack
+     */
     protected function createLoggingHandlerStack(HandlerStack $stack)
     {
         $messageFormats = [
@@ -55,7 +72,6 @@ class HttpClientService
             'RESPONSE: {code} - {res_body}',
         ];
         foreach ($messageFormats as $messageFormat) {
-            // We'll use unshift instead of push, to add the middleware to the bottom of the stack, not the top
             $stack->unshift(
                 $this->createGuzzleLoggingMiddleware($messageFormat)
             );
@@ -64,6 +80,11 @@ class HttpClientService
         return $stack;
     }
 
+    /**
+     * Creates the guzzle middleware for logging
+     * @param string $messageFormat
+     * @return callable
+     */
     protected function createGuzzleLoggingMiddleware(string $messageFormat)
     {
         return Middleware::log(
@@ -72,9 +93,6 @@ class HttpClientService
         );
     }
 
-    /**
-     * @return Client
-     */
     public function getHttpClient(): Client
     {
         return $this->httpClient;

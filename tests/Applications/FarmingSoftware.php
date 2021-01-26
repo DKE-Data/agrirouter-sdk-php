@@ -3,7 +3,10 @@
 
 namespace Lib\Tests\Applications;
 
-
+/**
+ * Farming Software for integration testing.
+ * @package Lib\Tests\Applications
+ */
 class FarmingSoftware
 {
     public static function privateKey(): string

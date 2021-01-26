@@ -6,6 +6,10 @@ namespace Lib\Tests\Applications;
 
 class TelemetryPlatform
 {
+    /**
+     * Telemetry Platform for integration testing.
+     * @package Lib\Tests\Applications
+     */
     public static function privateKey(): string
     {
         return "-----BEGIN PRIVATE KEY-----\n" .

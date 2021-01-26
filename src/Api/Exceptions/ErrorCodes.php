@@ -27,5 +27,10 @@ namespace App\Api\Exceptions {
          * Is used if the request causes a HTTP 400 while sending a message.
          */
         public const INVALID_MESSAGE = 3;
+
+        /**
+         * Is used if a signature is not valid
+         */
+        public const INVALID_SIGNATURE = 4;
     }
 }

@@ -36,13 +36,13 @@ namespace Lib\Tests\Service\Onboard {
         }
 
         /**
-         * @covers AuthorizationService::parseauthorizationResult()
+         * @covers AuthorizationService::parseAuthorizationResult()
          */
         public function testGivenValidResponseWhenParsingTheResultThenTheAuthorizationRequestObjectWShouldBeFilled()
         {
             $input =
                 "state=6eab2086-0ef2-4b64-94b0-2ce620e66ece&token=eyJhY2NvdW50IjoiNWQ0N2E1MzctOTQ1NS00MTBkLWFhNmQtZmJkNjlhNWNmOTkwIiwicmVnY29kZSI6IjI2NGQwNjgzYzkiLCJleHBpcmVzIjoiMjAyMC0wMS0xNFQxMDowOTo1OS4zMTlaIn0%3D&signature=AJOFQmO4Y%2FT8DlNOcTAfpymMFiZQBpJHr4%2FUOfrHuGpzst6UA4kQraJYJtUEKSeEaQ%2FHCf4rJlUcK14ygyGAUtGkca1Y1sUAC1lVggVnECFMnVQAyTQzSnd1DEXjqI8n4Ud4LujSF6oSbiK0DWg1U8U9swwAEQ73Z0SDna7M3OEirY8zPUhGFcRij%2FrJOEFujq2rW%2Bs267z1pnp6FNq%2BoK5nbPBuH0hvCZ57Fz3HI1VadyE77o6rOAZ1HXniGqCGr%2F6v4TqAQ22MY9xhMAfUihtwQ3VLtdHsGSu1OH%2Fs71IQczOzBgeIlMAl4mchRo3l16qSU4k4awufLq7LzDSf5Q%3D%3D";
-            $authorizationResult = (new AuthorizationService($this->getEnvironment()))->parseauthorizationResult($input);
+            $authorizationResult = (new AuthorizationService($this->getEnvironment()))->parseAuthorizationResult($input);
             $this->assertNotNull($authorizationResult->getState());
             $this->assertNotNull($authorizationResult->getToken());
             $this->assertNotNull($authorizationResult->getSignature());
@@ -58,7 +58,7 @@ namespace Lib\Tests\Service\Onboard {
 
             $authorizationService = new AuthorizationService($this->getEnvironment());
 
-            $authorizationResult = $authorizationService->parseauthorizationResult($input);
+            $authorizationResult = $authorizationService->parseAuthorizationResult($input);
             $this->assertNotNull($authorizationResult->getState());
             $this->assertNotNull($authorizationResult->getToken());
             $this->assertNotNull($authorizationResult->getSignature());
@@ -76,7 +76,7 @@ namespace Lib\Tests\Service\Onboard {
         public function testGivenDeclineConnectionResponseWhenParsingTheTokenThenTheAuthorizationServiceShouldThrowSpecificException()
         {
             $input = "state=5e0492fb-1550-49b9-add7-e480e79f323e&error=request_declined";
-            $authorizationResult = (new AuthorizationService($this->getEnvironment()))->parseauthorizationResult($input);
+            $authorizationResult = (new AuthorizationService($this->getEnvironment()))->parseAuthorizationResult($input);
             $this->assertNotNull($authorizationResult->getState());
             $this->assertNull($authorizationResult->getToken());
             $this->assertNull($authorizationResult->getSignature());

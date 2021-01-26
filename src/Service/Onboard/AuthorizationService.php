@@ -10,10 +10,10 @@ use App\Environment\AbstractEnvironment;
 use App\Service\Common\UuidService;
 use ArgumentCountError;
 
-/*
- * Service for the authorization process.
+/**
+ * Class AuthorizationService - Service for the authorization process.
+ * @package App\Service\Onboard
  */
-
 class AuthorizationService
 {
     private AbstractEnvironment $environment;
@@ -49,11 +49,15 @@ class AuthorizationService
         return new AuthorizationUrlResult($authorizationUrl, $state);
     }
 
-    public function parseauthorizationResult(string $authorizationResult): ?AuthorizationResult
+    /**
+     * Parsing the result which was attached as parameters to the URL.
+     * @param string $authorizationResult
+     * @return AuthorizationResult|null
+     */
+    public function parseAuthorizationResult(string $authorizationResult): ?AuthorizationResult
     {
         $split = explode('&', $authorizationResult);
 
-        //$parameters = new Dictionary<string, string>();
         if (count($split) < 2 || count($split) > 4) throw new ArgumentCountError("The input '{authorizationResult}' does not meet the specification");
 
         $result = new AuthorizationResult();
@@ -68,19 +72,19 @@ class AuthorizationService
         return $result;
     }
 
+    /**
+     * Parsing the token from the authorization result.
+     * @param AuthorizationResult|null $authorizationResult
+     * @return AuthorizationToken|null
+     */
     public function parseAuthorizationToken(?AuthorizationResult $authorizationResult): ?AuthorizationToken
     {
         $authorizationResultToken = urldecode($authorizationResult->getToken());
-        $decodedToken = base64_decode($authorizationResultToken,true);
-        //$decodedToken = mb_convert_encoding( $authorizationResultToken, "UTF-8", "BASE64" );
+        $decodedToken = base64_decode($authorizationResultToken, true);
         $authorizationToken = new AuthorizationToken();
-        $arraytoken = json_decode($decodedToken,true);
+        $arraytoken = json_decode($decodedToken, true);
         $authorizationToken = $authorizationToken->jsonDeserialize($arraytoken);
 
         return $authorizationToken;
-//            return
-//                (AuthorizationToken) JsonConvert.DeserializeObject(
-//                    Encoding.UTF8.GetString(Convert.FromBase64String(authorizationResult.Token)),
-//                    typeof(AuthorizationToken));
     }
 }

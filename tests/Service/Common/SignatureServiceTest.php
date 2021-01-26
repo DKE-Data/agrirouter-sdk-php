@@ -4,8 +4,9 @@
 namespace Lib\Tests\Service\Common;
 
 
-use App\Exception\CouldNotCreateSignatureException;
-use App\Exception\CouldNotVerifySignatureException;
+use App\Api\Exceptions\ErrorCodes;
+use App\Api\Exceptions\SignatureException;
+use App\Api\Exceptions\CouldNotVerifySignatureException;
 use App\Service\Common\SignatureService;
 use PHPUnit\Framework\TestCase;
 
@@ -57,8 +58,8 @@ class SignatureServiceTest extends TestCase
 
     public function testGivenInvalidCertificatesWhenSigningThenThereShouldBeAnException()
     {
-        self::expectException(CouldNotCreateSignatureException::class);
-        self::expectExceptionCode(666);
+        self::expectException(SignatureException::class);
+        self::expectExceptionCode(ErrorCodes::INVALID_SIGNATURE);
         self::expectExceptionMessage("Could not create signature.");
 
         SignatureService::createSignature("REQUEST CONTENT", substr(self::PRIVATE_KEY, 0, 41));
@@ -71,9 +72,8 @@ class SignatureServiceTest extends TestCase
     public function testGivenInvalidCertificatesWhenVerifyingTheCreatedSignatureThenThereShouldBeAnException()
     {
         $this->markTestIncomplete("Certificates invalid?!");
-        self::expectException(CouldNotVerifySignatureException::class);
-        self::expectExceptionCode(666);
-        self::expectExceptionMessage("Could not verify signature.");
+        self::expectException(SignatureException::class);
+        self::expectExceptionCode(ErrorCodes::INVALID_SIGNATURE);
         $signature = SignatureService::createSignature("REQUEST CONTENT", self::PRIVATE_KEY);
 
         SignatureService::verifySignature("REQUEST CONTENT", $signature, substr(self::PRIVATE_KEY, 0, 41));
