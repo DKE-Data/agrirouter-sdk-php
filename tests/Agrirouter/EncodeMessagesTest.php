@@ -22,7 +22,7 @@ namespace Lib\Tests\Agrirouter {
         public function testGivenCapabilityParametersWhenEncodingTheMessageThenTheCapabilitiesServiceShouldCreateAnEncodedMessage()
         {
             $capabilitiesService = new CapabilitiesService(new HttpMessagingService(HttpClientFactory::httpClient()));
-            $capabilityParameters =new CapabilityParameters();
+            $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
