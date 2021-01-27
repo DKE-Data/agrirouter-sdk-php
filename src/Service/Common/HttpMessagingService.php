@@ -2,10 +2,9 @@
 
 namespace App\Service\Common;
 
-use App\Api\Common\MessagingService;
+use App\Api\Common\MessagingServiceInterface;
 use App\Api\Exceptions\ErrorCodes;
 use App\Api\Exceptions\MessagingException;
-use App\Api\Exceptions\OnboardException;
 use App\Api\Service\Parameters\MessagingParameters;
 use App\Dto\Messaging\Inner\Message;
 use App\Dto\Messaging\MessageRequest;
@@ -18,9 +17,9 @@ use GuzzleHttp\RequestOptions;
 /**
  * Service to send messages to the AR.
  * @package App\Service\Common
- * @template-implements MessagingService<MessagingParameters>
+ * @template-implements MessagingServiceInterface<MessagingParameters>
  */
-class HttpMessagingService implements MessagingService
+class HttpMessagingService implements MessagingServiceInterface
 {
     private Client $httpClient;
 
@@ -37,7 +36,7 @@ class HttpMessagingService implements MessagingService
      * Send message to the AR using the given message parameters.
      * @param MessagingParameters $parameters Messaging parameters.
      * @return MessagingResult -
-     * @throws OnboardException Will be thrown in case of an error.
+     * @throws MessagingException Will be thrown in case of an error.
      */
     public function send($parameters): MessagingResult
     {

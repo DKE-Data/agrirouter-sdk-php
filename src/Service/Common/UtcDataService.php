@@ -3,6 +3,7 @@
 namespace App\Service\Common {
 
     use DateTime;
+    use Google\Protobuf\Timestamp;
     use JetBrains\PhpStorm\Pure;
 
     /**
@@ -16,7 +17,7 @@ namespace App\Service\Common {
          *
          * 2018-06-20T07:29:23.457Z
          *
-         * @return string -
+         * @return string The current time.
          */
         public static function now(): string
         {
@@ -27,7 +28,7 @@ namespace App\Service\Common {
         /**
          * Delivering the current time zone as a string representation.
          * @param int $offset -
-         * @return string -
+         * @return string The current time zone.
          */
         #[Pure] public static function timeZone(int $offset): string
         {
@@ -36,11 +37,22 @@ namespace App\Service\Common {
 
         /**
          * Delivering the current date using a unix timestamp format.
-         * @return string
+         * @return string The current timestamp as UNIX format.
          */
         public static function nowAsUnixTimestamp(): string
         {
             return sprintf("%s", time());
+        }
+
+        /**
+         * Delivering the current date using a timestamp.
+         * @return Timestamp The current timestamp.
+         */
+        public static function nowAsTimestamp(): Timestamp
+        {
+            $timestamp = new Timestamp();
+            $timestamp->fromDateTime(new DateTime());
+            return $timestamp;
         }
     }
 }

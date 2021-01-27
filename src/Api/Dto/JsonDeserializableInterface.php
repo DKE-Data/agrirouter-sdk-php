@@ -6,7 +6,7 @@ namespace App\Api\Dto;
  * Interface JsonDeserializable - Classes that implement this Interface deserialize itself out of json data
  * @package App\Helper
  */
-interface JsonDeserializable
+interface JsonDeserializableInterface
 {
     /**
      * Creates a new object of itself with the data of a given array

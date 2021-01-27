@@ -8,7 +8,7 @@ namespace App\Api\Service\Parameters {
      * Parameter container definition.
      * @package App\Api\Service\Parameters
      */
-    abstract class MessageParameters extends Parameters implements Validatable
+    abstract class MessageParameters extends Parameters implements ValidatableInterface
     {
         private OnboardResponse $onboardResponse;
 

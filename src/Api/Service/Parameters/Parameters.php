@@ -6,11 +6,11 @@ namespace App\Api\Service\Parameters {
      * Parameter container definition.
      * @package App\Api\Service\Parameters
      */
-    abstract class Parameters implements Validatable
+    abstract class Parameters implements ValidatableInterface
     {
-        private string $applicationMessageSeqNo;
-        private string $applicationMessageId;
-        private string $teamSetContextId;
+        private int $applicationMessageSeqNo;
+        private ?string $applicationMessageId = "";
+        private ?string $teamSetContextId = "";
 
         public function getApplicationMessageId(): string
         {
@@ -32,12 +32,12 @@ namespace App\Api\Service\Parameters {
             $this->teamSetContextId = $teamSetContextId;
         }
 
-        public function getApplicationMessageSeqNo(): string
+        public function getApplicationMessageSeqNo(): int
         {
             return $this->applicationMessageSeqNo;
         }
 
-        public function setApplicationMessageSeqNo(string $applicationMessageSeqNo): void
+        public function setApplicationMessageSeqNo(int $applicationMessageSeqNo): void
         {
             $this->applicationMessageSeqNo = $applicationMessageSeqNo;
         }
