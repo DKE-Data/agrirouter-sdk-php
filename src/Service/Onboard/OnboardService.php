@@ -5,15 +5,16 @@ namespace App\Service\Onboard {
     use App\Dto\Requests\OnboardRequest;
     use App\Service\Common\UtcDataService;
     use App\Service\Parameters\OnboardParameters;
-    use GuzzleHttp\Psr7\Request;
+    use Psr\Http\Message\RequestInterface;
+
 
     /**
-     * Service for all onboard purposes.
+     * Service for all unsecured onboard purposes.
      * @package App\Service\Onboard
      */
     class OnboardService extends AbstractOnboardService
     {
-        public function createRequest(?OnboardParameters $onboardParameters, ?string $privateKey = null): ?Request
+        public function createRequest(?OnboardParameters $onboardParameters, ?string $privateKey = null): RequestInterface
         {
             $onboardRequest = new OnboardRequest();
             $onboardRequest->setExternalId($onboardParameters->getUuid());
@@ -30,7 +31,7 @@ namespace App\Service\Onboard {
                 'Authorization' => 'Bearer ' . $onboardParameters->getRegistrationCode(),
             ];
 
-            return new Request('POST', $this->environment->onboardUrl(), $headers, $requestBody);
+            return $this->httpClient->createRequest('POST', $this->environment->onboardUrl(), $headers, $requestBody);
         }
     }
 }

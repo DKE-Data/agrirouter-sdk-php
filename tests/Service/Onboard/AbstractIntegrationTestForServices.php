@@ -2,10 +2,12 @@
 
 namespace Lib\Tests\Service\Onboard {
 
+    use App\Api\Common\HttpClient;
     use App\Environment\AbstractEnvironment;
     use App\Environment\QualityAssuranceEnvironment;
     use App\Service\Common\HttpClientService;
     use DateTimeZone;
+    use Lib\Tests\Helper\GuzzleHttpClient;
     use Monolog\Formatter\LineFormatter;
     use Monolog\Handler\StreamHandler;
     use Monolog\Logger;
@@ -14,14 +16,14 @@ namespace Lib\Tests\Service\Onboard {
     abstract class AbstractIntegrationTestForServices extends TestCase
     {
         private AbstractEnvironment $environment;
-        private HttpClientService $httpClientService;
+        private HttpClient $httpClient;
         private Logger $logger;
 
         public function __construct()
         {
             parent::__construct();
             $this->environment = new QualityAssuranceEnvironment();
-            $this->httpClientService = new HttpClientService();
+            $this->httpClient = new GuzzleHttpClient();
             $this->logger = $this->createConsoleTestLogger();
         }
 
@@ -42,9 +44,9 @@ namespace Lib\Tests\Service\Onboard {
             return $this->environment;
         }
 
-        public function getHttpClientService(): HttpClientService
+        public function getHttpClient(): HttpClient
         {
-            return $this->httpClientService;
+            return $this->httpClient;
         }
 
         public function getLogger(): Logger

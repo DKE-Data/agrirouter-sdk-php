@@ -1,78 +1,76 @@
-<?php
+<?php declare(strict_types=1);
 
 
-namespace App\Service\Onboard;
+namespace App\Service\Onboard {
 
 
-use App\Api\Exceptions\ErrorCodes;
-use App\Api\Exceptions\OnboardException;
-use App\Dto\Onboard\OnboardResponse;
-use App\Dto\Requests\OnboardRequest;
-use App\Environment\AbstractEnvironment;
-use App\Service\Common\UtcDataService;
-use App\Service\Parameters\OnboardParameters;
-use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
+    use App\Api\Common\HttpClient;
+    use App\Api\Exceptions\ErrorCodes;
+    use App\Api\Exceptions\OnboardException;
+    use App\Dto\Onboard\OnboardResponse;
+    use App\Environment\AbstractEnvironment;
+    use App\Service\Common\UtcDataService;
+    use App\Service\Parameters\OnboardParameters;
+    use Exception;
+    use Psr\Http\Message\RequestInterface;
 
-abstract class AbstractOnboardService
-{
-    protected AbstractEnvironment $environment;
-    protected Client $httpClient;
-    protected UtcDataService $utcDataService;
 
     /**
-     * OnboardService constructor.
-     * @param AbstractEnvironment $environment
-     * @param UtcDataService $utcDataService
-     * @param Client $httpClient
+     * Abstract Service for all onboard purposes.
+     * @package App\Service\Onboard
      */
-    public function __construct(AbstractEnvironment $environment, UtcDataService $utcDataService, Client $httpClient)
+    abstract class AbstractOnboardService
     {
-        $this->environment = $environment;
-        $this->httpClient = $httpClient;
-        $this->utcDataService = $utcDataService;
-    }
+        protected AbstractEnvironment $environment;
+        protected HttpClient $httpClient;
+        protected UtcDataService $utcDataService;
 
-    /**
-     * @param OnboardParameters|null $onboardParameters
-     * @param string|null $privateKey
-     * @return OnboardRequest|null
-     * @throws Exception
-     */
-    public abstract function createRequest(?OnboardParameters $onboardParameters, ?string $privateKey = null):?Request;
-
-    /**
-     * Onboard an endpoint using the simple onboard procedure and the given parameters.
-     * @param OnboardParameters $onboardParameters The onboard parameters.
-     * @return OnboardResponse|null
-     * @throws OnboardException Will be thrown if the onboarding was not successful.
-     */
-    public function onboard(?OnboardParameters $onboardParameters, ?string $privateKey = null): ?OnboardResponse
-    {
-        $request = $this->createRequest($onboardParameters,$privateKey);
-
-        $promise = $this->httpClient->sendAsync($request)->
-        then(function ($response) {
-            return (string)$response->getBody();
-        }, function ($exception) {
-            return $exception;
-        });
-
-        $result = $promise->wait();
-
-        if ($result instanceof Exception) {
-            if ($result->getCode() == 401) {
-                throw new OnboardException($result->getMessage(), ErrorCodes::BEARER_NOT_FOUND);
-            } else {
-                throw new OnboardException($result->getMessage(), ErrorCodes::UNDEFINED);
-            }
-        } else {
-            $object = json_decode($result, true);
-            $onboardingResponse = new OnboardResponse();
-            $onboardingResponse = $onboardingResponse->jsonDeserialize($object);
-            return $onboardingResponse;
+        /**
+         * OnboardService constructor.
+         * @param AbstractEnvironment $environment The environment to use for onboarding
+         * @param UtcDataService $utcDataService The time service for UTC time data
+         * @param Client $httpClient The http client used for onboarding
+         */
+        public function __construct(AbstractEnvironment $environment, UtcDataService $utcDataService, HttpClient $httpClient)
+        {
+            $this->environment = $environment;
+            $this->httpClient = $httpClient;
+            $this->utcDataService = $utcDataService;
         }
+
+        /**
+         * Onboard an endpoint using with a prepared request.
+         * @param OnboardParameters $onboardParameters The onboard parameters.
+         * @param string|null $privateKey Null for normal onboarding | the private key for secured onboarding.
+         * @return OnboardResponse The onboard response from the agrirouter.
+         * @throws OnboardException Will be thrown if the onboarding was not successful.
+         */
+        public function onboard(OnboardParameters $onboardParameters, ?string $privateKey = null): OnboardResponse
+        {
+            $request = $this->createRequest($onboardParameters, $privateKey);
+            try {
+                $response = $this->httpClient->sendAsync($request);
+
+                $arrayResponse = json_decode($response->getBody(), true);
+                $onboardResponse = new OnboardResponse();
+                $onboardResponse = $onboardResponse->jsonDeserialize($arrayResponse);
+                return $onboardResponse;
+            } catch (Exception $exception){
+                if ($exception->getCode() == 401) {
+                    throw new OnboardException($exception->getMessage(), ErrorCodes::BEARER_NOT_FOUND);
+                } else {
+                    throw new OnboardException($exception->getMessage(), ErrorCodes::UNDEFINED);
+                }
+            }
+        }
+
+        /**
+         * Creates an onboard request using the given parameters.
+         * @param OnboardParameters|null $onboardParameters The onboard parameters.
+         * @param string|null $privateKey Null for normal onboarding | The private key for secured onboarding.
+         * @return Request The prepared request for onboarding
+         * @throws Exception Will be thrown if the request building was not successful.
+         */
+        public abstract function createRequest(?OnboardParameters $onboardParameters, ?string $privateKey = null): RequestInterface;
     }
 }
-

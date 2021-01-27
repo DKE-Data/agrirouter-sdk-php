@@ -29,8 +29,13 @@ namespace App\Api\Exceptions {
         public const INVALID_MESSAGE = 3;
 
         /**
-         * Is used if a signature is not valid
+         * Is used if a signature is not valid.
          */
         public const INVALID_SIGNATURE = 4;
+
+        /**
+         * Is used if an error occurs while verifying the signature.
+         */
+        public const SIGNATURE_VERIFICATION_ERROR = 5;
     }
 }

@@ -2,13 +2,16 @@
 
 namespace App\Dto\Onboard {
 
-
+    /**
+     * Class AuthorizationResult - Data transfer object for the communication.
+     * @package App\Dto\Onboard
+     */
     class AuthorizationResult
     {
-        private ?string $state=null;
-        private ?string $signature=null;
-        private ?string $token=null;
-        private ?string $error=null;
+        private ?string $state = null;
+        private ?string $signature = null;
+        private ?string $token = null;
+        private ?string $error = null;
 
         public function getState(): ?string
         {

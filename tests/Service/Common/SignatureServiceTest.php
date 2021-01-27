@@ -10,6 +10,10 @@ use App\Api\Exceptions\CouldNotVerifySignatureException;
 use App\Service\Common\SignatureService;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class SignatureServiceTest
+ * @package Lib\Tests\Service\Common
+ */
 class SignatureServiceTest extends TestCase
 {
     private const PRIVATE_KEY = "-----BEGIN PRIVATE KEY-----\n" .
@@ -55,15 +59,12 @@ class SignatureServiceTest extends TestCase
     /**
      * @covers SignatureService::buildSignature
      */
-
     public function testGivenInvalidCertificatesWhenSigningThenThereShouldBeAnException()
     {
         self::expectException(SignatureException::class);
         self::expectExceptionCode(ErrorCodes::INVALID_SIGNATURE);
         self::expectExceptionMessage("Could not create signature.");
-
         SignatureService::createSignature("REQUEST CONTENT", substr(self::PRIVATE_KEY, 0, 41));
-
     }
 
     /**
@@ -75,7 +76,6 @@ class SignatureServiceTest extends TestCase
         self::expectException(SignatureException::class);
         self::expectExceptionCode(ErrorCodes::INVALID_SIGNATURE);
         $signature = SignatureService::createSignature("REQUEST CONTENT", self::PRIVATE_KEY);
-
         SignatureService::verifySignature("REQUEST CONTENT", $signature, substr(self::PRIVATE_KEY, 0, 41));
     }
 
@@ -96,5 +96,4 @@ class SignatureServiceTest extends TestCase
         $signature = SignatureService::createSignature("REQUEST CONTENT", self::PRIVATE_KEY);
         $this->assertTrue(SignatureService::verifySignature("REQUEST CONTENT", $signature, self::PUBLIC_KEY));
     }
-
 }

@@ -1,9 +1,8 @@
 {
   "name": "dke-data/agrirouter-sdk-php",
   "description": "This project contains the API for the communication with the agrirouter. Everything you need for the onboarding process, secure communication and much more.",
-  "version": "0.0.1",
   "license": [
-    "Apache License 2.0"
+    "Apache-2.0"
   ],
   "autoload": {
     "psr-4": {
@@ -11,7 +10,9 @@
       "App\\Definitions\\": "src/Definitions",
       "App\\Dto\\": "src/Dto",
       "App\\Environment\\": "src/Environment",
-      "App\\Service\\": "src/Service"
+      "App\\Service\\": "src/Service",
+      "Agrirouter\\": "generated/Agrirouter",
+      "GPBMetadata\\": "generated/GPBMetadata"
     }
   },
   "autoload-dev": {
@@ -21,12 +22,14 @@
   },
   "require": {
     "google/protobuf": "^3.11",
-    "guzzlehttp/guzzle": "^7.0",
-    "phpseclib/phpseclib": "^3.0.0",
-    "monolog/monolog": "^2.2.0",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "psr/http-client": "^1.0.1",
+    "psr/http-message": "^1.0.1",
+    "psr/http-factory": "^1.0.1"
   },
   "require-dev": {
+    "guzzlehttp/guzzle": "^7.0",
+    "monolog/monolog": "^2.2.0",
     "phpunit/phpunit": "^9.5.0"
   }
 }

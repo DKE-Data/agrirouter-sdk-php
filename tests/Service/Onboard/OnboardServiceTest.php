@@ -1,21 +1,22 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Lib\Tests\Service\Onboard {
 
+    use App\Api\Common\HttpClient;
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OnboardException;
     use App\Definitions\ApplicationTypeDefinitions;
     use App\Definitions\CertificationTypeDefinitions;
     use App\Definitions\GatewayTypeDefinitions;
-    use App\Environment\QualityAssuranceEnvironment;
     use App\Service\Common\UtcDataService;
     use App\Service\Common\UuidService;
     use App\Service\Onboard\OnboardService;
     use App\Service\Parameters\OnboardParameters;
     use DateTime;
     use DateTimeZone;
-    use Lib\Tests\Applications\CommunicationUnit;
     use GuzzleHttp\Client;
+    use Lib\Tests\Applications\CommunicationUnit;
+    use Lib\Tests\Helper\GuzzleHttpClient;
 
     /**
      * Class OnboardServiceTest
@@ -24,18 +25,18 @@ namespace Lib\Tests\Service\Onboard {
     class OnboardServiceTest extends AbstractIntegrationTestForServices
     {
         private UtcDataService $utcDataService;
-        private Client $httpClient;
+        private HttpClient $httpClient;
 
         public function setUp(): void
         {
             $this->utcDataService = new UtcDataService();
-            $this->httpClient = new Client();
+            $this->httpClient = new GuzzleHttpClient();
         }
 
         /**
          * @covers OnboardService::onboard
          */
-        public function testGivenInvalidRequestTokenWhenOnboardingCUThenThereShouldBeAnException()
+        public function testGivenInvalidRequestTokenWhenOnboardingCommunicationUnitThenThereShouldBeAnException()
         {
             self::expectException(OnboardException::class);
             self::expectExceptionCode(ErrorCodes::BEARER_NOT_FOUND);
@@ -59,7 +60,7 @@ namespace Lib\Tests\Service\Onboard {
          * @throws OnboardException
          * @noinspection PhpUnreachableStatementInspection
          */
-        public function testGivenValidRequestTokenWhenOnboardingCUForP12ThenThereShouldBeAValidResponse()
+        public function testGivenValidRequestTokenWhenOnboardingCommunicationUnitForP12ThenThereShouldBeAValidResponse()
         {
             $this->markTestIncomplete('Will not run successfully without changing the registration code.');
 
@@ -92,7 +93,7 @@ namespace Lib\Tests\Service\Onboard {
          * @throws OnboardException
          * @noinspection PhpUnreachableStatementInspection
          */
-        public function testGivenValidRequestTokenWhenOnboardingCUForPemThenThereShouldBeAValidResponse()
+        public function testGivenValidRequestTokenWhenOnboardingCommunicationUnitForPemThenThereShouldBeAValidResponse()
         {
             $this->markTestIncomplete('Will not run successfully without changing the registration code.');
 

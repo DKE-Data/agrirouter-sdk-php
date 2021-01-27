@@ -1,7 +1,8 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Lib\Tests\Service\Onboard {
 
+    use App\Api\Common\HttpClient;
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OnboardException;
     use App\Definitions\ApplicationTypeDefinitions;
@@ -19,25 +20,25 @@ namespace Lib\Tests\Service\Onboard {
     use Lib\Tests\Applications\TelemetryPlatform;
 
     /**
-     * Class OnboardServiceTest
+     * Class TelemetryPlatformSecuredOnboardServiceTest
      * @package Lib\Tests\Service\Onboard
      */
     class TelemetryPlatformSecuredOnboardServiceTest extends AbstractIntegrationTestForServices
     {
         private UtcDataService $utcDataService;
-        private Client $httpClient;
+        private HttpClient $httpClient;
 
         public function setUp(): void
         {
             $this->utcDataService = new UtcDataService();
-            $this->httpClient = $this->getHttpClientService()->getHttpClient();
+            $this->httpClient = $this->getHttpClient();
         }
 
         /**
          * @covers \App\Service\Onboard\SecuredOnboardService::onboard
          * @throws OnboardException
          */
-        public function testGivenInvalidRequestTokenWhenOnboardingTPThenThereShouldBeAnException()
+        public function testGivenInvalidRequestTokenWhenOnboardingTelemetryPlatformThenThereShouldBeAnException()
         {
             self::expectException(OnboardException::class);
             self::expectExceptionCode(ErrorCodes::BEARER_NOT_FOUND);
@@ -61,7 +62,7 @@ namespace Lib\Tests\Service\Onboard {
          * @throws OnboardException
          * @noinspection PhpUnreachableStatementInspection
          */
-        public function testGivenValidRequestTokenWhenOnboardingTPThenThereShouldBeAValidResponse()
+        public function testGivenValidRequestTokenWhenOnboardingTelemetryPlatformThenThereShouldBeAValidResponse()
         {
             $this->markTestSkipped('Will not run successfully without changing the registration code.');
 
@@ -75,7 +76,6 @@ namespace Lib\Tests\Service\Onboard {
             $onboardingParameters->setGatewayId(GatewayTypeDefinitions::http());
             $onboardingParameters->setRegistrationCode("98ad35b33d");
             $onboardingParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
-
             $onboardingResponse = $onboardService->onboard($onboardingParameters, TelemetryPlatform::privateKey());
 
             $this->assertNotEmpty($onboardingResponse->getSensorAlternateId());
