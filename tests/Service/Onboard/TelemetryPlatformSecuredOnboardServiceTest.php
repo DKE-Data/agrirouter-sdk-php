@@ -16,7 +16,6 @@ namespace Lib\Tests\Service\Onboard {
     use App\Service\Parameters\OnboardParameters;
     use DateTime;
     use DateTimeZone;
-    use GuzzleHttp\Client;
     use Lib\Tests\Applications\TelemetryPlatform;
 
     /**

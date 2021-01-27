@@ -16,7 +16,6 @@ namespace Lib\Tests\Service\Onboard {
     use App\Service\Parameters\OnboardParameters;
     use DateTime;
     use DateTimeZone;
-    use GuzzleHttp\Client;
     use Lib\Tests\Applications\FarmingSoftware;
 
     /**
@@ -99,7 +98,7 @@ namespace Lib\Tests\Service\Onboard {
             $authorizationService = new AuthorizationService(new QualityAssuranceEnvironment());
             $result = $authorizationService->authorizationUrl(FarmingSoftware::applicationId());
 
-            $this->getLogger()->info(get_class($this)." - authorizationUrl: ");
+            $this->getLogger()->info(get_class($this) . " - authorizationUrl: ");
             $this->getLogger()->info($result->getAuthorizationUrl());
 
             self::assertNotEmpty($result);
@@ -116,7 +115,7 @@ namespace Lib\Tests\Service\Onboard {
             $authorizationService = new AuthorizationService($this->getEnvironment());
             $authorizationResult = $authorizationService->parseAuthorizationResult($uri);
             $authorizationToken = $authorizationService->parseAuthorizationToken($authorizationResult);
-            $this->getLogger()->info("RegCode: ".$authorizationToken->getRegcode());
+            $this->getLogger()->info("RegCode: " . $authorizationToken->getRegcode());
             $this->assertNotNull($authorizationToken->getRegcode());
         }
     }
