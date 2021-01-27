@@ -29,7 +29,6 @@ namespace Lib\Tests\Helper {
          */
         public function __construct()
         {
-
             $this->httpClient = $this->createHttpClient();
         }
 
@@ -38,10 +37,9 @@ namespace Lib\Tests\Helper {
          * @param null $logger
          * @return Client
          */
-        public function createHttpClient(?LoggerInterface $logger = null): Client
+        private function createHttpClient(?LoggerInterface $logger = null): Client
         {
             if (is_null($logger)) $logger = self::createConsoleLogger();
-
             $httpClient = new Client([
                 'handler' => self::createHandlerStack($logger),
                 'verify' => false
@@ -74,7 +72,6 @@ namespace Lib\Tests\Helper {
         private function createHandlerStack(LoggerInterface $logger)
         {
             $stack = HandlerStack::create();
-
             $messageFormats = [
                 '{method} {uri} HTTP/{version}',
                 'HEADERS: {req_headers}',
@@ -89,9 +86,7 @@ namespace Lib\Tests\Helper {
                     )
                 );
             }
-
             return $stack;
-
         }
 
         public function createRequest(string $method, string $uri, array $headers = [], string $body = null): RequestInterface
@@ -107,7 +102,6 @@ namespace Lib\Tests\Helper {
         public function sendAsync(RequestInterface $request, array $options = []): ?ResponseInterface
         {
             $result = null;
-
             $promise = $this->httpClient->sendAsync($request, $options)->
             then(function ($response) {
                 return (string)$response();
