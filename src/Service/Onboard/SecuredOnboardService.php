@@ -23,7 +23,7 @@ namespace App\Service\Onboard {
             $onboardRequest->setGatewayId($onboardParameters->getGatewayId());
             $onboardRequest->setCertificateType($onboardParameters->getCertificationType());
             $onboardRequest->setTimeZone(UtcDataService::timeZone($onboardParameters->getOffset()));
-            $onboardRequest->setUTCTimestamp(UtcDataService::now());
+            $onboardRequest->setUtcTimestamp(UtcDataService::now());
 
             $requestBody = json_encode($onboardRequest);
             $headers = [
