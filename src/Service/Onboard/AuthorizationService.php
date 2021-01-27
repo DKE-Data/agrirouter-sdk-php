@@ -64,14 +64,27 @@ namespace App\Service\Onboard {
             if (count($parameters) < 2 || count($parameters) > 4) throw new ArgumentCountError("The input '{$authorizationResultUri}' does not meet the specification");
 
             $authorizationResult = new AuthorizationResult();
-            foreach ($parameters as $parameter) {
-                $parameterSplit = explode("=", $parameter);
-                if (count($parameterSplit) != 2)
-                    throw new ArgumentException("Parameter '{parameter}' could not be parsed.");
-                $setterName = "set" . ucfirst($parameterSplit[0]);
-                $authorizationResult->$setterName($parameterSplit[1]);
+            foreach ($parameters as $parameterString) {
+                $parameter = explode("=", $parameterString);
+                if (count($parameter) != 2)
+                    throw new ArgumentException("Parameter '$parameter' could not be parsed.");
+                switch ($parameter[0]){
+                    case 'state':
+                        $authorizationResult->setState($parameter[1]);
+                        break;
+                    case 'signature':
+                        $authorizationResult->setSignature($parameter[1]);
+                        break;
+                    case 'token':
+                        $authorizationResult->setToken($parameter[1]);
+                        break;
+                    case 'error':
+                        $authorizationResult->setError($parameter[1]);
+                        break;
+                    default:
+                        throw new ArgumentException("Unknown Parameter '$parameter' could not be parsed.");
+                }
             }
-
             return $authorizationResult;
         }
 
