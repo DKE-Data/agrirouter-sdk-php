@@ -25,15 +25,16 @@ namespace App\Service\Common {
          */
         public static function verifySignature(string $requestBody, string $signature, string $publicKeyString): bool
         {
-            $publicKey = openssl_pkey_get_public($publicKeyString);
-            $return = openssl_verify($requestBody, $signature, $publicKey, "sha256WithRSAEncryption");
-
-            if ($return == 1) {
-                return true;
-            } elseif ($return == 0) {
-                return false;
-            } else {
-                throw new SignatureException("Error occurred while verifying the signature.", ErrorCodes::SIGNATURE_VERIFICATION_ERROR);
+            try {
+                $publicKey = openssl_pkey_get_public($publicKeyString);
+                $return = openssl_verify($requestBody, $signature, $publicKey, "sha256WithRSAEncryption");
+                if ($return == 1) {
+                    return true;
+                } elseif ($return == 0) {
+                    return false;
+                }
+            } catch (Exception $exception) {
+                throw new SignatureException("Error occurred while verifying the signature. Reason: " . $exception->getMessage(), ErrorCodes::SIGNATURE_VERIFICATION_ERROR);
             }
         }
 
