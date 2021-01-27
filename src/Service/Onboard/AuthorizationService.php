@@ -99,8 +99,7 @@ namespace App\Service\Onboard {
             $authorizationResultToken = urldecode($authorizationResult->getToken());
             $decodedToken = base64_decode($authorizationResultToken, true);
             $authorizationToken = new AuthorizationToken();
-            $arrayToken = json_decode($decodedToken, true);
-            $authorizationToken = $authorizationToken->jsonDeserialize($arrayToken);
+            $authorizationToken = $authorizationToken->jsonDeserialize($decodedToken);
 
             return $authorizationToken;
         }

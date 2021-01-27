@@ -52,11 +52,10 @@ namespace App\Service\Onboard {
                 $response = $this->httpClient->sendAsync($request);
                 $response->getBody()->rewind();
                 $content = $response->getBody()->getContents();
-                $arrayResponse = json_decode($content, true);
                 $onboardResponse = new OnboardResponse();
-                $onboardResponse = $onboardResponse->jsonDeserialize($arrayResponse);
+                $onboardResponse = $onboardResponse->jsonDeserialize($content);
                 return $onboardResponse;
-            } catch (Exception $exception){
+            } catch (Exception $exception) {
                 if ($exception->getCode() == 401) {
                     throw new OnboardException($exception->getMessage(), ErrorCodes::BEARER_NOT_FOUND);
                 } else {

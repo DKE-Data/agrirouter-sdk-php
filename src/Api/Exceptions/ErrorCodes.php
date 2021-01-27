@@ -52,5 +52,10 @@ namespace App\Api\Exceptions {
          * Is used if an unknown authorization result parameter has been detected.
          */
         public const UNKNOWN_AUTHORIZATION_PARAMETER = 8;
+
+        /**
+         * Is used if an unknown field is found while deserializing json data;
+         */
+        public const UNKNOWN_FIELD_IN_JSON_DATA = 9;
     }
 }

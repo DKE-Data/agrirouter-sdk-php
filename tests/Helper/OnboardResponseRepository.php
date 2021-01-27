@@ -23,9 +23,8 @@ namespace Lib\Tests\Helper {
                 Identifier::COMMUNICATION_UNIT => $data = Content::COMMUNICATION_UNIT,
                 default => throw new Exception("Could not read onboard response."),
             };
-            $json = json_decode($data, true);
             $onboardResponse = new OnboardResponse();
-            return $onboardResponse->jsonDeserialize($json);
+            return $onboardResponse->jsonDeserialize($data);
         }
     }
 

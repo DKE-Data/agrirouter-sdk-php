@@ -5,6 +5,8 @@ namespace App\Dto\Onboard {
 
 
     use App\Api\Dto\JsonDeserializable;
+    use App\Api\Exceptions\ErrorCodes;
+    use JsonException;
 
     /**
      * Class AuthorizationToken - Data transfer object for the communication.
@@ -13,7 +15,7 @@ namespace App\Dto\Onboard {
     class AuthorizationToken implements JsonDeserializable
     {
         private string $account;
-        private string $regcode;
+        private string $registrationCode;
         private string $expires;
 
         public function getAccount(): ?string
@@ -26,14 +28,14 @@ namespace App\Dto\Onboard {
             $this->account = $account;
         }
 
-        public function getRegcode(): string
+        public function getRegistrationCode(): string
         {
-            return $this->regcode;
+            return $this->registrationCode;
         }
 
-        public function setRegcode(string $regcode): void
+        public function setRegistrationCode(string $registrationCode): void
         {
-            $this->regcode = $regcode;
+            $this->registrationCode = $registrationCode;
         }
 
         public function getExpires(): string
@@ -46,19 +48,26 @@ namespace App\Dto\Onboard {
             $this->expires = $expires;
         }
 
-        public function jsonDeserialize(array $data): self
+        public function jsonDeserialize(string|array $jsonData): self
         {
-            foreach ($data as $key => $value) {
-                if (is_array($value)) {
-                    $classname = __NAMESPACE__ . '\\' . ucfirst($key);
-                    $object = new $classname();
-                    $this->$key = $object->jsonDeserialize($value);
-                } else {
-                    try {
-                        $this->$key = $value;
-                    } catch (Exception $ex) {
-                        echo $ex;
-                    }
+            if (is_string($jsonData)) {
+                $decodedJsonDataArray = json_decode($jsonData, true);
+            } else {
+                $decodedJsonDataArray = $jsonData;
+            }
+            foreach ($decodedJsonDataArray as $fieldName => $fieldValue) {
+                switch ($fieldName){
+                    case 'account':
+                        $this->account = $fieldValue;
+                        break;
+                    case 'regcode':
+                        $this->registrationCode = $fieldValue;
+                        break;
+                    case 'expires':
+                        $this->expires = $fieldValue;
+                        break;
+                    default:
+                        throw new JsonException("Unknown field '$fieldName' for class '".get_class($this)."'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
                 }
             }
             return $this;

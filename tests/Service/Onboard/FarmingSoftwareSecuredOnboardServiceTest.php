@@ -109,8 +109,8 @@ namespace Lib\Tests\Service\Onboard {
             $authorizationService = new AuthorizationService($this->getEnvironment());
             $authorizationResult = $authorizationService->parseAuthorizationResult($uri);
             $authorizationToken = $authorizationService->parseAuthorizationToken($authorizationResult);
-            $this->getLogger()->info("RegCode: " . $authorizationToken->getRegcode());
-            $this->assertNotNull($authorizationToken->getRegcode());
+            $this->getLogger()->info("RegCode: " . $authorizationToken->getRegistrationCode());
+            $this->assertNotNull($authorizationToken->getRegistrationCode());
         }
     }
 }

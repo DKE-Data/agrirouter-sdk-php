@@ -65,7 +65,7 @@ namespace Lib\Tests\Service\Onboard {
             $this->assertNull($authorizationResult->getError());
 
             $authorizationToken = $authorizationService->parseAuthorizationToken($authorizationResult);
-            $this->assertNotNull($authorizationToken->getRegcode());
+            $this->assertNotNull($authorizationToken->getRegistrationCode());
             $this->assertNotNull($authorizationToken->getAccount());
             $this->assertNotNull($authorizationToken->getExpires());
         }
