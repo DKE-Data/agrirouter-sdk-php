@@ -70,7 +70,7 @@ namespace Lib\Tests\Service\Onboard {
             $onboardingParameters->setApplicationId(FarmingSoftware::applicationId());
             $onboardingParameters->setCertificationVersionId(FarmingSoftware::certificationVersionId());
             $onboardingParameters->setApplicationType(ApplicationTypeDefinitions::application());
-            $onboardingParameters->setCertificationType(CertificationTypeDefinitions::P12());
+            $onboardingParameters->setCertificationType(CertificationTypeDefinitions::PEM());
             $onboardingParameters->setGatewayId(GatewayTypeDefinitions::http());
             $onboardingParameters->setRegistrationCode("98ad35b33d");
             $onboardingParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));

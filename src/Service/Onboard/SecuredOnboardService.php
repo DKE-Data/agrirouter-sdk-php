@@ -23,7 +23,7 @@ namespace App\Service\Onboard {
             $onboardRequest->setGatewayId($onboardParameters->getGatewayId());
             $onboardRequest->setCertificateType($onboardParameters->getCertificationType());
             $onboardRequest->setTimeZone(UtcDataService::timeZone($onboardParameters->getOffset()));
-            $onboardRequest->setUtcTimestamp(UtcDataService::now());
+            $onboardRequest->setUTCTimestamp(UtcDataService::now());
 
             $requestBody = json_encode($onboardRequest);
             $headers = [
@@ -33,7 +33,7 @@ namespace App\Service\Onboard {
                 'X-Agrirouter-Signature' => SignatureService::createXAgrirouterSignature($requestBody, $privateKey)
             ];
 
-            return $this->httpClient->createRequest('POST', $this->environment->onboardUrl(), $headers, $requestBody);
+            return $this->httpClient->createRequest('POST', $this->environment->securedOnboardUrl(), $headers, $requestBody);
         }
     }
 }

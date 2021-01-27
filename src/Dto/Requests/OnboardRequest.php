@@ -98,8 +98,8 @@ namespace App\Dto\Requests {
                 'applicationId' => $this->getApplicationId(),
                 'certificationVersionId' => $this->getCertificationVersionId(),
                 'gatewayId' => $this->getGatewayId(),
-                'utcTimestamp' => $this->getUtcTimestamp(),
-                'timeZone' => $this->getTimeZone(),
+                'UTCTimestamp' => $this->getUtcTimestamp(),
+                'timezone' => $this->getTimeZone(),
                 'certificateType' => $this->getCertificateType()
             ];
         }

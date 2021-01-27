@@ -37,5 +37,20 @@ namespace App\Api\Exceptions {
          * Is used if an error occurs while verifying the signature.
          */
         public const SIGNATURE_VERIFICATION_ERROR = 5;
+
+        /**
+         * Is used if an error occurs while counting the authorization result parameters.
+         */
+        public const AUTHORIZATION_RESULT_PARAMETER_COUNT_ERROR = 6;
+
+        /**
+         * Is used if an authorization result parameters has no value.
+         */
+        public const AUTHORIZATION_PARAMETER_VALUE_MISSING = 7;
+
+        /**
+         * Is used if an unknown authorization result parameter has been detected.
+         */
+        public const UNKNOWN_AUTHORIZATION_PARAMETER = 8;
     }
 }

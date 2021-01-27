@@ -102,13 +102,16 @@ namespace Lib\Tests\Helper {
         public function sendAsync(RequestInterface $request, array $options = []): ?ResponseInterface
         {
             $result = null;
+
             $promise = $this->httpClient->sendAsync($request, $options)->
             then(function ($response) {
-                return (string)$response();
+                return $response;
             }, function ($response) {
                 throw $response;
             });
-            return $promise->wait(true);
+
+            $response = $promise->wait(true);
+            return $response;
         }
     }
 }

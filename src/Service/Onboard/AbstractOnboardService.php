@@ -50,8 +50,9 @@ namespace App\Service\Onboard {
             $request = $this->createRequest($onboardParameters, $privateKey);
             try {
                 $response = $this->httpClient->sendAsync($request);
-
-                $arrayResponse = json_decode($response->getBody(), true);
+                $response->getBody()->rewind();
+                $content = $response->getBody()->getContents();
+                $arrayResponse = json_decode($content, true);
                 $onboardResponse = new OnboardResponse();
                 $onboardResponse = $onboardResponse->jsonDeserialize($arrayResponse);
                 return $onboardResponse;

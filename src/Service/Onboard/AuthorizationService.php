@@ -3,12 +3,13 @@
 namespace App\Service\Onboard {
 
 
+    use App\Api\Exceptions\AuthorizationException;
+    use App\Api\Exceptions\ErrorCodes;
     use App\Dto\Onboard\AuthorizationResult;
     use App\Dto\Onboard\AuthorizationToken;
     use App\Dto\Onboard\AuthorizationUrlResult;
     use App\Environment\AbstractEnvironment;
     use App\Service\Common\UuidService;
-    use ArgumentCountError;
 
     /**
      * Service for the authorization process.
@@ -61,14 +62,14 @@ namespace App\Service\Onboard {
         public function parseAuthorizationResult(string $authorizationResultUri): AuthorizationResult
         {
             $parameters = explode('&', $authorizationResultUri);
-            if (count($parameters) < 2 || count($parameters) > 4) throw new ArgumentCountError("The input '{$authorizationResultUri}' does not meet the specification");
+            if (count($parameters) < 2 || count($parameters) > 4) throw new AuthorizationException("The number authorization result parameters '{$authorizationResultUri}' does not meet the specification", ErrorCodes::AUTHORIZATION_RESULT_PARAMETER_COUNT_ERROR);
 
             $authorizationResult = new AuthorizationResult();
             foreach ($parameters as $parameterString) {
                 $parameter = explode("=", $parameterString);
                 if (count($parameter) != 2)
-                    throw new ArgumentException("Parameter '$parameter' could not be parsed.");
-                switch ($parameter[0]){
+                    throw new AuthorizationException("Parameter without value in '$parameterString'.", ErrorCodes::AUTHORIZATION_PARAMETER_VALUE_MISSING);
+                switch ($parameter[0]) {
                     case 'state':
                         $authorizationResult->setState($parameter[1]);
                         break;
@@ -82,7 +83,7 @@ namespace App\Service\Onboard {
                         $authorizationResult->setError($parameter[1]);
                         break;
                     default:
-                        throw new ArgumentException("Unknown Parameter '$parameter' could not be parsed.");
+                        throw new AuthorizationException("Unknown Parameter '$parameter[0]' in Authorization response '$parameterString'.", ErrorCodes::UNKNOWN_AUTHORIZATION_PARAMETER);
                 }
             }
             return $authorizationResult;
