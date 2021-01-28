@@ -18,7 +18,7 @@ namespace Lib\Tests\Service\Onboard {
     use Lib\Tests\Applications\CommunicationUnit;
     use Lib\Tests\Helper\GuzzleHttpClient;
 
-    /**
+     /**
      * Class OnboardServiceTest
      * @package Lib\Tests\Service\Onboard
      */
@@ -30,6 +30,7 @@ namespace Lib\Tests\Service\Onboard {
         public function setUp(): void
         {
             $this->utcDataService = new UtcDataService();
+
             $this->httpClient = new GuzzleHttpClient();
         }
 

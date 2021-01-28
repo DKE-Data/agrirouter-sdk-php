@@ -69,7 +69,6 @@ namespace App\Dto\Requests {
             $this->utcTimestamp = $utcTimestamp;
         }
 
-
         public function getTimeZone(): string
         {
             return $this->timeZone;

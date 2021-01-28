@@ -6,6 +6,7 @@ namespace App\Dto\Onboard {
     use App\Api\Exceptions\ErrorCodes;
     use JetBrains\PhpStorm\ArrayShape;
     use JsonException;
+
     use JsonSerializable;
 
     /**
@@ -121,7 +122,6 @@ namespace App\Dto\Onboard {
                         throw new JsonException("Unknown field '$fieldName' for class '".get_class($this)."'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
                 }
             }
-
             return $this;
         }
     }

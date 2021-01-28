@@ -6,6 +6,7 @@ namespace App\Dto\Onboard {
     use App\Api\Exceptions\ErrorCodes;
     use JetBrains\PhpStorm\ArrayShape;
     use JsonException;
+
     use JsonSerializable;
 
     /**
@@ -17,6 +18,7 @@ namespace App\Dto\Onboard {
         private string $type;
         private string $secret;
         private string $certificate;
+
 
         #[ArrayShape(['type' => "string", 'secret' => "string", 'certificate' => "string"])]
         public function jsonSerialize(): array

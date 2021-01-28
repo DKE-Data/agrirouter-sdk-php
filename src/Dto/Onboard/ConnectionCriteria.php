@@ -74,6 +74,7 @@ namespace App\Dto\Onboard {
             $this->host = $host;
         }
 
+
         public function getMeasures(): string
         {
             return $this->measures;
