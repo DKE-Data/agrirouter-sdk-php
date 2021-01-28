@@ -31,6 +31,7 @@ namespace App\Service\Onboard {
                 'Authorization' => 'Bearer ' . $onboardParameters->getRegistrationCode(),
             ];
 
+
             return $this->httpClient->createRequest('POST', $this->environment->onboardUrl(), $headers, $requestBody);
         }
     }
