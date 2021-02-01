@@ -88,6 +88,14 @@ namespace Lib\Tests\Helper {
             return $stack;
         }
 
+        /**
+         * Create a request.
+         * @param string $method
+         * @param string $uri
+         * @param array $headers
+         * @param string|null $body
+         * @return RequestInterface
+         */
         public function createRequest(string $method, string $uri, array $headers = [], string $body = null): RequestInterface
         {
             return new Request($method, $uri, $headers, $body);
