@@ -6,7 +6,6 @@ namespace App\Dto\Onboard {
     use App\Api\Exceptions\ErrorCodes;
     use JetBrains\PhpStorm\ArrayShape;
     use JsonException;
-
     use JsonSerializable;
 
     /**
@@ -15,30 +14,32 @@ namespace App\Dto\Onboard {
      */
     class OnboardResponse implements JsonSerializable, JsonDeserializable
     {
+        private const DEVICE_ALTERNATE_ID = 'deviceAlternateId';
+        private const CAPABILITY_ALTERNATE_ID = 'capabilityAlternateId';
+        private const SENSOR_ALTERNATE_ID = 'sensorAlternateId';
+        private const CONNECTION_CRITERIA = 'connectionCriteria';
+        private const AUTHENTICATION = 'authentication';
+
         private string $deviceAlternateId;
-
         private string $capabilityAlternateId;
-
         private string $sensorAlternateId;
-
         private ConnectionCriteria $connectionCriteria;
-
         private Authentication $authentication;
 
         /**
          * Serializes the object data to a simple array
          * @return array Array with object data.
          */
-        #[ArrayShape(['authentication' => Authentication::class, 'capabilityAlternateId' => "string",
-            'connectionCriteria' => ConnectionCriteria::class, 'deviceAlternateId' => "string", 'sensorAlternateId' => "string"])]
+        #[ArrayShape([self::AUTHENTICATION => Authentication::class, self::CAPABILITY_ALTERNATE_ID => "string",
+            self::CONNECTION_CRITERIA => ConnectionCriteria::class, self::DEVICE_ALTERNATE_ID => "string", self::SENSOR_ALTERNATE_ID => "string"])]
         public function jsonSerialize(): array
         {
             return [
-                'authentication' => $this->getAuthentication(),
-                'capabilityAlternateId' => $this->getCapabilityAlternateId(),
-                'connectionCriteria' => $this->getConnectionCriteria(),
-                'deviceAlternateId' => $this->getDeviceAlternateId(),
-                'sensorAlternateId' => $this->getSensorAlternateId()
+                self::AUTHENTICATION => $this->getAuthentication(),
+                self::CAPABILITY_ALTERNATE_ID => $this->getCapabilityAlternateId(),
+                self::CONNECTION_CRITERIA => $this->getConnectionCriteria(),
+                self::DEVICE_ALTERNATE_ID => $this->getDeviceAlternateId(),
+                self::SENSOR_ALTERNATE_ID => $this->getSensorAlternateId()
             ];
         }
 
@@ -100,26 +101,26 @@ namespace App\Dto\Onboard {
                 $decodedJsonDataArray = $jsonData;
             }
             foreach ($decodedJsonDataArray as $fieldName => $fieldValue) {
-                switch ($fieldName){
-                    case 'deviceAlternateId':
+                switch ($fieldName) {
+                    case self::DEVICE_ALTERNATE_ID:
                         $this->deviceAlternateId = $fieldValue;
                         break;
-                    case 'capabilityAlternateId':
+                    case self::CAPABILITY_ALTERNATE_ID:
                         $this->capabilityAlternateId = $fieldValue;
                         break;
-                    case 'sensorAlternateId':
+                    case self::SENSOR_ALTERNATE_ID:
                         $this->sensorAlternateId = $fieldValue;
                         break;
-                    case 'connectionCriteria':
+                    case self::CONNECTION_CRITERIA:
                         $newConnectionCriteria = new ConnectionCriteria();
                         $this->connectionCriteria = $newConnectionCriteria->jsonDeserialize($fieldValue);
                         break;
-                    case'authentication':
+                    case self::AUTHENTICATION:
                         $newAuthentication = new Authentication();
                         $this->authentication = $newAuthentication->jsonDeserialize($fieldValue);
                         break;
                     default:
-                        throw new JsonException("Unknown field '$fieldName' for class '".get_class($this)."'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
+                        throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
                 }
             }
             return $this;
