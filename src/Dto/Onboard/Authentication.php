@@ -6,7 +6,6 @@ namespace App\Dto\Onboard {
     use App\Api\Exceptions\ErrorCodes;
     use JetBrains\PhpStorm\ArrayShape;
     use JsonException;
-
     use JsonSerializable;
 
     /**
@@ -15,18 +14,21 @@ namespace App\Dto\Onboard {
      */
     class Authentication implements JsonSerializable, JsonDeserializable
     {
+        const TYPE = 'type';
+        const SECRET = 'secret';
+        const CERTIFICATE = 'certificate';
         private string $type;
         private string $secret;
         private string $certificate;
 
 
-        #[ArrayShape(['type' => "string", 'secret' => "string", 'certificate' => "string"])]
+        #[ArrayShape([self::TYPE => "string", self::SECRET => "string", self::CERTIFICATE => "string"])]
         public function jsonSerialize(): array
         {
             return [
-                'type' => $this->getType(),
-                'secret' => $this->getSecret(),
-                'certificate' => $this->getCertificate()
+                self::TYPE => $this->getType(),
+                self::SECRET => $this->getSecret(),
+                self::CERTIFICATE => $this->getCertificate()
             ];
         }
 
@@ -69,13 +71,13 @@ namespace App\Dto\Onboard {
             }
             foreach ($decodedJsonDataArray as $fieldName => $fieldValue) {
                 switch ($fieldName) {
-                    case 'type':
+                    case self::TYPE:
                         $this->type = $fieldValue;
                         break;
-                    case 'secret':
+                    case self::SECRET:
                         $this->secret = $fieldValue;
                         break;
-                    case 'certificate':
+                    case self::CERTIFICATE:
                         $this->certificate = $fieldValue;
                         break;
                     default:
