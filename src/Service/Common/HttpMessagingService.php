@@ -6,7 +6,6 @@ use App\Api\Common\HttpClient;
 use App\Api\Common\MessagingService;
 use App\Api\Exceptions\ErrorCodes;
 use App\Api\Exceptions\MessagingException;
-use App\Api\Exceptions\OnboardException;
 use App\Api\Service\Parameters\MessagingParameters;
 use App\Dto\Messaging\Inner\Message;
 use App\Dto\Messaging\MessageRequest;
@@ -35,7 +34,7 @@ class HttpMessagingService implements MessagingService
      * Send message to the AR using the given message parameters.
      * @param MessagingParameters $parameters Messaging parameters.
      * @return MessagingResult -
-     * @throws OnboardException Will be thrown in case of an error.
+     * @throws MessagingException Will be thrown in case of an error.
      */
     public function send($parameters): MessagingResult
     {
@@ -66,8 +65,7 @@ class HttpMessagingService implements MessagingService
                     'ssl_key' => [CertificateService::createCertificateFile($parameters->getOnboardResponse()), $parameters->getOnboardResponse()->getAuthentication()->getSecret()]
                 ]);
 
-            $messagingResult = json_decode($response->getBody(), true);
-            return $messagingResult;
+            return json_decode($response->getBody(), true);
         } catch (Exception $exception) {
             if ($exception->getCode() == 400) {
                 throw new MessagingException($exception->getMessage(), ErrorCodes::INVALID_MESSAGE);
