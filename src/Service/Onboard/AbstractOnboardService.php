@@ -27,9 +27,9 @@ namespace App\Service\Onboard {
 
         /**
          * OnboardService constructor.
-         * @param AbstractEnvironment $environment The environment to use for onboarding
-         * @param UtcDataService $utcDataService The time service for UTC time data
-         * @param Client $httpClient The http client used for onboarding
+         * @param AbstractEnvironment $environment The environment to use for the onboard process.
+         * @param UtcDataService $utcDataService The time service for UTC time data.
+         * @param HttpClient $httpClient The http client used for the onboard process.
          */
         public function __construct(AbstractEnvironment $environment, UtcDataService $utcDataService, HttpClient $httpClient)
         {
@@ -41,9 +41,9 @@ namespace App\Service\Onboard {
         /**
          * Onboard an endpoint using with a prepared request.
          * @param OnboardParameters $onboardParameters The onboard parameters.
-         * @param string|null $privateKey Null for normal onboarding | the private key for secured onboarding.
+         * @param string|null $privateKey Null for normal the onboard process | the private key for the secured onboard process.
          * @return OnboardResponse The onboard response from the agrirouter.
-         * @throws OnboardException Will be thrown if the onboarding was not successful.
+         * @throws OnboardException Will be thrown if the onboard process was not successful.
          */
         public function onboard(OnboardParameters $onboardParameters, ?string $privateKey = null): OnboardResponse
         {
@@ -67,8 +67,8 @@ namespace App\Service\Onboard {
         /**
          * Creates an onboard request using the given parameters.
          * @param OnboardParameters|null $onboardParameters The onboard parameters.
-         * @param string|null $privateKey Null for normal onboarding | The private key for secured onboarding.
-         * @return Request The prepared request for onboarding
+         * @param string|null $privateKey Null for normal the onboard process | The private key for the secured onboard process.
+         * @return RequestInterface The prepared request for the onboard process
          * @throws Exception Will be thrown if the request building was not successful.
          */
         public abstract function createRequest(?OnboardParameters $onboardParameters, ?string $privateKey = null): RequestInterface;
