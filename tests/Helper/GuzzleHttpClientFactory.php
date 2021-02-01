@@ -34,8 +34,8 @@ namespace Lib\Tests\Helper {
 
         /**
          * Creates a PSR compatible http client.
-         * @param null $logger
-         * @return Client
+         * @param LoggerInterface|null $logger -
+         * @return Client -
          */
         private function createHttpClient(?LoggerInterface $logger = null): Client
         {
