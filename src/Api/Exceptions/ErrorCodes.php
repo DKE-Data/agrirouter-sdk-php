@@ -62,5 +62,10 @@ namespace App\Api\Exceptions {
          * Is used if the token from the authorization response can not be decoded.
          */
         public const COULD_NOT_PARSE_AUTHORIZATION_TOKEN = 10;
+
+        /**
+         * Is used if the agrirouter doesn't support a specific function for otherwise equally treated objects.
+         */
+        public const FUNCTION_NOT_SUPPORTED = 11;
     }
 }

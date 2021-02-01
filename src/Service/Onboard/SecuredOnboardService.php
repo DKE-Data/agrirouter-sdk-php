@@ -2,10 +2,13 @@
 
 namespace App\Service\Onboard {
 
+    use App\Dto\Onboard\OnboardResponse;
+    use App\Dto\Onboard\VerificationResponse;
     use App\Dto\Requests\OnboardRequest;
     use App\Service\Common\SignatureService;
     use App\Service\Common\UtcDataService;
     use App\Service\Parameters\OnboardParameters;
+    use Exception;
     use Psr\Http\Message\RequestInterface;
 
     /**
@@ -14,7 +17,22 @@ namespace App\Service\Onboard {
      */
     class SecuredOnboardService extends AbstractOnboardService
     {
-        public function createRequest(?OnboardParameters $onboardParameters, ?string $privateKey = null): RequestInterface
+        public function onboard(OnboardParameters $onboardParameters, ?string $privateKey = null): OnboardResponse
+        {
+            $request = $this->createRequest($onboardParameters, $this->environment->securedOnboardUrl(), $privateKey);
+            try {
+                $response = $this->httpClient->sendAsync($request);
+                $response->getBody()->rewind();
+                $content = $response->getBody()->getContents();
+                $onboardResponse = new OnboardResponse();
+                $onboardResponse = $onboardResponse->jsonDeserialize($content);
+                return $onboardResponse;
+            } catch (Exception $exception) {
+                $this->handleOnboardRequestException($exception);
+            }
+        }
+
+        public function createRequest(OnboardParameters $onboardParameters, string $requestUrl, ?string $privateKey = null): RequestInterface
         {
             $onboardRequest = new OnboardRequest();
             $onboardRequest->setExternalId($onboardParameters->getUuid());
@@ -33,7 +51,22 @@ namespace App\Service\Onboard {
                 'X-Agrirouter-Signature' => SignatureService::createXAgrirouterSignature($requestBody, $privateKey)
             ];
 
-            return $this->httpClient->createRequest('POST', $this->environment->securedOnboardUrl(), $headers, $requestBody);
+            return $this->httpClient->createRequest('POST', $requestUrl, $headers, $requestBody);
+        }
+
+        public function verify(OnboardParameters $onboardParameters, ?string $privateKey = null): VerificationResponse
+        {
+            $request = $this->createRequest($onboardParameters, $this->environment->verificationUrl(), $privateKey);
+            try {
+                $response = $this->httpClient->sendAsync($request);
+                $response->getBody()->rewind();
+                $content = $response->getBody()->getContents();
+                $verificationResponse = new VerificationResponse();
+                $verificationResponse = $verificationResponse->jsonDeserialize($content);
+                return $verificationResponse;
+            } catch (Exception $exception) {
+                $this->handleOnboardRequestException($exception);
+            }
         }
     }
 }
