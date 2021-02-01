@@ -17,6 +17,7 @@ namespace App\Dto\Onboard {
         const TYPE = 'type';
         const SECRET = 'secret';
         const CERTIFICATE = 'certificate';
+
         private string $type;
         private string $secret;
         private string $certificate;
