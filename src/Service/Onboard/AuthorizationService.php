@@ -9,6 +9,7 @@ namespace App\Service\Onboard {
     use App\Dto\Onboard\AuthorizationUrlResult;
     use App\Environment\AbstractEnvironment;
     use App\Service\Common\UuidService;
+    use JsonException;
 
     /**
      * Service for the authorization process.
@@ -16,6 +17,11 @@ namespace App\Service\Onboard {
      */
     class AuthorizationService
     {
+        private const STATE = 'state';
+        private const SIGNATURE = 'signature';
+        private const TOKEN = 'token';
+        private const ERROR = 'error';
+
         private AbstractEnvironment $environment;
 
         /**
@@ -28,7 +34,7 @@ namespace App\Service\Onboard {
         }
 
         /**
-         * Generates the authorization URL for the application used within the onboarding process.
+         * Generates the authorization URL for the application used within the onboard process.
          * @param string $applicationId The application ID for the authorization.
          * @return AuthorizationUrlResult The prepared authorization url and the application id
          */
@@ -40,7 +46,7 @@ namespace App\Service\Onboard {
         }
 
         /**
-         * Generates the authorization URL for the application used within the onboarding process and adds the redirect URI parameter.
+         * Generates the authorization URL for the application used within the onboard process and adds the redirect URI parameter.
          * @param string $applicationId The application ID for the authorization.
          * @param string $redirectUri The redirect URI.
          * @return AuthorizationUrlResult The prepared authorization url and the application id
@@ -57,11 +63,14 @@ namespace App\Service\Onboard {
          * Parsing the result which was attached as parameters to the URL.
          * @param string $authorizationResultUri The authorization result uri with the parameters to parse
          * @return AuthorizationResult The parsed authorization parameters
+         * @throws AuthorizationException Will be thrown if
          */
         public function parseAuthorizationResult(string $authorizationResultUri): AuthorizationResult
         {
             $parameters = explode('&', $authorizationResultUri);
-            if (count($parameters) < 2 || count($parameters) > 4) throw new AuthorizationException("The number authorization result parameters '{$authorizationResultUri}' does not meet the specification", ErrorCodes::AUTHORIZATION_RESULT_PARAMETER_COUNT_ERROR);
+            if (count($parameters) < 2 || count($parameters) > 4){
+                throw new AuthorizationException("The number authorization result parameters '{$authorizationResultUri}' does not meet the specification", ErrorCodes::AUTHORIZATION_RESULT_PARAMETER_COUNT_ERROR);
+            }
 
             $authorizationResult = new AuthorizationResult();
             foreach ($parameters as $parameterString) {
@@ -69,16 +78,16 @@ namespace App\Service\Onboard {
                 if (count($parameter) != 2)
                     throw new AuthorizationException("Parameter without value in '$parameterString'.", ErrorCodes::AUTHORIZATION_PARAMETER_VALUE_MISSING);
                 switch ($parameter[0]) {
-                    case 'state':
+                    case self::STATE:
                         $authorizationResult->setState($parameter[1]);
                         break;
-                    case 'signature':
+                    case self::SIGNATURE:
                         $authorizationResult->setSignature($parameter[1]);
                         break;
-                    case 'token':
+                    case self::TOKEN:
                         $authorizationResult->setToken($parameter[1]);
                         break;
-                    case 'error':
+                    case self::ERROR:
                         $authorizationResult->setError($parameter[1]);
                         break;
                     default:
@@ -98,7 +107,11 @@ namespace App\Service\Onboard {
             $authorizationResultToken = urldecode($authorizationResult->getToken());
             $decodedToken = base64_decode($authorizationResultToken, true);
             $authorizationToken = new AuthorizationToken();
-            $authorizationToken = $authorizationToken->jsonDeserialize($decodedToken);
+            try {
+                $authorizationToken = $authorizationToken->jsonDeserialize($decodedToken);
+            } catch (JsonException $e) {
+
+            }
 
             return $authorizationToken;
         }
