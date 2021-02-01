@@ -3,7 +3,7 @@
 namespace App\Dto\Onboard {
 
     /**
-     * Class AuthorizationResult - Data transfer object for the communication.
+     * Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
     class AuthorizationResult
