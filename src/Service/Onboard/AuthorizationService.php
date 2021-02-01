@@ -68,7 +68,7 @@ namespace App\Service\Onboard {
         public function parseAuthorizationResult(string $authorizationResultUri): AuthorizationResult
         {
             $parameters = explode('&', $authorizationResultUri);
-            if (count($parameters) < 2 || count($parameters) > 4){
+            if (count($parameters) < 2 || count($parameters) > 4) {
                 throw new AuthorizationException("The number authorization result parameters '{$authorizationResultUri}' does not meet the specification", ErrorCodes::AUTHORIZATION_RESULT_PARAMETER_COUNT_ERROR);
             }
 
@@ -110,9 +110,8 @@ namespace App\Service\Onboard {
             try {
                 $authorizationToken = $authorizationToken->jsonDeserialize($decodedToken);
             } catch (JsonException $e) {
-
+                throw new AuthorizationException("Could not parse JSON from token.", ErrorCodes::COULD_NOT_PARSE_AUTHORIZATION_TOKEN, $e);
             }
-
             return $authorizationToken;
         }
     }

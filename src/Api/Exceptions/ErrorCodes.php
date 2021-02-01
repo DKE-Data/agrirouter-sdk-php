@@ -57,5 +57,10 @@ namespace App\Api\Exceptions {
          * Is used if an unknown field is found while deserializing json data;
          */
         public const UNKNOWN_FIELD_IN_JSON_DATA = 9;
+
+        /**
+         * Is used if the token from the authorization response can not be decoded.
+         */
+        public const COULD_NOT_PARSE_AUTHORIZATION_TOKEN = 10;
     }
 }
