@@ -1,10 +1,9 @@
 <?php declare(strict_types=1);
 
-
 namespace App\Dto\Onboard {
 
     /**
-     * Class AuthorizationUrlResult - Data transfer object for the communication.
+     * Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
     class AuthorizationUrlResult
