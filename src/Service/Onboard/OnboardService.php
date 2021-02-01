@@ -7,7 +7,6 @@ namespace App\Service\Onboard {
     use App\Service\Parameters\OnboardParameters;
     use Psr\Http\Message\RequestInterface;
 
-
     /**
      * Service for all unsecured onboard purposes.
      * @package App\Service\Onboard
