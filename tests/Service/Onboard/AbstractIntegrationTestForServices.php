@@ -7,7 +7,7 @@ namespace Lib\Tests\Service\Onboard {
     use App\Environment\QualityAssuranceEnvironment;
     use App\Service\Common\HttpClientService;
     use DateTimeZone;
-    use Lib\Tests\Helper\GuzzleHttpClient;
+    use Lib\Tests\Helper\GuzzleHttpClientFactory;
     use Monolog\Formatter\LineFormatter;
     use Monolog\Handler\StreamHandler;
     use Monolog\Logger;
@@ -23,7 +23,7 @@ namespace Lib\Tests\Service\Onboard {
         {
             parent::__construct();
             $this->environment = new QualityAssuranceEnvironment();
-            $this->httpClient = new GuzzleHttpClient();
+            $this->httpClient = new GuzzleHttpClientFactory();
             $this->logger = $this->createConsoleTestLogger();
         }
 

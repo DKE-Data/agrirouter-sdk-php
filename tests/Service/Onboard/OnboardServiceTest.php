@@ -14,11 +14,10 @@ namespace Lib\Tests\Service\Onboard {
     use App\Service\Parameters\OnboardParameters;
     use DateTime;
     use DateTimeZone;
-    use GuzzleHttp\Client;
     use Lib\Tests\Applications\CommunicationUnit;
-    use Lib\Tests\Helper\GuzzleHttpClient;
+    use Lib\Tests\Helper\GuzzleHttpClientFactory;
 
-     /**
+    /**
      * Class OnboardServiceTest
      * @package Lib\Tests\Service\Onboard
      */
@@ -31,7 +30,7 @@ namespace Lib\Tests\Service\Onboard {
         {
             $this->utcDataService = new UtcDataService();
 
-            $this->httpClient = new GuzzleHttpClient();
+            $this->httpClient = new GuzzleHttpClientFactory();
         }
 
         /**

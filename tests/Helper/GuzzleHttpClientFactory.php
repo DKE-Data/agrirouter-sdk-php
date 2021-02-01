@@ -20,7 +20,7 @@ namespace Lib\Tests\Helper {
      * Manages the GuzzleHttpClient with Logging.
      * @package Lib\Tests\Helper
      */
-    class GuzzleHttpClient implements HttpClient
+    class GuzzleHttpClientFactory implements HttpClient
     {
         private Client $httpClient;
 
