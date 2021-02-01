@@ -1,8 +1,6 @@
 <?php declare(strict_types=1);
 
-
 namespace App\Service\Common {
-
 
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\SignatureException;
