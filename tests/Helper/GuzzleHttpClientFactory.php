@@ -40,11 +40,10 @@ namespace Lib\Tests\Helper {
         private function createHttpClient(?LoggerInterface $logger = null): Client
         {
             if (is_null($logger)) $logger = self::createConsoleLogger();
-            $httpClient = new Client([
+            return new Client([
                 'handler' => self::createHandlerStack($logger),
                 'verify' => false
             ]);
-            return $httpClient;
         }
 
         /**
