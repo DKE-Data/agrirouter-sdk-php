@@ -109,8 +109,7 @@ namespace Lib\Tests\Helper {
                 throw $response;
             });
 
-            $response = $promise->wait(true);
-            return $response;
+            return $promise->wait(true);
         }
     }
 }
