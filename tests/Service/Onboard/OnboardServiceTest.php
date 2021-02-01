@@ -7,7 +7,6 @@ namespace Lib\Tests\Service\Onboard {
     use App\Definitions\ApplicationTypeDefinitions;
     use App\Definitions\CertificationTypeDefinitions;
     use App\Definitions\GatewayTypeDefinitions;
-    use App\Service\Common\UtcDataService;
     use App\Service\Common\UuidService;
     use App\Service\Onboard\OnboardService;
     use App\Service\Parameters\OnboardParameters;
@@ -23,13 +22,6 @@ namespace Lib\Tests\Service\Onboard {
      */
     class OnboardServiceTest extends AbstractIntegrationTestForServices
     {
-        private UtcDataService $utcDataService;
-
-        public function setUp(): void
-        {
-            $this->utcDataService = new UtcDataService();
-        }
-
         /**
          * @covers OnboardService::onboard
          */
