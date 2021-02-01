@@ -68,7 +68,7 @@ namespace Lib\Tests\Helper {
          * @param LoggerInterface $logger The psr logger to use for logging.
          * @return HandlerStack The prepared guzzle HandlerStack.
          */
-        private function createHandlerStack(LoggerInterface $logger)
+        private function createHandlerStack(LoggerInterface $logger): HandlerStack
         {
             $stack = HandlerStack::create();
             $messageFormats = [
