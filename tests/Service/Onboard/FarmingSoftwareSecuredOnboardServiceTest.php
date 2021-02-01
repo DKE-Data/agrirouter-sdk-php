@@ -8,7 +8,6 @@ namespace Lib\Tests\Service\Onboard {
     use App\Definitions\CertificationTypeDefinitions;
     use App\Definitions\GatewayTypeDefinitions;
     use App\Environment\QualityAssuranceEnvironment;
-    use App\Service\Common\UtcDataService;
     use App\Service\Common\UuidService;
     use App\Service\Onboard\AuthorizationService;
     use App\Service\Onboard\SecuredOnboardService;
@@ -25,12 +24,6 @@ namespace Lib\Tests\Service\Onboard {
      */
     class FarmingSoftwareSecuredOnboardServiceTest extends AbstractIntegrationTestForServices
     {
-        private UtcDataService $utcDataService;
-
-        public function setUp(): void
-        {
-            $this->utcDataService = new UtcDataService();
-        }
 
         /**
          * @covers \App\Service\Onboard\SecuredOnboardService::onboard
