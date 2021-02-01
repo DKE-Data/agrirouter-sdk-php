@@ -59,7 +59,7 @@ namespace App\Dto\Onboard {
                 $decodedJsonDataArray = $jsonData;
             }
             foreach ($decodedJsonDataArray as $fieldName => $fieldValue) {
-                switch ($fieldName){
+                switch ($fieldName) {
                     case self::ACCOUNT:
                         $this->account = $fieldValue;
                         break;
@@ -70,7 +70,7 @@ namespace App\Dto\Onboard {
                         $this->expires = $fieldValue;
                         break;
                     default:
-                        throw new JsonException("Unknown field '$fieldName' for class '".get_class($this)."'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
+                        throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
                 }
             }
             return $this;
