@@ -3,7 +3,6 @@
 
 namespace App\Dto\Onboard {
 
-
     use App\Api\Dto\JsonDeserializable;
     use App\Api\Exceptions\ErrorCodes;
     use JsonException;
