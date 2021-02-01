@@ -14,6 +14,13 @@ namespace App\Dto\Onboard {
      */
     class ConnectionCriteria implements JsonSerializable, JsonDeserializable
     {
+        private const CLIENT_ID = 'clientId';
+        private const COMMANDS = 'commands';
+        private const GATEWAY_ID = 'gatewayId';
+        private const HOST = 'host';
+        private const MEASURES = 'measures';
+        private const PORT = 'port';
+
         private string $gatewayId;
         private string $measures;
         private string $commands;
@@ -21,16 +28,16 @@ namespace App\Dto\Onboard {
         private string $port;
         private string $clientId;
 
-        #[ArrayShape(['clientId' => "string", 'commands' => "string", 'gatewayId' => "string", 'host' => "string", 'measures' => "string", 'port' => "string"])]
+        #[ArrayShape([self::CLIENT_ID => "string", self::COMMANDS => "string", self::GATEWAY_ID => "string", self::HOST => "string", self::MEASURES => "string", self::PORT => "string"])]
         public function jsonSerialize(): array
         {
             return [
-                'clientId' => $this->getClientId(),
-                'commands' => $this->getCommands(),
-                'gatewayId' => $this->getGatewayId(),
-                'host' => $this->getHost(),
-                'measures' => $this->getMeasures(),
-                'port' => $this->getPort()
+                self::CLIENT_ID => $this->getClientId(),
+                self::COMMANDS => $this->getCommands(),
+                self::GATEWAY_ID => $this->getGatewayId(),
+                self::HOST => $this->getHost(),
+                self::MEASURES => $this->getMeasures(),
+                self::PORT => $this->getPort()
             ];
         }
 
@@ -104,22 +111,22 @@ namespace App\Dto\Onboard {
             }
             foreach ($decodedJsonDataArray as $fieldName => $fieldValue) {
                 switch ($fieldName) {
-                    case 'clientId':
+                    case self::CLIENT_ID:
                         $this->clientId = $fieldValue;
                         break;
-                    case 'commands':
+                    case self::COMMANDS:
                         $this->commands = $fieldValue;
                         break;
-                    case 'gatewayId':
+                    case self::GATEWAY_ID:
                         $this->gatewayId = $fieldValue;
                         break;
-                    case 'host':
+                    case self::HOST:
                         $this->host = $fieldValue;
                         break;
-                    case 'measures':
+                    case self::MEASURES:
                         $this->measures = $fieldValue;
                         break;
-                    case 'port':
+                    case self::PORT:
                         $this->port = $fieldValue;
                         break;
                     default:
