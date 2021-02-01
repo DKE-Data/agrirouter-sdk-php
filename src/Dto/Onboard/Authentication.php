@@ -14,9 +14,9 @@ namespace App\Dto\Onboard {
      */
     class Authentication implements JsonSerializable, JsonDeserializable
     {
-        const TYPE = 'type';
-        const SECRET = 'secret';
-        const CERTIFICATE = 'certificate';
+        private const TYPE = 'type';
+        private const SECRET = 'secret';
+        private const CERTIFICATE = 'certificate';
 
         private string $type;
         private string $secret;
