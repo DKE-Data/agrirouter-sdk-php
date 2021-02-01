@@ -2,6 +2,7 @@
 
 namespace App\Api\Exceptions {
 
+    use Exception;
     use JetBrains\PhpStorm\Pure;
 
     /**
@@ -14,10 +15,11 @@ namespace App\Api\Exceptions {
          * Constructor.
          * @param string $message The message.
          * @param int $code The code.
+         * @param Exception|null $previous
          */
-        #[Pure] public function __construct(string $message, int $code)
+        #[Pure] public function __construct(string $message, int $code, Exception $previous = null)
         {
-            parent::__construct($message, $code);
+            parent::__construct($message, $code, $previous);
         }
     }
 }
