@@ -21,7 +21,7 @@ namespace App\Service\Common {
         public static function now(): string
         {
             $d = new DateTime();
-            return $d->format("Y-m-d\Th:m:s.v\Z");
+            return $d->format("Y-m-d\TH:i:s.v\Z");
         }
 
         /**

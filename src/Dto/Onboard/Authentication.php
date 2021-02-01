@@ -3,8 +3,9 @@
 namespace App\Dto\Onboard {
 
     use App\Api\Dto\JsonDeserializable;
-    use Exception;
+    use App\Api\Exceptions\ErrorCodes;
     use JetBrains\PhpStorm\ArrayShape;
+    use JsonException;
     use JsonSerializable;
 
     /**
@@ -13,9 +14,24 @@ namespace App\Dto\Onboard {
      */
     class Authentication implements JsonSerializable, JsonDeserializable
     {
+        private const TYPE = 'type';
+        private const SECRET = 'secret';
+        private const CERTIFICATE = 'certificate';
+
         private string $type;
         private string $secret;
         private string $certificate;
+
+
+        #[ArrayShape([self::TYPE => "string", self::SECRET => "string", self::CERTIFICATE => "string"])]
+        public function jsonSerialize(): array
+        {
+            return [
+                self::TYPE => $this->getType(),
+                self::SECRET => $this->getSecret(),
+                self::CERTIFICATE => $this->getCertificate()
+            ];
+        }
 
         public function getType(): string
         {
@@ -47,23 +63,26 @@ namespace App\Dto\Onboard {
             $this->certificate = $certificate;
         }
 
-        #[ArrayShape(['type' => "string", 'secret' => "string", 'certificate' => "string"])]
-        public function jsonSerialize(): array
+        public function jsonDeserialize(string|array $jsonData): self
         {
-            return [
-                'type' => $this->getType(),
-                'secret' => $this->getSecret(),
-                'certificate' => $this->getCertificate()
-            ];
-        }
-
-        public function jsonDeserialize(array $data): self
-        {
-            foreach ($data as $key => $value) {
-                try {
-                    $this->$key = $value;
-                } catch (Exception $ex) {
-                    echo $ex;
+            if (is_string($jsonData)) {
+                $decodedJsonDataArray = json_decode($jsonData, true);
+            } else {
+                $decodedJsonDataArray = $jsonData;
+            }
+            foreach ($decodedJsonDataArray as $fieldName => $fieldValue) {
+                switch ($fieldName) {
+                    case self::TYPE:
+                        $this->type = $fieldValue;
+                        break;
+                    case self::SECRET:
+                        $this->secret = $fieldValue;
+                        break;
+                    case self::CERTIFICATE:
+                        $this->certificate = $fieldValue;
+                        break;
+                    default:
+                        throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
                 }
             }
             return $this;

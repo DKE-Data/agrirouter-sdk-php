@@ -16,7 +16,9 @@ namespace Lib\Tests\Agrirouter {
 
     class ProtobufSmokeTest extends TestCase
     {
-
+        /**
+         * @covers
+         */
         public function testGivenCapabilitiesMessageWhenEncodeMessageThenTheResultShouldBeValid()
         {
             $expected = "RAokNmY5Y2ZiMWEtMGQ5YS00M2JjLWFiMWItMWUwNjliZDE2OGUxEAEaEGRrZTpjYXBhYmlsaXRpZXMoAUIGCICRv9IDgwEKgAEKEGRrZTpjYXBhYmlsaXRpZXMSbAoeChppc286MTE3ODM6LTEwOnRhc2tkYXRhOnppcBABEiRlNjMzMDcwNC0yOGYxLTRhNDYtYTg5YS03ZmZjM2Y4YTBlNDIaJDA3ZDkzYTQ0LTdjMzItNGM4Mi04MTk5LTUwM2QwYTNiODkxMgAAAAAAAAAAAAAAAAAAAAAA";

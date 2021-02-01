@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 
 namespace Lib\Tests\Service\Common {
@@ -9,7 +9,7 @@ namespace Lib\Tests\Service\Common {
     use App\Api\Service\Parameters\MessagingParameters;
     use App\Service\Common\HttpMessagingService;
     use Error;
-    use Lib\Tests\Helper\HttpClientFactory;
+    use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
     use Lib\Tests\Helper\OnboardResponseRepository;
     use PHPUnit\Framework\TestCase;
@@ -24,7 +24,8 @@ namespace Lib\Tests\Service\Common {
         {
             self::expectException(Error::class);
 
-            $httpMessagingService = new HttpMessagingService(HttpClientFactory::httpClient());
+            $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
+            $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
             $parameters = new MessagingParameters();
             $httpMessagingService->send($parameters);
         }
@@ -39,7 +40,8 @@ namespace Lib\Tests\Service\Common {
 
             $onboardResponse = OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT);
 
-            $httpMessagingService = new HttpMessagingService(HttpClientFactory::httpClient());
+            $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
+            $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
 
             $parameters = new MessagingParameters();
             $parameters->setOnboardResponse($onboardResponse);
