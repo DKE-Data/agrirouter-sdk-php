@@ -9,11 +9,15 @@ namespace App\Dto\Onboard {
     use JsonException;
 
     /**
-     * Class AuthorizationToken - Data transfer object for the communication.
+     * Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
     class AuthorizationToken implements JsonDeserializable
     {
+        private const ACCOUNT = 'account';
+        private const REGISTRATION_CODE = 'regcode';
+        private const EXPIRES = 'expires';
+
         private string $account;
         private string $registrationCode;
         private string $expires;
@@ -57,13 +61,13 @@ namespace App\Dto\Onboard {
             }
             foreach ($decodedJsonDataArray as $fieldName => $fieldValue) {
                 switch ($fieldName){
-                    case 'account':
+                    case self::ACCOUNT:
                         $this->account = $fieldValue;
                         break;
-                    case 'regcode':
+                    case self::REGISTRATION_CODE:
                         $this->registrationCode = $fieldValue;
                         break;
-                    case 'expires':
+                    case self::EXPIRES:
                         $this->expires = $fieldValue;
                         break;
                     default:
