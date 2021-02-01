@@ -2,7 +2,6 @@
 
 namespace App\Service\Onboard {
 
-
     use App\Api\Exceptions\AuthorizationException;
     use App\Api\Exceptions\ErrorCodes;
     use App\Dto\Onboard\AuthorizationResult;
