@@ -2,9 +2,9 @@
 
 namespace Lib\Tests\Service\Onboard {
 
-
     use App\Api\Exceptions\AuthorizationException;
     use App\Service\Onboard\AuthorizationService;
+    use Lib\Tests\Service\AbstractIntegrationTestForServices;
 
     class AuthorizationServiceTest extends AbstractIntegrationTestForServices
     {
