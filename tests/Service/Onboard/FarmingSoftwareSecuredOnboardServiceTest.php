@@ -2,7 +2,6 @@
 
 namespace Lib\Tests\Service\Onboard {
 
-    use App\Api\Common\HttpClient;
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OnboardException;
     use App\Definitions\ApplicationTypeDefinitions;
@@ -17,6 +16,8 @@ namespace Lib\Tests\Service\Onboard {
     use DateTime;
     use DateTimeZone;
     use Lib\Tests\Applications\FarmingSoftware;
+    use Lib\Tests\Helper\GuzzleHttpClientBuilder;
+    use Lib\Tests\Service\AbstractIntegrationTestForServices;
 
     /**
      * Class FarmingSoftwareSecuredOnboardServiceTest
@@ -25,35 +26,33 @@ namespace Lib\Tests\Service\Onboard {
     class FarmingSoftwareSecuredOnboardServiceTest extends AbstractIntegrationTestForServices
     {
         private UtcDataService $utcDataService;
-        private HttpClient $httpClient;
 
         public function setUp(): void
         {
             $this->utcDataService = new UtcDataService();
-            $this->httpClient = $this->getHttpClient();
         }
 
         /**
          * @covers \App\Service\Onboard\SecuredOnboardService::onboard
          * @throws OnboardException
          */
-        public function testGivenInvalidRequestTokenWhenOnboardingFarmingSoftwareThenThereShouldBeAnException()
+        public function testGivenInvalidRequestTokenWhenOnboardFarmingSoftwareThenThereShouldBeAnException()
         {
             self::expectException(OnboardException::class);
             self::expectExceptionCode(ErrorCodes::BEARER_NOT_FOUND);
 
-            $onboardService = new SecuredOnboardService($this->getEnvironment(), $this->utcDataService, $this->httpClient);
-            $onboardingParameters = new OnboardParameters();
-            $onboardingParameters->setUuid(UuidService::newUuid());
-            $onboardingParameters->setApplicationId(FarmingSoftware::applicationId());
-            $onboardingParameters->setCertificationVersionId(FarmingSoftware::certificationVersionId());
-            $onboardingParameters->setApplicationType(ApplicationTypeDefinitions::application());
-            $onboardingParameters->setCertificationType(CertificationTypeDefinitions::p12());
-            $onboardingParameters->setGatewayId(GatewayTypeDefinitions::http());
-            $onboardingParameters->setRegistrationCode("INVALID");
-            $onboardingParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
-            $onboardService->onboard($onboardingParameters, FarmingSoftware::privateKey());
-
+            $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
+            $onboardService = new SecuredOnboardService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
+            $onboardParameters = new OnboardParameters();
+            $onboardParameters->setUuid(UuidService::newUuid());
+            $onboardParameters->setApplicationId(FarmingSoftware::applicationId());
+            $onboardParameters->setCertificationVersionId(FarmingSoftware::certificationVersionId());
+            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::application());
+            $onboardParameters->setCertificationType(CertificationTypeDefinitions::p12());
+            $onboardParameters->setGatewayId(GatewayTypeDefinitions::http());
+            $onboardParameters->setRegistrationCode("INVALID");
+            $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
+            $onboardService->onboard($onboardParameters, FarmingSoftware::privateKey());
         }
 
         /**
@@ -61,31 +60,33 @@ namespace Lib\Tests\Service\Onboard {
          * @throws OnboardException
          * @noinspection PhpUnreachableStatementInspection
          */
-        public function testGivenValidRequestTokenWhenOnboardingFarmingSoftwareThenThereShouldBeAValidResponse()
+        public function testGivenValidRequestTokenWhenOnboardFarmingSoftwareThenThereShouldBeAValidResponse()
         {
             $this->markTestSkipped('Will not run successfully without changing the registration code.');
-            $onboardService = new SecuredOnboardService($this->getEnvironment(), $this->utcDataService, $this->httpClient);
-            $onboardingParameters = new OnboardParameters();
-            $onboardingParameters->setUuid(UuidService::newUuid());
-            $onboardingParameters->setApplicationId(FarmingSoftware::applicationId());
-            $onboardingParameters->setCertificationVersionId(FarmingSoftware::certificationVersionId());
-            $onboardingParameters->setApplicationType(ApplicationTypeDefinitions::application());
-            $onboardingParameters->setCertificationType(CertificationTypeDefinitions::PEM());
-            $onboardingParameters->setGatewayId(GatewayTypeDefinitions::http());
-            $onboardingParameters->setRegistrationCode("98ad35b33d");
-            $onboardingParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
-            $onboardingResponse = $onboardService->onboard($onboardingParameters, FarmingSoftware::privateKey());
 
-            $this->assertNotEmpty($onboardingResponse->getSensorAlternateId());
-            $this->assertNotEmpty($onboardingResponse->getDeviceAlternateId());
-            $this->assertNotEmpty($onboardingResponse->getCapabilityAlternateId());
+            $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
+            $onboardService = new SecuredOnboardService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
+            $onboardParameters = new OnboardParameters();
+            $onboardParameters->setUuid(UuidService::newUuid());
+            $onboardParameters->setApplicationId(FarmingSoftware::applicationId());
+            $onboardParameters->setCertificationVersionId(FarmingSoftware::certificationVersionId());
+            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::application());
+            $onboardParameters->setCertificationType(CertificationTypeDefinitions::PEM());
+            $onboardParameters->setGatewayId(GatewayTypeDefinitions::http());
+            $onboardParameters->setRegistrationCode("98ad35b33d");
+            $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
+            $onboardResponse = $onboardService->onboard($onboardParameters, FarmingSoftware::privateKey());
 
-            $this->assertNotEmpty($onboardingResponse->getAuthentication()->getCertificate());
-            $this->assertNotEmpty($onboardingResponse->getAuthentication()->getSecret());
-            $this->assertNotEmpty($onboardingResponse->getAuthentication()->getType());
+            $this->assertNotEmpty($onboardResponse->getSensorAlternateId());
+            $this->assertNotEmpty($onboardResponse->getDeviceAlternateId());
+            $this->assertNotEmpty($onboardResponse->getCapabilityAlternateId());
 
-            $this->assertNotEmpty($onboardingResponse->getConnectionCriteria()->getCommands());
-            $this->assertNotEmpty($onboardingResponse->getConnectionCriteria()->getMeasures());
+            $this->assertNotEmpty($onboardResponse->getAuthentication()->getCertificate());
+            $this->assertNotEmpty($onboardResponse->getAuthentication()->getSecret());
+            $this->assertNotEmpty($onboardResponse->getAuthentication()->getType());
+
+            $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getCommands());
+            $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getMeasures());
         }
 
         /**

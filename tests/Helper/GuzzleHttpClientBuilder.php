@@ -2,44 +2,40 @@
 
 namespace Lib\Tests\Helper {
 
-    use App\Api\Common\HttpClient;
     use DateTimeZone;
     use GuzzleHttp\Client;
     use GuzzleHttp\HandlerStack;
     use GuzzleHttp\MessageFormatter;
     use GuzzleHttp\Middleware;
-    use GuzzleHttp\Psr7\Request;
     use Monolog\Formatter\LineFormatter;
     use Monolog\Handler\StreamHandler;
     use Monolog\Logger;
-    use Psr\Http\Message\RequestInterface;
-    use Psr\Http\Message\ResponseInterface;
     use Psr\Log\LoggerInterface;
 
     /**
      * Manages the GuzzleHttpClient with Logging.
      * @package Lib\Tests\Helper
      */
-    class GuzzleHttpClientFactory implements HttpClient
+    class GuzzleHttpClientBuilder
     {
-        private Client $httpClient;
+
+        private HttpClient $httpClient;
 
         /**
          * Constructor.
          */
         public function __construct()
         {
-            $this->httpClient = $this->createHttpClient();
+            $this->httpClient = new HttpClient($this->createHttpClient());
         }
 
         /**
          * Creates a PSR compatible http client.
-         * @param LoggerInterface|null $logger -
          * @return Client -
          */
-        private function createHttpClient(?LoggerInterface $logger = null): Client
+        private function createHttpClient(): Client
         {
-            if (is_null($logger)) $logger = self::createConsoleLogger();
+            $logger = self::createConsoleLogger();
             return new Client([
                 'handler' => self::createHandlerStack($logger),
                 'verify' => false
@@ -48,12 +44,11 @@ namespace Lib\Tests\Helper {
 
         /**
          * Creates a standard logging Handler for logging requests and responses to the console.
-         * @param string $channel Channel name for the logger.
          * @return Logger The default console logger.
          */
-        private function createConsoleLogger(string $channel = 'HttpClientConsole'): Logger
+        private function createConsoleLogger(): Logger
         {
-            $logger = new Logger($channel);
+            $logger = new Logger('HttpClientConsole');
             $dateFormat = "d.m.Y, H:i:s";
             $formatter = new LineFormatter(null, $dateFormat, false, true);
             $handler = new StreamHandler('php://stdout', Logger::INFO);
@@ -89,35 +84,12 @@ namespace Lib\Tests\Helper {
         }
 
         /**
-         * Create a request.
-         * @param string $method
-         * @param string $uri
-         * @param array $headers
-         * @param string|null $body
-         * @return RequestInterface
+         * Get the HTTP client.
+         * @return HttpClient -
          */
-        public function createRequest(string $method, string $uri, array $headers = [], string $body = null): RequestInterface
+        public function build(): HttpClient
         {
-            return new Request($method, $uri, $headers, $body);
-        }
-
-        public function sendRequest(RequestInterface $request): ResponseInterface
-        {
-            return $this->sendRequest($request);
-        }
-
-        public function sendAsync(RequestInterface $request, array $options = []): ?ResponseInterface
-        {
-            $result = null;
-
-            $promise = $this->httpClient->sendAsync($request, $options)->
-            then(function ($response) {
-                return $response;
-            }, function ($response) {
-                throw $response;
-            });
-
-            return $promise->wait(true);
+            return $this->httpClient;
         }
     }
 }

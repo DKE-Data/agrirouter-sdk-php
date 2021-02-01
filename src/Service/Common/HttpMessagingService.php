@@ -2,7 +2,7 @@
 
 namespace App\Service\Common;
 
-use App\Api\Common\HttpClient;
+use App\Api\Common\HttpClientInterface;
 use App\Api\Common\MessagingService;
 use App\Api\Exceptions\ErrorCodes;
 use App\Api\Exceptions\MessagingException;
@@ -19,13 +19,13 @@ use Exception;
  */
 class HttpMessagingService implements MessagingService
 {
-    private HttpClient $httpClient;
+    private HttpClientInterface $httpClient;
 
     /**
      * Constructor.
-     * @param HttpClient $httpClient -
+     * @param HttpClientInterface $httpClient -
      */
-    public function __construct(HttpClient $httpClient)
+    public function __construct(HttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
     }

@@ -4,12 +4,11 @@
 namespace App\Service\Onboard {
 
 
-    use App\Api\Common\HttpClient;
+    use App\Api\Common\HttpClientInterface;
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OnboardException;
     use App\Dto\Onboard\OnboardResponse;
     use App\Environment\AbstractEnvironment;
-    use App\Service\Common\UtcDataService;
     use App\Service\Parameters\OnboardParameters;
     use Exception;
     use Psr\Http\Message\RequestInterface;
@@ -22,20 +21,17 @@ namespace App\Service\Onboard {
     abstract class AbstractOnboardService
     {
         protected AbstractEnvironment $environment;
-        protected HttpClient $httpClient;
-        protected UtcDataService $utcDataService;
+        protected HttpClientInterface $httpClient;
 
         /**
          * OnboardService constructor.
          * @param AbstractEnvironment $environment The environment to use for the onboard process.
-         * @param UtcDataService $utcDataService The time service for UTC time data.
-         * @param HttpClient $httpClient The http client used for the onboard process.
+         * @param HttpClientInterface $httpClient The http client used for the onboard process.
          */
-        public function __construct(AbstractEnvironment $environment, UtcDataService $utcDataService, HttpClient $httpClient)
+        public function __construct(AbstractEnvironment $environment, HttpClientInterface $httpClient)
         {
             $this->environment = $environment;
             $this->httpClient = $httpClient;
-            $this->utcDataService = $utcDataService;
         }
 
         /**
