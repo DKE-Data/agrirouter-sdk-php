@@ -14,7 +14,8 @@ namespace App\Dto\Onboard {
      */
     class VerificationResponse implements JsonSerializable, JsonDeserializable
     {
-        const ACCOUNT_ID = 'accountId';
+        private const ACCOUNT_ID = 'accountId';
+
         private string $accountId;
 
         /**
