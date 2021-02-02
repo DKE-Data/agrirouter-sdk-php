@@ -2,12 +2,18 @@
 
 namespace App\Dto\Messaging\Inner {
 
+    use JetBrains\PhpStorm\ArrayShape;
+    use JsonSerializable;
+
     /**
      * Data transfer object for the communication.
      * @package App\Dto\Messaging\Inner
      */
-    class Message
+    class Message implements JsonSerializable
     {
+        private const MESSAGE = "message";
+        private const TIMESTAMP = "timestamp";
+
         private string $content;
         private string $timestamp;
 
@@ -31,6 +37,13 @@ namespace App\Dto\Messaging\Inner {
             $this->timestamp = $timestamp;
         }
 
-
+        #[ArrayShape([self::MESSAGE => "string", self::TIMESTAMP => "string"])]
+        public function jsonSerialize(): array
+        {
+            return [
+                self::MESSAGE => $this->getContent(),
+                self::TIMESTAMP => $this->getTimestamp(),
+            ];
+        }
     }
 }

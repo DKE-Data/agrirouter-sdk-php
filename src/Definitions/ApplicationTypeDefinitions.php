@@ -8,15 +8,10 @@ namespace App\Definitions {
      */
     class ApplicationTypeDefinitions
     {
-
         /**
          * Type "Application".
-         * @return string -
          */
-        public static function application(): string
-        {
-            return "Application";
-        }
+        public const APPLICATION = "Application";
 
     }
 }

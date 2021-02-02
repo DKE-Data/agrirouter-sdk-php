@@ -7,7 +7,7 @@ namespace App\Api\Service\Parameters {
      * Interface to mark parameters as validatable.
      * @package App\Api\Service\Parameters
      */
-    interface Validatable
+    interface ValidatableInterface
     {
 
         /**

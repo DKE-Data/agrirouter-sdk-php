@@ -40,9 +40,9 @@ namespace Lib\Tests\Service\Onboard {
             $onboardParameters->setUuid(UuidService::newUuid());
             $onboardParameters->setApplicationId(TelemetryPlatform::applicationId());
             $onboardParameters->setCertificationVersionId(TelemetryPlatform::certificationVersionId());
-            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::application());
-            $onboardParameters->setCertificationType(CertificationTypeDefinitions::pem());
-            $onboardParameters->setGatewayId(GatewayTypeDefinitions::http());
+            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::APPLICATION);
+            $onboardParameters->setCertificationType(CertificationTypeDefinitions::PEM);
+            $onboardParameters->setGatewayId(GatewayTypeDefinitions::HTTP);
             $onboardParameters->setRegistrationCode("INVALID");
             $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
             $onboardService->onboard($onboardParameters, TelemetryPlatform::privateKey());
@@ -64,9 +64,9 @@ namespace Lib\Tests\Service\Onboard {
             $onboardParameters->setUuid(UuidService::newUuid());
             $onboardParameters->setApplicationId(TelemetryPlatform::applicationId());
             $onboardParameters->setCertificationVersionId(TelemetryPlatform::certificationVersionId());
-            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::application());
-            $onboardParameters->setCertificationType(CertificationTypeDefinitions::pem());
-            $onboardParameters->setGatewayId(GatewayTypeDefinitions::http());
+            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::APPLICATION);
+            $onboardParameters->setCertificationType(CertificationTypeDefinitions::PEM);
+            $onboardParameters->setGatewayId(GatewayTypeDefinitions::HTTP);
             $onboardParameters->setRegistrationCode("98ad35b33d");
             $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
             $onboardResponse = $onboardService->onboard($onboardParameters, TelemetryPlatform::privateKey());

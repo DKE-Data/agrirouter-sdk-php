@@ -1,9 +1,8 @@
 <?php declare(strict_types=1);
 
-
 namespace App\Dto\Onboard {
 
-    use App\Api\Dto\JsonDeserializable;
+    use App\Api\Dto\JsonDeserializableInterface;
     use App\Api\Exceptions\ErrorCodes;
     use JsonException;
 
@@ -11,7 +10,7 @@ namespace App\Dto\Onboard {
      * Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
-    class AuthorizationToken implements JsonDeserializable
+    class AuthorizationToken implements JsonDeserializableInterface
     {
         private const ACCOUNT = 'account';
         private const REGISTRATION_CODE = 'regcode';

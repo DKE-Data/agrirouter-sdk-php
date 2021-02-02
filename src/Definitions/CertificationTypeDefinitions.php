@@ -11,21 +11,8 @@ namespace App\Definitions {
 
         /**
          * Type "PEM".
-         * @return string -
          */
-        public static function pem(): string
-        {
-            return "PEM";
-        }
-
-        /**
-         * Type "P12".
-         * @return string -
-         */
-        public static function p12(): string
-        {
-            return "P12";
-        }
+        public const PEM = "PEM";
 
     }
 }

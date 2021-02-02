@@ -9,7 +9,7 @@ namespace App\Api\Common {
      * @package App\Service\Common
      * @template T
      */
-    interface MessagingService
+    interface MessagingServiceInterface
     {
         /**
          * Sending a message using the given message parameters.
