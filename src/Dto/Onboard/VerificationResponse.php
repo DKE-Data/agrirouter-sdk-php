@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Dto\Onboard {
 
     use App\Api\Dto\JsonDeserializable;
