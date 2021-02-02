@@ -8,8 +8,8 @@ namespace App\Service\Common {
     use App\Api\Exceptions\MessagingException;
     use App\Api\Service\Parameters\MessagingParameters;
     use App\Dto\Messaging\Inner\Message;
-    use App\Dto\Messaging\MessageRequest;
     use App\Dto\Messaging\MessagingResult;
+    use App\Dto\Requests\MessageRequest;
     use Exception;
 
     /**
@@ -59,13 +59,16 @@ namespace App\Service\Common {
             $request = $this->httpClient->createRequest('POST', $parameters->getOnboardResponse()->getConnectionCriteria()->getMeasures(), $headers, $requestBody);
 
             try {
-                $response = $this->httpClient->sendAsync($request,
+                $this->httpClient->sendAsync($request,
                     [
                         'cert' => [CertificateService::createCertificateFile($parameters->getOnboardResponse()), $parameters->getOnboardResponse()->getAuthentication()->getSecret()],
                         'ssl_key' => [CertificateService::createCertificateFile($parameters->getOnboardResponse()), $parameters->getOnboardResponse()->getAuthentication()->getSecret()]
                     ]);
-
-                return json_decode($response->getBody(), true);
+                $messagingResult = new MessagingResult();
+                $messageIds = [];
+                array_push($messageIds, $parameters->getApplicationMessageId());
+                $messagingResult->setMessageIds($messageIds);
+                return $messagingResult;
             } catch (Exception $exception) {
                 if ($exception->getCode() == 400) {
                     throw new MessagingException($exception->getMessage(), ErrorCodes::INVALID_MESSAGE);

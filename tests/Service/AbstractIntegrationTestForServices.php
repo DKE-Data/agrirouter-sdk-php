@@ -34,7 +34,7 @@ namespace Lib\Tests\Service {
             return $logger;
         }
 
-        public function getEnvironment(): ?QualityAssuranceEnvironment
+        public function getEnvironment(): QualityAssuranceEnvironment
         {
             return $this->environment;
         }

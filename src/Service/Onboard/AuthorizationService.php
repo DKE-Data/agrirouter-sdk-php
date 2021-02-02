@@ -101,6 +101,7 @@ namespace App\Service\Onboard {
          * Parsing the token from the authorization result.
          * @param AuthorizationResult $authorizationResult The AuthorizationResult that contains the token to parse.
          * @return AuthorizationToken The parsed authorization token
+         * @throws AuthorizationException Will be thrown if the token can not be parsed.
          */
         public function parseAuthorizationToken(AuthorizationResult $authorizationResult): AuthorizationToken
         {

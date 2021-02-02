@@ -7,6 +7,7 @@ namespace App\Service\Messaging {
     use App\Api\Common\MessagingServiceInterface;
     use App\Api\Service\Messaging\CapabilitiesServiceInterface;
     use App\Api\Service\Messaging\EncodeMessageServiceInterface;
+    use App\Api\Service\Parameters\MessagingParameters;
     use App\Definitions\TechnicalMessageTypeDefinitions;
     use App\Dto\Messaging\EncodedMessage;
     use App\Dto\Messaging\MessagingResult;
@@ -16,8 +17,13 @@ namespace App\Service\Messaging {
     use App\Service\Parameters\CapabilityParameters;
     use App\Service\Parameters\MessageHeaderParameters;
     use App\Service\Parameters\MessagePayloadParameters;
-    use JetBrains\PhpStorm\Pure;
 
+    /**
+     * Service to send the capabilities to the AR.
+     * @template-implements MessagingServiceInterface<CapabilityParameters>
+     * @template-implements EncodeMessageServiceInterface<CapabilityParameters>
+     * @package App\Service\Messaging
+     */
     class CapabilitiesService implements CapabilitiesServiceInterface, EncodeMessageServiceInterface
     {
 
@@ -33,8 +39,9 @@ namespace App\Service\Messaging {
         }
 
         /**
-         * @param CapabilityParameters $parameters
-         * @return EncodedMessage
+         * Encoding of the message.
+         * @param CapabilityParameters $parameters -
+         * @return EncodedMessage -
          */
         public function encode($parameters): EncodedMessage
         {
@@ -66,9 +73,20 @@ namespace App\Service\Messaging {
             return $encodedMessage;
         }
 
-        #[Pure] public function send($parameters): MessagingResult
+        /**
+         * Send message.
+         * @param CapabilityParameters $parameters -
+         * @return MessagingResult -
+         */
+        public function send($parameters): MessagingResult
         {
-            return new MessagingResult();
+            $messagingParameters = new MessagingParameters();
+            $messagingParameters->setOnboardResponse($parameters->getOnboardResponse());
+            $messagingParameters->setApplicationMessageId($parameters->getApplicationMessageId());
+            $messagingParameters->setApplicationMessageSeqNo($parameters->getApplicationMessageSeqNo());
+            $encodedMessages = $this->encode($parameters);
+            $messagingParameters->setEncodedMessages([$encodedMessages->getContent()]);
+            return $this->messagingService->send($messagingParameters);
         }
     }
 }
