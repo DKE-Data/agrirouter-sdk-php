@@ -15,7 +15,6 @@ namespace App\Service\Onboard {
     use Exception;
     use Psr\Http\Message\RequestInterface;
 
-
     /**
      * Abstract Service for all onboard purposes.
      * @package App\Service\Onboard
