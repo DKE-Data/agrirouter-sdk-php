@@ -8,7 +8,7 @@ namespace Lib\Tests\Agrirouter {
     use App\Service\Messaging\CapabilitiesService;
     use App\Service\Parameters\CapabilityParameters;
     use Lib\Tests\Applications\CommunicationUnit;
-    use Lib\Tests\Helper\HttpClientFactory;
+    use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
     use Lib\Tests\Helper\OnboardResponseRepository;
     use PHPUnit\Framework\TestCase;
@@ -21,7 +21,9 @@ namespace Lib\Tests\Agrirouter {
          */
         public function testGivenCapabilityParametersWhenEncodingTheMessageThenTheCapabilitiesServiceShouldCreateAnEncodedMessage()
         {
-            $capabilitiesService = new CapabilitiesService(new HttpMessagingService(HttpClientFactory::httpClient()));
+            $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
+            $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
+            $capabilitiesService = new CapabilitiesService($httpMessagingService);
             $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
             $capabilityParameters->setApplicationMessageSeqNo(1);

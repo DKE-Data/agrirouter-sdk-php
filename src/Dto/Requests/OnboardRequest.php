@@ -6,17 +6,25 @@ namespace App\Dto\Requests {
     use JsonSerializable;
 
     /**
-     * Class OnboardRequest - Data transfer object for the communication.
+     * Data transfer object for the communication.
      * @package App\Dto\Requests
      */
     class OnboardRequest implements JsonSerializable
     {
+        private const ID = 'id';
+        private const APPLICATION_ID = 'applicationId';
+        private const CERTIFICATION_VERSION_ID = 'certificationVersionId';
+        private const GATEWAY_ID = 'gatewayId';
+        private const UTC_TIMESTAMP = 'UTCTimestamp';
+        private const TIME_ZONE = 'timezone';
+        private const CERTIFICATE_TYPE = 'certificateType';
+
         private string $externalId;
         private string $applicationId;
         private string $certificationVersionId;
         private string $gatewayId;
         private string $utcTimestamp;
-        private string $timezone;
+        private string $timeZone;
         private string $certificateType;
 
         public function getExternalId(): string
@@ -69,15 +77,14 @@ namespace App\Dto\Requests {
             $this->utcTimestamp = $utcTimestamp;
         }
 
-
-        public function getTimezone(): string
+        public function getTimeZone(): string
         {
-            return $this->timezone;
+            return $this->timeZone;
         }
 
-        public function setTimezone(string $timezone): void
+        public function setTimeZone(string $timeZone): void
         {
-            $this->timezone = $timezone;
+            $this->timeZone = $timeZone;
         }
 
         public function getCertificateType(): string
@@ -90,17 +97,17 @@ namespace App\Dto\Requests {
             $this->certificateType = $certificateType;
         }
 
-        #[ArrayShape(['id' => "string", 'applicationId' => "string", 'certificationVersionId' => "string", 'gatewayId' => "string", 'utcTimestamp' => "string", 'timezone' => "string", 'certificateType' => "string"])]
+        #[ArrayShape([self::ID => "string", self::APPLICATION_ID => "string", self::CERTIFICATION_VERSION_ID => "string", self::GATEWAY_ID => "string", self::UTC_TIMESTAMP => "string", self::TIME_ZONE => "string", self::CERTIFICATE_TYPE => "string"])]
         public function jsonSerialize(): array
         {
             return [
-                'id' => $this->getExternalId(),
-                'applicationId' => $this->getApplicationId(),
-                'certificationVersionId' => $this->getCertificationVersionId(),
-                'gatewayId' => $this->getGatewayId(),
-                'utcTimestamp' => $this->getUtcTimestamp(),
-                'timezone' => $this->getTimezone(),
-                'certificateType' => $this->getCertificateType()
+                self::ID => $this->getExternalId(),
+                self::APPLICATION_ID => $this->getApplicationId(),
+                self::CERTIFICATION_VERSION_ID => $this->getCertificationVersionId(),
+                self::GATEWAY_ID => $this->getGatewayId(),
+                self::UTC_TIMESTAMP => $this->getUtcTimestamp(),
+                self::TIME_ZONE => $this->getTimeZone(),
+                self::CERTIFICATE_TYPE => $this->getCertificateType()
             ];
         }
     }

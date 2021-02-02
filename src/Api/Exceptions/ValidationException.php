@@ -19,5 +19,6 @@ namespace App\Api\Exceptions {
         {
             parent::__construct("Parameters passed are not valid. The following parameter is invalid >>> $invalidParameter", ErrorCodes::PARAMETER_INVALID);
         }
+
     }
 }

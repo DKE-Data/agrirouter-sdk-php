@@ -2,6 +2,7 @@
 
 namespace App\Service\Common;
 
+use App\Api\Common\HttpClientInterface;
 use App\Api\Common\MessagingServiceInterface;
 use App\Api\Exceptions\ErrorCodes;
 use App\Api\Exceptions\MessagingException;
@@ -10,9 +11,6 @@ use App\Dto\Messaging\Inner\Message;
 use App\Dto\Messaging\MessageRequest;
 use App\Dto\Messaging\MessagingResult;
 use Exception;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\RequestOptions;
 
 /**
  * Service to send messages to the AR.
@@ -21,13 +19,13 @@ use GuzzleHttp\RequestOptions;
  */
 class HttpMessagingService implements MessagingServiceInterface
 {
-    private Client $httpClient;
+    private HttpClientInterface $httpClient;
 
     /**
      * Constructor.
-     * @param Client $httpClient -
+     * @param HttpClientInterface $httpClient -
      */
-    public function __construct(Client $httpClient)
+    public function __construct(HttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
     }
@@ -58,29 +56,22 @@ class HttpMessagingService implements MessagingServiceInterface
             'Content-type' => 'application/json',
         ];
 
-        $request = new Request('POST', $parameters->getOnboardResponse()->getConnectionCriteria()->getMeasures(), $headers, $requestBody);
+        $request = $this->httpClient->createRequest('POST', $parameters->getOnboardResponse()->getConnectionCriteria()->getMeasures(), $headers, $requestBody);
 
-        $promise = $this->httpClient->sendAsync($request,
-            [
-                RequestOptions::CERT => [CertificateService::createCertificateFile($parameters->getOnboardResponse()), $parameters->getOnboardResponse()->getAuthentication()->getSecret()],
-                RequestOptions::SSL_KEY => [CertificateService::createCertificateFile($parameters->getOnboardResponse()), $parameters->getOnboardResponse()->getAuthentication()->getSecret()]
-            ])->
-        then(function ($response) {
-            return (string)$response->getBody();
-        }, function ($exception) {
-            return $exception;
-        });
+        try {
+            $response = $this->httpClient->sendAsync($request,
+                [
+                    'cert' => [CertificateService::createCertificateFile($parameters->getOnboardResponse()), $parameters->getOnboardResponse()->getAuthentication()->getSecret()],
+                    'ssl_key' => [CertificateService::createCertificateFile($parameters->getOnboardResponse()), $parameters->getOnboardResponse()->getAuthentication()->getSecret()]
+                ]);
 
-        $result = $promise->wait();
-
-        if ($result instanceof Exception) {
-            if ($result->getCode() == 400) {
-                throw new MessagingException($result->getMessage(), ErrorCodes::INVALID_MESSAGE);
+            return json_decode($response->getBody(), true);
+        } catch (Exception $exception) {
+            if ($exception->getCode() == 400) {
+                throw new MessagingException($exception->getMessage(), ErrorCodes::INVALID_MESSAGE);
             } else {
-                throw new MessagingException($result->getMessage(), ErrorCodes::UNDEFINED);
+                throw new MessagingException($exception->getMessage(), ErrorCodes::UNDEFINED);
             }
-        } else {
-            return new MessagingResult();
         }
     }
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Lib\Tests\Service\Onboard {
 
@@ -7,43 +7,31 @@ namespace Lib\Tests\Service\Onboard {
     use App\Definitions\ApplicationTypeDefinitions;
     use App\Definitions\CertificationTypeDefinitions;
     use App\Definitions\GatewayTypeDefinitions;
-    use App\Environment\QualityAssuranceEnvironment;
-    use App\Service\Common\UtcDataService;
     use App\Service\Common\UuidService;
     use App\Service\Onboard\OnboardService;
     use App\Service\Parameters\OnboardParameters;
     use DateTime;
     use DateTimeZone;
-    use GuzzleHttp\Client;
     use Lib\Tests\Applications\CommunicationUnit;
-    use PHPUnit\Framework\TestCase;
+    use Lib\Tests\Helper\GuzzleHttpClientBuilder;
+    use Lib\Tests\Service\AbstractIntegrationTestForServices;
 
     /**
      * Class OnboardServiceTest
      * @package Lib\Tests\Service\Onboard
      */
-    class OnboardServiceTest extends TestCase
+    class OnboardServiceTest extends AbstractIntegrationTestForServices
     {
-        private UtcDataService $utcDataService;
-        private QualityAssuranceEnvironment $qualityAssuranceEnvironment;
-        private Client $httpClient;
-
-        public function setUp(): void
-        {
-            $this->utcDataService = new UtcDataService();
-            $this->qualityAssuranceEnvironment = new QualityAssuranceEnvironment();
-            $this->httpClient = new Client();
-        }
-
         /**
          * @covers OnboardService::onboard
          */
-        public function testGivenInvalidRequestTokenWhenTheEndpointIsOnboardedThenThereShouldBeAnException()
+        public function testGivenInvalidRequestTokenWhenOnboardCommunicationUnitThenThereShouldBeAnException()
         {
             self::expectException(OnboardException::class);
             self::expectExceptionCode(ErrorCodes::BEARER_NOT_FOUND);
 
-            $onboardService = new OnboardService($this->qualityAssuranceEnvironment, $this->utcDataService, $this->httpClient);
+            $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
+            $onboardService = new OnboardService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
             $onboardParameters = new OnboardParameters();
             $onboardParameters->setUuid(UuidService::newUuid());
             $onboardParameters->setApplicationId(CommunicationUnit::applicationId());
@@ -62,11 +50,12 @@ namespace Lib\Tests\Service\Onboard {
          * @throws OnboardException
          * @noinspection PhpUnreachableStatementInspection
          */
-        public function testGivenValidRequestTokenWhenTheEndpointIsOnboardedForPemThenThereShouldBeAValidResponse()
+        public function testGivenValidRequestTokenWhenOnboardCommunicationUnitForPemThenThereShouldBeAValidResponse()
         {
             $this->markTestIncomplete('Will not run successfully without changing the registration code.');
 
-            $onboardService = new OnboardService($this->qualityAssuranceEnvironment, $this->utcDataService, $this->httpClient);
+            $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
+            $onboardService = new OnboardService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
             $onboardParameters = new OnboardParameters();
             $onboardParameters->setUuid(UuidService::newUuid());
             $onboardParameters->setApplicationId(CommunicationUnit::applicationId());
@@ -76,18 +65,18 @@ namespace Lib\Tests\Service\Onboard {
             $onboardParameters->setGatewayId(GatewayTypeDefinitions::HTTP);
             $onboardParameters->setRegistrationCode("d773852334");
             $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
-            $onboardingResponse = $onboardService->onboard($onboardParameters);
+            $onboardResponse = $onboardService->onboard($onboardParameters);
 
-            $this->assertNotEmpty($onboardingResponse->getSensorAlternateId());
-            $this->assertNotEmpty($onboardingResponse->getDeviceAlternateId());
-            $this->assertNotEmpty($onboardingResponse->getCapabilityAlternateId());
+            $this->assertNotEmpty($onboardResponse->getSensorAlternateId());
+            $this->assertNotEmpty($onboardResponse->getDeviceAlternateId());
+            $this->assertNotEmpty($onboardResponse->getCapabilityAlternateId());
 
-            $this->assertNotEmpty($onboardingResponse->getAuthentication()->getCertificate());
-            $this->assertNotEmpty($onboardingResponse->getAuthentication()->getSecret());
-            $this->assertNotEmpty($onboardingResponse->getAuthentication()->getType());
+            $this->assertNotEmpty($onboardResponse->getAuthentication()->getCertificate());
+            $this->assertNotEmpty($onboardResponse->getAuthentication()->getSecret());
+            $this->assertNotEmpty($onboardResponse->getAuthentication()->getType());
 
-            $this->assertNotEmpty($onboardingResponse->getConnectionCriteria()->getCommands());
-            $this->assertNotEmpty($onboardingResponse->getConnectionCriteria()->getMeasures());
+            $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getCommands());
+            $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getMeasures());
         }
     }
 }

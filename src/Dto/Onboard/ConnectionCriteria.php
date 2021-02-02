@@ -3,8 +3,9 @@
 namespace App\Dto\Onboard {
 
     use App\Api\Dto\JsonDeserializableInterface;
-    use Exception;
+    use App\Api\Exceptions\ErrorCodes;
     use JetBrains\PhpStorm\ArrayShape;
+    use JsonException;
     use JsonSerializable;
 
     /**
@@ -13,6 +14,13 @@ namespace App\Dto\Onboard {
      */
     class ConnectionCriteria implements JsonSerializable, JsonDeserializableInterface
     {
+        private const CLIENT_ID = 'clientId';
+        private const COMMANDS = 'commands';
+        private const GATEWAY_ID = 'gatewayId';
+        private const HOST = 'host';
+        private const MEASURES = 'measures';
+        private const PORT = 'port';
+
         private string $gatewayId;
         private string $measures;
         private string $commands;
@@ -20,54 +28,17 @@ namespace App\Dto\Onboard {
         private string $port;
         private string $clientId;
 
-        public function getGatewayId(): string
+        #[ArrayShape([self::CLIENT_ID => "string", self::COMMANDS => "string", self::GATEWAY_ID => "string", self::HOST => "string", self::MEASURES => "string", self::PORT => "string"])]
+        public function jsonSerialize(): array
         {
-            return $this->gatewayId;
-        }
-
-        public function setGatewayId(string $gatewayId): void
-        {
-            $this->gatewayId = $gatewayId;
-        }
-
-        public function getMeasures(): string
-        {
-            return $this->measures;
-        }
-
-        public function setMeasures(string $measures): void
-        {
-            $this->measures = $measures;
-        }
-
-        public function getCommands(): string
-        {
-            return $this->commands;
-        }
-
-        public function setCommands(string $commands): void
-        {
-            $this->commands = $commands;
-        }
-
-        public function getHost(): string
-        {
-            return $this->host;
-        }
-
-        public function setHost(string $host): void
-        {
-            $this->host = $host;
-        }
-
-        public function getPort(): string
-        {
-            return $this->port;
-        }
-
-        public function setPort(string $port): void
-        {
-            $this->port = $port;
+            return [
+                self::CLIENT_ID => $this->getClientId(),
+                self::COMMANDS => $this->getCommands(),
+                self::GATEWAY_ID => $this->getGatewayId(),
+                self::HOST => $this->getHost(),
+                self::MEASURES => $this->getMeasures(),
+                self::PORT => $this->getPort()
+            ];
         }
 
         public function getClientId(): string
@@ -80,26 +51,86 @@ namespace App\Dto\Onboard {
             $this->clientId = $clientId;
         }
 
-        #[ArrayShape(['clientId' => "string", 'commands' => "string", 'gatewayId' => "string", 'host' => "string", 'measures' => "string", 'port' => "string"])]
-        public function jsonSerialize(): array
+        public function getCommands(): string
         {
-            return [
-                'clientId' => $this->getClientId(),
-                'commands' => $this->getCommands(),
-                'gatewayId' => $this->getGatewayId(),
-                'host' => $this->getHost(),
-                'measures' => $this->getMeasures(),
-                'port' => $this->getPort()
-            ];
+            return $this->commands;
         }
 
-        public function jsonDeserialize(array $data): self
+        public function setCommands(string $commands): void
         {
-            foreach ($data as $key => $value) {
-                try {
-                    $this->$key = $value;
-                } catch (Exception $ex) {
-                    echo $ex;
+            $this->commands = $commands;
+        }
+
+        public function getGatewayId(): string
+        {
+            return $this->gatewayId;
+        }
+
+        public function setGatewayId(string $gatewayId): void
+        {
+            $this->gatewayId = $gatewayId;
+        }
+
+        public function getHost(): string
+        {
+            return $this->host;
+        }
+
+        public function setHost(string $host): void
+        {
+            $this->host = $host;
+        }
+
+
+        public function getMeasures(): string
+        {
+            return $this->measures;
+        }
+
+        public function setMeasures(string $measures): void
+        {
+            $this->measures = $measures;
+        }
+
+        public function getPort(): string
+        {
+            return $this->port;
+        }
+
+        public function setPort(string $port): void
+        {
+            $this->port = $port;
+        }
+
+        public function jsonDeserialize(string|array $jsonData): self
+        {
+            if (is_string($jsonData)) {
+                $decodedJsonDataArray = json_decode($jsonData, true);
+            } else {
+                $decodedJsonDataArray = $jsonData;
+            }
+            foreach ($decodedJsonDataArray as $fieldName => $fieldValue) {
+                switch ($fieldName) {
+                    case self::CLIENT_ID:
+                        $this->clientId = $fieldValue;
+                        break;
+                    case self::COMMANDS:
+                        $this->commands = $fieldValue;
+                        break;
+                    case self::GATEWAY_ID:
+                        $this->gatewayId = $fieldValue;
+                        break;
+                    case self::HOST:
+                        $this->host = $fieldValue;
+                        break;
+                    case self::MEASURES:
+                        $this->measures = $fieldValue;
+                        break;
+                    case self::PORT:
+                        $this->port = $fieldValue;
+                        break;
+                    default:
+                        throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
                 }
             }
             return $this;
