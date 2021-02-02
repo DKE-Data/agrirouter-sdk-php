@@ -23,7 +23,7 @@ namespace App\Api\Builder {
             $capability = new Capability();
             $capability->setDirection($direction);
             $capability->setTechnicalMessageType(CapabilityTypeDefinitions::ISO_11783_TASKDATA_ZIP);
-            array_push($this->capabilities,$capability);
+            array_push($this->capabilities, $capability);
             return $this;
         }
 
@@ -37,7 +37,7 @@ namespace App\Api\Builder {
             $capability = new Capability();
             $capability->setDirection($direction);
             $capability->setTechnicalMessageType(CapabilityTypeDefinitions::ISO_11783_DEVICE_DESCRIPTION_PROTOBUF);
-            array_push($this->capabilities,$capability);
+            array_push($this->capabilities, $capability);
             return $this;
         }
 
@@ -51,7 +51,7 @@ namespace App\Api\Builder {
             $capability = new Capability();
             $capability->setDirection($direction);
             $capability->setTechnicalMessageType(CapabilityTypeDefinitions::ISO_11783_TIMELOG_PROTOBUF);
-            array_push($this->capabilities,$capability);
+            array_push($this->capabilities, $capability);
             return $this;
         }
 
@@ -65,7 +65,7 @@ namespace App\Api\Builder {
             $capability = new Capability();
             $capability->setDirection($direction);
             $capability->setTechnicalMessageType(CapabilityTypeDefinitions::IMG_BMP);
-            array_push($this->capabilities,$capability);
+            array_push($this->capabilities, $capability);
             return $this;
         }
 
@@ -79,7 +79,7 @@ namespace App\Api\Builder {
             $capability = new Capability();
             $capability->setDirection($direction);
             $capability->setTechnicalMessageType(CapabilityTypeDefinitions::IMG_JPEG);
-            array_push($this->capabilities,$capability);
+            array_push($this->capabilities, $capability);
             return $this;
         }
 
@@ -93,7 +93,7 @@ namespace App\Api\Builder {
             $capability = new Capability();
             $capability->setDirection($direction);
             $capability->setTechnicalMessageType(CapabilityTypeDefinitions::IMG_PNG);
-            array_push($this->capabilities,$capability);
+            array_push($this->capabilities, $capability);
             return $this;
         }
 
@@ -107,7 +107,7 @@ namespace App\Api\Builder {
             $capability = new Capability();
             $capability->setDirection($direction);
             $capability->setTechnicalMessageType(CapabilityTypeDefinitions::SHP_SHAPE_ZIP);
-            array_push($this->capabilities,$capability);
+            array_push($this->capabilities, $capability);
             return $this;
         }
 
@@ -121,7 +121,7 @@ namespace App\Api\Builder {
             $capability = new Capability();
             $capability->setDirection($direction);
             $capability->setTechnicalMessageType(CapabilityTypeDefinitions::DOC_PDF);
-            array_push($this->capabilities,$capability);
+            array_push($this->capabilities, $capability);
             return $this;
         }
 
@@ -135,7 +135,7 @@ namespace App\Api\Builder {
             $capability = new Capability();
             $capability->setDirection($direction);
             $capability->setTechnicalMessageType(CapabilityTypeDefinitions::VID_AVI);
-            array_push($this->capabilities,$capability);
+            array_push($this->capabilities, $capability);
             return $this;
         }
 
@@ -149,7 +149,7 @@ namespace App\Api\Builder {
             $capability = new Capability();
             $capability->setDirection($direction);
             $capability->setTechnicalMessageType(CapabilityTypeDefinitions::VID_MP4);
-            array_push($this->capabilities,$capability);
+            array_push($this->capabilities, $capability);
             return $this;
         }
 
@@ -163,7 +163,7 @@ namespace App\Api\Builder {
             $capability = new Capability();
             $capability->setDirection($direction);
             $capability->setTechnicalMessageType(CapabilityTypeDefinitions::VID_WMV);
-            array_push($this->capabilities,$capability);
+            array_push($this->capabilities, $capability);
             return $this;
         }
 
@@ -177,7 +177,7 @@ namespace App\Api\Builder {
             $capability = new Capability();
             $capability->setDirection($direction);
             $capability->setTechnicalMessageType(CapabilityTypeDefinitions::GPS_INFO);
-            array_push($this->capabilities,$capability);
+            array_push($this->capabilities, $capability);
             return $this;
         }
 

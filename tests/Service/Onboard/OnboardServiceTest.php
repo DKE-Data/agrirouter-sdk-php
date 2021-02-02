@@ -16,10 +16,6 @@ namespace Lib\Tests\Service\Onboard {
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Service\AbstractIntegrationTestForServices;
 
-    /**
-     * Class OnboardServiceTest
-     * @package Lib\Tests\Service\Onboard
-     */
     class OnboardServiceTest extends AbstractIntegrationTestForServices
     {
         /**

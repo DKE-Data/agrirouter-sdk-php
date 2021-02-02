@@ -7,10 +7,6 @@ namespace Lib\Tests\Service\Common {
     use App\Service\Common\SignatureService;
     use PHPUnit\Framework\TestCase;
 
-    /**
-     * Class SignatureServiceTest
-     * @package Lib\Tests\Service\Common
-     */
     class SignatureServiceTest extends TestCase
     {
         private const PRIVATE_KEY = "-----BEGIN PRIVATE KEY-----\n" .

@@ -2,11 +2,12 @@
 
 namespace App\Service\Onboard {
 
-    use App\Dto\Requests\OnboardRequest;
-    use App\Service\Common\SignatureService;
-    use App\Service\Common\UtcDataService;
+    use App\Api\Exceptions\ErrorCodes;
+    use App\Api\Exceptions\VerificationException;
+    use App\Dto\Onboard\OnboardResponse;
+    use App\Dto\Onboard\VerificationResponse;
     use App\Service\Parameters\OnboardParameters;
-    use Psr\Http\Message\RequestInterface;
+    use Exception;
 
     /**
      * Service for all secured onboard purposes.
@@ -14,26 +15,38 @@ namespace App\Service\Onboard {
      */
     class SecuredOnboardService extends AbstractOnboardService
     {
-        public function createRequest(?OnboardParameters $onboardParameters, ?string $privateKey = null): RequestInterface
+        public function onboard(OnboardParameters $onboardParameters, ?string $privateKey = null): OnboardResponse
         {
-            $onboardRequest = new OnboardRequest();
-            $onboardRequest->setExternalId($onboardParameters->getUuid());
-            $onboardRequest->setApplicationId($onboardParameters->getApplicationId());
-            $onboardRequest->setCertificationVersionId($onboardParameters->getCertificationVersionId());
-            $onboardRequest->setGatewayId($onboardParameters->getGatewayId());
-            $onboardRequest->setCertificateType($onboardParameters->getCertificationType());
-            $onboardRequest->setTimeZone(UtcDataService::timeZone($onboardParameters->getOffset()));
-            $onboardRequest->setUtcTimestamp(UtcDataService::now());
+            $request = $this->createRequest($onboardParameters, $this->environment->securedOnboardUrl(), $privateKey);
+            return $this->sendRequest($request);
+        }
 
-            $requestBody = json_encode($onboardRequest);
-            $headers = [
-                'Content-type' => 'application/json',
-                'Authorization' => 'Bearer ' . $onboardParameters->getRegistrationCode(),
-                'X-Agrirouter-ApplicationId' => $onboardParameters->getApplicationId(),
-                'X-Agrirouter-Signature' => SignatureService::createXAgrirouterSignature($requestBody, $privateKey)
-            ];
-
-            return $this->httpClient->createRequest('POST', $this->environment->securedOnboardUrl(), $headers, $requestBody);
+        /**
+         * Verifies an endpoint using with a prepared request. Not available in agrirouter for the common onboard process.
+         * @param OnboardParameters $onboardParameters The onboard parameters.
+         * @param string $privateKey The private key for the secured onboard process.
+         * @return VerificationResponse The verification response from the agrirouter for secured onboard requests. OnboardException for normal onboard requests.
+         * @throws VerificationException Will be thrown if the onboard process was not successful.
+         */
+        public function verify(OnboardParameters $onboardParameters, string $privateKey): VerificationResponse
+        {
+            $request = $this->createRequest($onboardParameters, $this->environment->verificationUrl(), $privateKey);
+            try {
+                $response = $this->httpClient->sendAsync($request);
+                $response->getBody()->rewind();
+                $content = $response->getBody()->getContents();
+                $verificationResponse = new VerificationResponse();
+                $verificationResponse = $verificationResponse->jsonDeserialize($content);
+                return $verificationResponse;
+            } catch (Exception $exception) {
+                if ($exception->getCode() == 400) {
+                    throw new VerificationException($exception->getMessage(), ErrorCodes::INVALID_MESSAGE);
+                } elseif ($exception->getCode() == 401) {
+                    throw new VerificationException($exception->getMessage(), ErrorCodes::BEARER_NOT_FOUND);
+                } else {
+                    throw new VerificationException($exception->getMessage(), ErrorCodes::UNDEFINED);
+                }
+            }
         }
     }
 }

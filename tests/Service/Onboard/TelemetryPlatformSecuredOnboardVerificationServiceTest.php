@@ -14,18 +14,18 @@ namespace Lib\Tests\Service\Onboard {
     use App\Service\Parameters\OnboardParameters;
     use DateTime;
     use DateTimeZone;
+    use Lib\Tests\Applications\FarmingSoftware;
     use Lib\Tests\Applications\TelemetryPlatform;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Service\AbstractIntegrationTestForServices;
 
-    class TelemetryPlatformSecuredOnboardServiceTest extends AbstractIntegrationTestForServices
+    class TelemetryPlatformSecuredOnboardVerificationServiceTest extends AbstractIntegrationTestForServices
     {
-
         /**
-         * @covers \App\Service\Onboard\SecuredOnboardService::onboard
+         * @covers \App\Service\Onboard\SecuredOnboardService::verify
          * @throws OnboardException
          */
-        public function testGivenInvalidRequestTokenWhenOnboardTelemetryPlatformThenThereShouldBeAnException()
+        public function testGivenInvalidRequestTokenWhenVerifyTelemetryPlatformThenThereShouldBeAnException()
         {
             self::expectException(OnboardException::class);
             self::expectExceptionCode(ErrorCodes::BEARER_NOT_FOUND);
@@ -41,18 +41,18 @@ namespace Lib\Tests\Service\Onboard {
             $onboardParameters->setGatewayId(GatewayTypeDefinitions::HTTP);
             $onboardParameters->setRegistrationCode("INVALID");
             $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
-            $onboardService->onboard($onboardParameters, TelemetryPlatform::privateKey());
+            $onboardService->verify($onboardParameters, TelemetryPlatform::privateKey());
 
         }
 
         /**
-         * @covers SecuredOnboardService::onboard
+         * @covers SecuredOnboardService::verify
          * @throws OnboardException
          * @noinspection PhpUnreachableStatementInspection
          */
-        public function testGivenValidRequestTokenWhenOnboardTelemetryPlatformThenThereShouldBeAValidResponse()
+        public function testGivenValidRequestTokenWhenVerifyTelemetryPlatformThenThereShouldBeAValidResponseWithAccountId()
         {
-            $this->markTestSkipped('Will not run successfully without changing the registration code.');
+            $this->markTestSkipped('Will not run successfully without changing the registration code and Uuid.');
 
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $onboardService = new SecuredOnboardService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
@@ -63,20 +63,36 @@ namespace Lib\Tests\Service\Onboard {
             $onboardParameters->setApplicationType(ApplicationTypeDefinitions::APPLICATION);
             $onboardParameters->setCertificationType(CertificationTypeDefinitions::PEM);
             $onboardParameters->setGatewayId(GatewayTypeDefinitions::HTTP);
-            $onboardParameters->setRegistrationCode("98ad35b33d");
+            $onboardParameters->setRegistrationCode("e8c3c3c8b6");
             $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
-            $onboardResponse = $onboardService->onboard($onboardParameters, TelemetryPlatform::privateKey());
+            $onboardResponse = $onboardService->verify($onboardParameters, TelemetryPlatform::privateKey());
 
-            $this->assertNotEmpty($onboardResponse->getSensorAlternateId());
-            $this->assertNotEmpty($onboardResponse->getDeviceAlternateId());
-            $this->assertNotEmpty($onboardResponse->getCapabilityAlternateId());
+            $this->assertNotEmpty($onboardResponse->getAccountId());
+        }
 
-            $this->assertNotEmpty($onboardResponse->getAuthentication()->getCertificate());
-            $this->assertNotEmpty($onboardResponse->getAuthentication()->getSecret());
-            $this->assertNotEmpty($onboardResponse->getAuthentication()->getType());
+        /**
+         * @covers SecuredOnboardService::verify
+         * @throws OnboardException
+         * @noinspection PhpUnreachableStatementInspection
+         */
+        public function testGivenValidRequestTokenWhenVerifyTelemetryPlatformWithWrongPrivateKeyThenThereShouldBeAnException()
+        {
+            $this->markTestSkipped('Will not run successfully without changing the registration code and Uuid.');
 
-            $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getCommands());
-            $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getMeasures());
+            self::expectException(OnboardException::class);
+            self::expectExceptionCode(ErrorCodes::INVALID_MESSAGE);
+            $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
+            $onboardService = new SecuredOnboardService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
+            $onboardParameters = new OnboardParameters();
+            $onboardParameters->setUuid(UuidService::newUuid());
+            $onboardParameters->setApplicationId(TelemetryPlatform::applicationId());
+            $onboardParameters->setCertificationVersionId(TelemetryPlatform::certificationVersionId());
+            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::APPLICATION);
+            $onboardParameters->setCertificationType(CertificationTypeDefinitions::PEM);
+            $onboardParameters->setGatewayId(GatewayTypeDefinitions::MQTT);
+            $onboardParameters->setRegistrationCode("e8c3c3c8b6");
+            $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
+            $onboardService->verify($onboardParameters, FarmingSoftware::privateKey());
         }
 
         /**
@@ -96,11 +112,12 @@ namespace Lib\Tests\Service\Onboard {
          */
         public function testGetRegistrationCodeFromUri()
         {
-            $uri = "state=6eab2086-0ef2-4b64-94b0-2ce620e66ece&token=eyJhY2NvdW50IjoiNWQ0N2E1MzctOTQ1NS00MTBkLWFhNmQtZmJkNjlhNWNmOTkwIiwicmVnY29kZSI6IjI2NGQwNjgzYzkiLCJleHBpcmVzIjoiMjAyMC0wMS0xNFQxMDowOTo1OS4zMTlaIn0%3D&signature=AJOFQmO4Y%2FT8DlNOcTAfpymMFiZQBpJHr4%2FUOfrHuGpzst6UA4kQraJYJtUEKSeEaQ%2FHCf4rJlUcK14ygyGAUtGkca1Y1sUAC1lVggVnECFMnVQAyTQzSnd1DEXjqI8n4Ud4LujSF6oSbiK0DWg1U8U9swwAEQ73Z0SDna7M3OEirY8zPUhGFcRij%2FrJOEFujq2rW%2Bs267z1pnp6FNq%2BoK5nbPBuH0hvCZ57Fz3HI1VadyE77o6rOAZ1HXniGqCGr%2F6v4TqAQ22MY9xhMAfUihtwQ3VLtdHsGSu1OH%2Fs71IQczOzBgeIlMAl4mchRo3l16qSU4k4awufLq7LzDSf5Q%3D%3D";
+            $uri = "state=f7ad4d4d-934e-4083-9044-e1c5f0678973&token=eyJhY2NvdW50IjoiNWQ0N2E1MzctOTQ1NS00MTBkLWFhNmQtZmJkNjlhNWNmOTkwIiwicmVnY29kZSI6ImU4YzNjM2M4YjYiLCJleHBpcmVzIjoiMjAyMS0wMi0wMVQxOTowNjoyMy45NDZaIn0%3D&signature=C%2BO2aHSRxuqDh9D%2BXL9pIDOfeZNKBWTrM0Sw8Oj3gHMEDo8crvN30JqfguMVdGvZdRikf1wr3O0JhwxIj%2FuR%2F29o98BqtundHCIjAzR7HQs5%2BdU3yLiekkpPE1JwYBb1BMlbwmf2zeccSc%2FA7aI9laGvF2W9HmTHYNuVDEJ7HBCuSIs%2FlfYBZbGEXQjOLLCJZHco2MqzzxikMk2IBJRE%2B3o6VjFMtNqASV8cO623lQOSz8i4%2BaoQu6OLjdil7V0Q%2BpXCtrsrChMJprQ6uXBAbCC3O84p8fpl6AwXxmgKioBdzZ93HlQrrRpskYGjYOgwCiYHsewoWgdvHFMrxvdO2A%3D%3D";
             $authorizationService = new AuthorizationService($this->getEnvironment());
             $authorizationResult = $authorizationService->parseAuthorizationResult($uri);
             $authorizationToken = $authorizationService->parseAuthorizationToken($authorizationResult);
             $this->getLogger()->info("RegCode: " . $authorizationToken->getRegistrationCode());
+            $this->getLogger()->info("externalId: " . $authorizationResult->getState());
             $this->assertNotNull($authorizationToken->getRegistrationCode());
         }
     }
