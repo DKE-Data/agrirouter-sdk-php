@@ -36,7 +36,7 @@ namespace App\Service\Onboard {
         }
 
         /**
-         * Verifys an endpoint using with a prepared request. Not available in agrirouter for normal onboarding
+         * Verifies an endpoint using with a prepared request. Not available in agrirouter for normal onboarding
          * @param OnboardParameters $onboardParameters The onboard parameters.
          * @param string|null $privateKey Null for normal the onboard process | the private key for the secured onboard process.
          * @return VerificationResponse The verification response from the agrirouter for secured onboard requests. OnboardException for normal onboard requests.
