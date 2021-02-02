@@ -5,9 +5,12 @@ namespace App\Service\Onboard {
     use App\Api\Common\HttpClientInterface;
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OnboardException;
+    use App\Api\Exceptions\SignatureException;
     use App\Dto\Onboard\OnboardResponse;
-    use App\Dto\Onboard\VerificationResponse;
+    use App\Dto\Requests\OnboardRequest;
     use App\Environment\AbstractEnvironment;
+    use App\Service\Common\SignatureService;
+    use App\Service\Common\UtcDataService;
     use App\Service\Parameters\OnboardParameters;
     use Exception;
     use Psr\Http\Message\RequestInterface;
@@ -34,20 +37,12 @@ namespace App\Service\Onboard {
         }
 
         /**
-         * Verifies an endpoint using with a prepared request. Not available in agrirouter for normal onboarding
-         * @param OnboardParameters $onboardParameters The onboard parameters.
-         * @param string|null $privateKey Null for normal the onboard process | the private key for the secured onboard process.
-         * @return VerificationResponse The verification response from the agrirouter for secured onboard requests. OnboardException for normal onboard requests.
-         * @throws OnboardException Will be thrown if the onboard process was not successful.
-         */
-        public abstract function verify(OnboardParameters $onboardParameters, ?string $privateKey = null): VerificationResponse;
-
-        /**
          * Onboard an endpoint using with a prepared request.
          * @param OnboardParameters $onboardParameters The onboard parameters.
          * @param string|null $privateKey Null for normal the onboard process | the private key for the secured onboard process.
          * @return OnboardResponse The onboard response from the agrirouter.
          * @throws OnboardException Will be thrown if the onboard process was not successful.
+         * @throws Exception Will be thrown in all other cases.
          */
         public abstract function onboard(OnboardParameters $onboardParameters, ?string $privateKey = null): OnboardResponse;
 
@@ -59,11 +54,62 @@ namespace App\Service\Onboard {
          * @return RequestInterface The prepared request for the onboard process
          * @throws Exception Will be thrown if the request building was not successful.
          */
-        public abstract function createRequest(OnboardParameters $onboardParameters, string $requestUrl, ?string $privateKey = null): RequestInterface;
+        protected function createRequest(OnboardParameters $onboardParameters, string $requestUrl, ?string $privateKey = null): RequestInterface
+        {
+            $onboardRequest = $this->mapOnboardParametersToOnboardRequest($onboardParameters);
+
+            $requestBody = json_encode($onboardRequest);
+            $headers = $this->createRequestHeader($onboardParameters, $requestBody, $privateKey);
+
+            return $this->httpClient->createRequest('POST', $requestUrl, $headers, $requestBody);
+        }
 
         /**
-         * @param Exception $exception
-         * @throws OnboardException
+         * Maps the required onboard parameters into the onboard request.
+         * @param OnboardParameters $onboardParameters The onboard parameters.
+         * @return OnboardRequest The prefilled onboard request.
+         */
+        private function mapOnboardParametersToOnboardRequest(OnboardParameters $onboardParameters): OnboardRequest
+        {
+            $onboardRequest = new OnboardRequest();
+            $onboardRequest->setExternalId($onboardParameters->getUuid());
+            $onboardRequest->setApplicationId($onboardParameters->getApplicationId());
+            $onboardRequest->setCertificationVersionId($onboardParameters->getCertificationVersionId());
+            $onboardRequest->setGatewayId($onboardParameters->getGatewayId());
+            $onboardRequest->setCertificateType($onboardParameters->getCertificationType());
+            $onboardRequest->setTimeZone(UtcDataService::timeZone($onboardParameters->getOffset()));
+            $onboardRequest->setUtcTimestamp(UtcDataService::now());
+            return $onboardRequest;
+        }
+
+        /**
+         * Creates the request header for the onboard request
+         * @param OnboardParameters $onboardParameters The onboard parameters.
+         * @param string $requestBody The json encoded request body.
+         * @param string|null $privateKey Null for normal the onboard process | The private key for the secured onboard process.
+         * @return array The header array for a request.
+         * @throws SignatureException Will be thrown if creation of the agrirouter header signature was not successful.
+         */
+        private function createRequestHeader(OnboardParameters $onboardParameters, string $requestBody, ?string $privateKey): array
+        {
+            $headers = [
+                'Content-type' => 'application/json',
+                'Authorization' => 'Bearer ' . $onboardParameters->getRegistrationCode()
+            ];
+            if ($privateKey != null) {
+                $headers += [
+                    'X-Agrirouter-ApplicationId' => $onboardParameters->getApplicationId(),
+                    'X-Agrirouter-Signature' => SignatureService::createXAgrirouterSignature($requestBody, $privateKey)
+                ];
+            }
+
+            return $headers;
+        }
+
+        /**
+         * Handles the errors which occurred during the onboard process.
+         * @param Exception $exception The incoming exception.
+         * @throws OnboardException The outgoing onboard exception with the agrirouter error code.
          */
         protected function handleOnboardRequestException(Exception $exception): void
         {

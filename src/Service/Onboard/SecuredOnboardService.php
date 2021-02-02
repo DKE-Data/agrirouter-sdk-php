@@ -2,14 +2,11 @@
 
 namespace App\Service\Onboard {
 
+    use App\Api\Exceptions\OnboardException;
     use App\Dto\Onboard\OnboardResponse;
     use App\Dto\Onboard\VerificationResponse;
-    use App\Dto\Requests\OnboardRequest;
-    use App\Service\Common\SignatureService;
-    use App\Service\Common\UtcDataService;
     use App\Service\Parameters\OnboardParameters;
     use Exception;
-    use Psr\Http\Message\RequestInterface;
 
     /**
      * Service for all secured onboard purposes.
@@ -32,29 +29,15 @@ namespace App\Service\Onboard {
             }
         }
 
-        public function createRequest(OnboardParameters $onboardParameters, string $requestUrl, ?string $privateKey = null): RequestInterface
-        {
-            $onboardRequest = new OnboardRequest();
-            $onboardRequest->setExternalId($onboardParameters->getUuid());
-            $onboardRequest->setApplicationId($onboardParameters->getApplicationId());
-            $onboardRequest->setCertificationVersionId($onboardParameters->getCertificationVersionId());
-            $onboardRequest->setGatewayId($onboardParameters->getGatewayId());
-            $onboardRequest->setCertificateType($onboardParameters->getCertificationType());
-            $onboardRequest->setTimeZone(UtcDataService::timeZone($onboardParameters->getOffset()));
-            $onboardRequest->setUtcTimestamp(UtcDataService::now());
-
-            $requestBody = json_encode($onboardRequest);
-            $headers = [
-                'Content-type' => 'application/json',
-                'Authorization' => 'Bearer ' . $onboardParameters->getRegistrationCode(),
-                'X-Agrirouter-ApplicationId' => $onboardParameters->getApplicationId(),
-                'X-Agrirouter-Signature' => SignatureService::createXAgrirouterSignature($requestBody, $privateKey)
-            ];
-
-            return $this->httpClient->createRequest('POST', $requestUrl, $headers, $requestBody);
-        }
-
-        public function verify(OnboardParameters $onboardParameters, ?string $privateKey = null): VerificationResponse
+        /**
+         * Verifies an endpoint using with a prepared request. Not available in agrirouter for normal onboarding
+         * @param OnboardParameters $onboardParameters The onboard parameters.
+         * @param string $privateKey The private key for the secured onboard process.
+         * @return VerificationResponse The verification response from the agrirouter for secured onboard requests. OnboardException for normal onboard requests.
+         * @throws OnboardException Will be thrown if the onboard process was not successful.
+         * @throws Exception Will be thrown in all other cases.
+         */
+        public function verify(OnboardParameters $onboardParameters, string $privateKey): VerificationResponse
         {
             $request = $this->createRequest($onboardParameters, $this->environment->verificationUrl(), $privateKey);
             try {
