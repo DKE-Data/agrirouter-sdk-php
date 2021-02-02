@@ -2,6 +2,7 @@
 
 namespace Lib\Tests\Service\Messaging {
 
+    use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\Capability;
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\Direction;
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\PushNotification;
     use App\Api\Builder\CapabilityBuilder;
@@ -17,6 +18,34 @@ namespace Lib\Tests\Service\Messaging {
 
     class CapabilitiesServiceTest extends AbstractIntegrationTestForServices
     {
+
+        function testGivenInvalidCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldStillAcceptTheMessage()
+        {
+            $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
+            $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
+            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+
+            $capabilityParameters = new CapabilityParameters();
+            $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
+            $capabilityParameters->setApplicationMessageSeqNo(1);
+            $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
+            $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
+
+            $capability = new Capability();
+            $capability->setDirection(Direction::SEND_RECEIVE);
+            $capability->setTechnicalMessageType("That one is invalid!");
+            $capabilities = [];
+            array_push($capabilities, $capability);
+            $capabilityParameters->setCapabilityParameters($capabilities);
+
+            $messagingResult = $capabilitiesService->send($capabilityParameters);
+
+            self::assertNotEmpty($messagingResult);
+            self::assertNotEmpty($messagingResult->getMessageIds());
+            self::assertCount(1, $messagingResult->getMessageIds());
+        }
 
         function testGivenEmptyCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
