@@ -1,8 +1,6 @@
 <?php declare(strict_types=1);
 
-
 namespace App\Service\Onboard {
-
 
     use App\Api\Common\HttpClientInterface;
     use App\Api\Exceptions\ErrorCodes;
