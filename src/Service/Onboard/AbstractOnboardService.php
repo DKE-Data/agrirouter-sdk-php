@@ -56,7 +56,7 @@ namespace App\Service\Onboard {
         /**
          * Creates an onboard request using the given parameters.
          * @param OnboardParameters $onboardParameters The onboard parameters.
-         * @param string $requestUrl The request url for onboarding
+         * @param string $requestUrl The request url for the onboard process.
          * @param string|null $privateKey Null for normal the onboard process | The private key for the secured onboard process.
          * @return RequestInterface The prepared request for the onboard process
          * @throws Exception Will be thrown if the request building was not successful.
