@@ -8,7 +8,7 @@ namespace App\Api\Service\Parameters {
      * Parameter container definition.
      * @package App\Api\Service\Parameters
      */
-    class MessagingParameters extends MessageParameters implements Validatable
+    class MessagingParameters extends MessageParameters implements ValidatableInterface
     {
         private array $encodedMessages = [];
 

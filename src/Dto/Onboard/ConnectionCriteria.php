@@ -2,7 +2,7 @@
 
 namespace App\Dto\Onboard {
 
-    use App\Api\Dto\JsonDeserializable;
+    use App\Api\Dto\JsonDeserializableInterface;
     use App\Api\Exceptions\ErrorCodes;
     use JetBrains\PhpStorm\ArrayShape;
     use JsonException;
@@ -12,7 +12,7 @@ namespace App\Dto\Onboard {
      * Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
-    class ConnectionCriteria implements JsonSerializable, JsonDeserializable
+    class ConnectionCriteria implements JsonSerializable, JsonDeserializableInterface
     {
         private const CLIENT_ID = 'clientId';
         private const COMMANDS = 'commands';

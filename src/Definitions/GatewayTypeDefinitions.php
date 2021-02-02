@@ -11,21 +11,13 @@ namespace App\Definitions {
 
         /**
          * Type "HTTP".
-         * @return string -
          */
-        public static function http(): string
-        {
-            return "3";
-        }
+        public const HTTP = "3";
 
         /**
          * Type "MQTT".
-         * @return string -
          */
-        public static function mqtt(): string
-        {
-            return "2";
-        }
+        public const MQTT = "2";
 
     }
 }

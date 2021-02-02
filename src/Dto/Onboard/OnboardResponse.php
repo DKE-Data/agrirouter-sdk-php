@@ -2,7 +2,7 @@
 
 namespace App\Dto\Onboard {
 
-    use App\Api\Dto\JsonDeserializable;
+    use App\Api\Dto\JsonDeserializableInterface;
     use App\Api\Exceptions\ErrorCodes;
     use JetBrains\PhpStorm\ArrayShape;
     use JsonException;
@@ -12,7 +12,7 @@ namespace App\Dto\Onboard {
      * Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
-    class OnboardResponse implements JsonSerializable, JsonDeserializable
+    class OnboardResponse implements JsonSerializable, JsonDeserializableInterface
     {
         private const DEVICE_ALTERNATE_ID = 'deviceAlternateId';
         private const CAPABILITY_ALTERNATE_ID = 'capabilityAlternateId';

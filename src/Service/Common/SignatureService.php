@@ -26,11 +26,7 @@ namespace App\Service\Common {
             try {
                 $publicKey = openssl_pkey_get_public($publicKeyString);
                 $return = openssl_verify($requestBody, $signature, $publicKey, "sha256WithRSAEncryption");
-                if ($return == 1) {
-                    return true;
-                } elseif ($return == 0) {
-                    return false;
-                }
+                return $return == 1;
             } catch (Exception $exception) {
                 throw new SignatureException("Error occurred while verifying the signature. Reason: " . $exception->getMessage(), ErrorCodes::SIGNATURE_VERIFICATION_ERROR);
             }
@@ -46,7 +42,6 @@ namespace App\Service\Common {
         public static function createXAgrirouterSignature(string $requestBody, string $privateKey): ?string
         {
             $sign = self::createSignature($requestBody, $privateKey);
-
             return bin2hex($sign);
         }
 
@@ -63,7 +58,6 @@ namespace App\Service\Common {
                 $privateKey = openssl_pkey_get_private($privateKeyString);
                 $signature = null;
                 openssl_sign($requestBody, $signature, $privateKey, OPENSSL_ALGO_SHA256);
-
                 return $signature;
             } catch (Exception $exception) {
                 throw new SignatureException("Could not create signature.", ErrorCodes::INVALID_SIGNATURE, $exception);

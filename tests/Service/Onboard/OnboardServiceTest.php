@@ -36,47 +36,13 @@ namespace Lib\Tests\Service\Onboard {
             $onboardParameters->setUuid(UuidService::newUuid());
             $onboardParameters->setApplicationId(CommunicationUnit::applicationId());
             $onboardParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::application());
-            $onboardParameters->setCertificationType(CertificationTypeDefinitions::p12());
-            $onboardParameters->setGatewayId(GatewayTypeDefinitions::http());
+            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::APPLICATION);
+            $onboardParameters->setCertificationType(CertificationTypeDefinitions::PEM);
+            $onboardParameters->setGatewayId(GatewayTypeDefinitions::HTTP);
             $onboardParameters->setRegistrationCode("INVALID");
             $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
             $onboardService->onboard($onboardParameters);
 
-        }
-
-        /**
-         * @covers OnboardService::onboard
-         * @throws OnboardException
-         * @noinspection PhpUnreachableStatementInspection
-         */
-        public function testGivenValidRequestTokenWhenOnboardCommunicationUnitForP12ThenThereShouldBeAValidResponse()
-        {
-            $this->markTestIncomplete('Will not run successfully without changing the registration code.');
-
-            $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
-            $onboardService = new OnboardService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
-            $onboardParameters = new OnboardParameters();
-            $onboardParameters->setUuid(UuidService::newUuid());
-            $onboardParameters->setApplicationId(CommunicationUnit::applicationId());
-            $onboardParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::application());
-            $onboardParameters->setCertificationType(CertificationTypeDefinitions::p12());
-            $onboardParameters->setGatewayId(GatewayTypeDefinitions::http());
-            $onboardParameters->setRegistrationCode("be7cdc7c09");
-            $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
-            $onboardResponse = $onboardService->onboard($onboardParameters);
-
-            $this->assertNotEmpty($onboardResponse->getSensorAlternateId());
-            $this->assertNotEmpty($onboardResponse->getDeviceAlternateId());
-            $this->assertNotEmpty($onboardResponse->getCapabilityAlternateId());
-
-            $this->assertNotEmpty($onboardResponse->getAuthentication()->getCertificate());
-            $this->assertNotEmpty($onboardResponse->getAuthentication()->getSecret());
-            $this->assertNotEmpty($onboardResponse->getAuthentication()->getType());
-
-            $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getCommands());
-            $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getMeasures());
         }
 
         /**
@@ -94,9 +60,9 @@ namespace Lib\Tests\Service\Onboard {
             $onboardParameters->setUuid(UuidService::newUuid());
             $onboardParameters->setApplicationId(CommunicationUnit::applicationId());
             $onboardParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::application());
-            $onboardParameters->setCertificationType(CertificationTypeDefinitions::pem());
-            $onboardParameters->setGatewayId(GatewayTypeDefinitions::http());
+            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::APPLICATION);
+            $onboardParameters->setCertificationType(CertificationTypeDefinitions::PEM);
+            $onboardParameters->setGatewayId(GatewayTypeDefinitions::HTTP);
             $onboardParameters->setRegistrationCode("d773852334");
             $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
             $onboardResponse = $onboardService->onboard($onboardParameters);
