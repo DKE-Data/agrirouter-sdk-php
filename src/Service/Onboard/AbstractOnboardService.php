@@ -55,11 +55,9 @@ namespace App\Service\Onboard {
          */
         protected function createRequest(OnboardParameters $onboardParameters, string $requestUrl, ?string $privateKey = null): RequestInterface
         {
-            $onboardRequest = $this->mapOnboardParametersToOnboardRequest($onboardParameters);
-
+            $onboardRequest = $this->createOnboardRequest($onboardParameters);
             $requestBody = json_encode($onboardRequest);
             $headers = $this->createRequestHeader($onboardParameters, $requestBody, $privateKey);
-
             return $this->httpClient->createRequest('POST', $requestUrl, $headers, $requestBody);
         }
 
@@ -68,7 +66,7 @@ namespace App\Service\Onboard {
          * @param OnboardParameters $onboardParameters The onboard parameters.
          * @return OnboardRequest The prefilled onboard request.
          */
-        private function mapOnboardParametersToOnboardRequest(OnboardParameters $onboardParameters): OnboardRequest
+        private function createOnboardRequest(OnboardParameters $onboardParameters): OnboardRequest
         {
             $onboardRequest = new OnboardRequest();
             $onboardRequest->setExternalId($onboardParameters->getUuid());
@@ -101,24 +99,34 @@ namespace App\Service\Onboard {
                     'X-Agrirouter-Signature' => SignatureService::createXAgrirouterSignature($requestBody, $privateKey)
                 ];
             }
-
             return $headers;
         }
 
         /**
-         * Handles the errors which occurred during the onboard process.
-         * @param Exception $exception The incoming exception.
-         * @throws OnboardException The outgoing onboard exception with the agrirouter error code.
+         * Send the onboard request to the AR.
+         * @param RequestInterface $request The request to send, that one differs from the unsecured to secured onboard process.
+         * @return OnboardResponse The onboard response from the AR, mapped to the domain object.
+         * @throws OnboardException Can be thrown during the onboard process.
          */
-        protected function handleOnboardRequestException(Exception $exception): void
+        protected function sendRequest(RequestInterface $request): OnboardResponse
         {
-            if ($exception->getCode() == 400) {
-                throw new OnboardException($exception->getMessage(), ErrorCodes::INVALID_MESSAGE);
-            } elseif ($exception->getCode() == 401) {
-                throw new OnboardException($exception->getMessage(), ErrorCodes::BEARER_NOT_FOUND);
-            } else {
-                throw new OnboardException($exception->getMessage(), ErrorCodes::UNDEFINED);
+            try {
+                $response = $this->httpClient->sendAsync($request);
+                $response->getBody()->rewind();
+                $content = $response->getBody()->getContents();
+                $onboardResponse = new OnboardResponse();
+                $onboardResponse = $onboardResponse->jsonDeserialize($content);
+                return $onboardResponse;
+            } catch (Exception $exception) {
+                if ($exception->getCode() == 400) {
+                    throw new OnboardException($exception->getMessage(), ErrorCodes::INVALID_MESSAGE);
+                } elseif ($exception->getCode() == 401) {
+                    throw new OnboardException($exception->getMessage(), ErrorCodes::BEARER_NOT_FOUND);
+                } else {
+                    throw new OnboardException($exception->getMessage(), ErrorCodes::UNDEFINED);
+                }
             }
         }
+
     }
 }

@@ -18,10 +18,6 @@ namespace Lib\Tests\Service\Onboard {
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Service\AbstractIntegrationTestForServices;
 
-    /**
-     * Class TelemetryPlatformSecuredOnboardServiceTest
-     * @package Lib\Tests\Service\Onboard
-     */
     class TelemetryPlatformSecuredOnboardServiceTest extends AbstractIntegrationTestForServices
     {
 

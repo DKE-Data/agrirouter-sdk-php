@@ -18,10 +18,6 @@ namespace Lib\Tests\Service\Onboard {
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Service\AbstractIntegrationTestForServices;
 
-    /**
-     * Class FarmingSoftwareSecuredOnboardServiceTest
-     * @package Lib\Tests\Service\Onboard
-     */
     class FarmingSoftwareSecuredOnboardServiceTest extends AbstractIntegrationTestForServices
     {
 

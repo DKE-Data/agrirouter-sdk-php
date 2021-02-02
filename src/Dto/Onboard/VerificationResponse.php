@@ -2,7 +2,7 @@
 
 namespace App\Dto\Onboard {
 
-    use App\Api\Dto\JsonDeserializable;
+    use App\Api\Dto\JsonDeserializableInterface;
     use App\Api\Exceptions\ErrorCodes;
     use JetBrains\PhpStorm\ArrayShape;
     use JsonException;
@@ -12,7 +12,7 @@ namespace App\Dto\Onboard {
      * Data transfer object for the communication.
      * @package App\Dto\Onboard
      */
-    class VerificationResponse implements JsonSerializable, JsonDeserializable
+    class VerificationResponse implements JsonSerializable, JsonDeserializableInterface
     {
         private const ACCOUNT_ID = 'accountId';
 
@@ -48,13 +48,10 @@ namespace App\Dto\Onboard {
                 $decodedJsonDataArray = $jsonData;
             }
             foreach ($decodedJsonDataArray as $fieldName => $fieldValue) {
-                switch ($fieldName) {
-                    case self::ACCOUNT_ID:
-                        $this->accountId = $fieldValue;
-                        break;
-                    default:
-                        throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
-                }
+                $this->accountId = match ($fieldName) {
+                    self::ACCOUNT_ID => $fieldValue,
+                    default => throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA),
+                };
             }
             return $this;
         }

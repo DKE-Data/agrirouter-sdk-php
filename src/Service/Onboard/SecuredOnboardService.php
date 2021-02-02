@@ -2,7 +2,8 @@
 
 namespace App\Service\Onboard {
 
-    use App\Api\Exceptions\OnboardException;
+    use App\Api\Exceptions\ErrorCodes;
+    use App\Api\Exceptions\VerificationException;
     use App\Dto\Onboard\OnboardResponse;
     use App\Dto\Onboard\VerificationResponse;
     use App\Service\Parameters\OnboardParameters;
@@ -17,25 +18,15 @@ namespace App\Service\Onboard {
         public function onboard(OnboardParameters $onboardParameters, ?string $privateKey = null): OnboardResponse
         {
             $request = $this->createRequest($onboardParameters, $this->environment->securedOnboardUrl(), $privateKey);
-            try {
-                $response = $this->httpClient->sendAsync($request);
-                $response->getBody()->rewind();
-                $content = $response->getBody()->getContents();
-                $onboardResponse = new OnboardResponse();
-                $onboardResponse = $onboardResponse->jsonDeserialize($content);
-                return $onboardResponse;
-            } catch (Exception $exception) {
-                $this->handleOnboardRequestException($exception);
-            }
+            return $this->sendRequest($request);
         }
 
         /**
-         * Verifies an endpoint using with a prepared request. Not available in agrirouter for normal onboarding
+         * Verifies an endpoint using with a prepared request. Not available in agrirouter for the common onboard process.
          * @param OnboardParameters $onboardParameters The onboard parameters.
          * @param string $privateKey The private key for the secured onboard process.
          * @return VerificationResponse The verification response from the agrirouter for secured onboard requests. OnboardException for normal onboard requests.
-         * @throws OnboardException Will be thrown if the onboard process was not successful.
-         * @throws Exception Will be thrown in all other cases.
+         * @throws VerificationException Will be thrown if the onboard process was not successful.
          */
         public function verify(OnboardParameters $onboardParameters, string $privateKey): VerificationResponse
         {
@@ -48,7 +39,13 @@ namespace App\Service\Onboard {
                 $verificationResponse = $verificationResponse->jsonDeserialize($content);
                 return $verificationResponse;
             } catch (Exception $exception) {
-                $this->handleOnboardRequestException($exception);
+                if ($exception->getCode() == 400) {
+                    throw new VerificationException($exception->getMessage(), ErrorCodes::INVALID_MESSAGE);
+                } elseif ($exception->getCode() == 401) {
+                    throw new VerificationException($exception->getMessage(), ErrorCodes::BEARER_NOT_FOUND);
+                } else {
+                    throw new VerificationException($exception->getMessage(), ErrorCodes::UNDEFINED);
+                }
             }
         }
     }

@@ -2,7 +2,6 @@
 
 namespace Lib\Tests\Service\Onboard {
 
-    use App\Api\Exceptions\EndpointVerificationException;
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OnboardException;
     use App\Definitions\ApplicationTypeDefinitions;
@@ -11,7 +10,6 @@ namespace Lib\Tests\Service\Onboard {
     use App\Environment\QualityAssuranceEnvironment;
     use App\Service\Common\UuidService;
     use App\Service\Onboard\AuthorizationService;
-    use App\Service\Onboard\SecuredEndpointVerificationService;
     use App\Service\Onboard\SecuredOnboardService;
     use App\Service\Parameters\OnboardParameters;
     use DateTime;
@@ -21,33 +19,29 @@ namespace Lib\Tests\Service\Onboard {
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Service\AbstractIntegrationTestForServices;
 
-    /**
-     * Class TelemetryPlatformSecuredOnboardVerificationServiceTest
-     * @package Lib\Tests\Service\Onboard
-     */
     class TelemetryPlatformSecuredOnboardVerificationServiceTest extends AbstractIntegrationTestForServices
     {
         /**
          * @covers \App\Service\Onboard\SecuredOnboardService::verify
          * @throws OnboardException
          */
-        public function testGivenInvalidRequestTokenWhenVerifyOnboardingTelemetryPlatformThenThereShouldBeAnException()
+        public function testGivenInvalidRequestTokenWhenVerifyTelemetryPlatformThenThereShouldBeAnException()
         {
             self::expectException(OnboardException::class);
             self::expectExceptionCode(ErrorCodes::BEARER_NOT_FOUND);
 
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $onboardService = new SecuredOnboardService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
-            $onboardingParameters = new OnboardParameters();
-            $onboardingParameters->setUuid(UuidService::newUuid());
-            $onboardingParameters->setApplicationId(TelemetryPlatform::applicationId());
-            $onboardingParameters->setCertificationVersionId(TelemetryPlatform::certificationVersionId());
-            $onboardingParameters->setApplicationType(ApplicationTypeDefinitions::application());
-            $onboardingParameters->setCertificationType(CertificationTypeDefinitions::p12());
-            $onboardingParameters->setGatewayId(GatewayTypeDefinitions::http());
-            $onboardingParameters->setRegistrationCode("INVALID");
-            $onboardingParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
-            $onboardService->verify($onboardingParameters, TelemetryPlatform::privateKey());
+            $onboardParameters = new OnboardParameters();
+            $onboardParameters->setUuid(UuidService::newUuid());
+            $onboardParameters->setApplicationId(TelemetryPlatform::applicationId());
+            $onboardParameters->setCertificationVersionId(TelemetryPlatform::certificationVersionId());
+            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::APPLICATION);
+            $onboardParameters->setCertificationType(CertificationTypeDefinitions::PEM);
+            $onboardParameters->setGatewayId(GatewayTypeDefinitions::HTTP);
+            $onboardParameters->setRegistrationCode("INVALID");
+            $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
+            $onboardService->verify($onboardParameters, TelemetryPlatform::privateKey());
 
         }
 
@@ -59,20 +53,21 @@ namespace Lib\Tests\Service\Onboard {
         public function testGivenValidRequestTokenWhenVerifyTelemetryPlatformThenThereShouldBeAValidResponseWithAccountId()
         {
             $this->markTestSkipped('Will not run successfully without changing the registration code and Uuid.');
+
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $onboardService = new SecuredOnboardService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
-            $onboardingParameters = new OnboardParameters();
-            $onboardingParameters->setUuid(UuidService::newUuid());
-            $onboardingParameters->setApplicationId(TelemetryPlatform::applicationId());
-            $onboardingParameters->setCertificationVersionId(TelemetryPlatform::certificationVersionId());
-            $onboardingParameters->setApplicationType(ApplicationTypeDefinitions::application());
-            $onboardingParameters->setCertificationType(CertificationTypeDefinitions::PEM());
-            $onboardingParameters->setGatewayId(GatewayTypeDefinitions::http());
-            $onboardingParameters->setRegistrationCode("e8c3c3c8b6");
-            $onboardingParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
-            $onboardingResponse = $onboardService->verify($onboardingParameters, TelemetryPlatform::privateKey());
+            $onboardParameters = new OnboardParameters();
+            $onboardParameters->setUuid(UuidService::newUuid());
+            $onboardParameters->setApplicationId(TelemetryPlatform::applicationId());
+            $onboardParameters->setCertificationVersionId(TelemetryPlatform::certificationVersionId());
+            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::APPLICATION);
+            $onboardParameters->setCertificationType(CertificationTypeDefinitions::PEM);
+            $onboardParameters->setGatewayId(GatewayTypeDefinitions::HTTP);
+            $onboardParameters->setRegistrationCode("e8c3c3c8b6");
+            $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
+            $onboardResponse = $onboardService->verify($onboardParameters, TelemetryPlatform::privateKey());
 
-            $this->assertNotEmpty($onboardingResponse->getAccountId());
+            $this->assertNotEmpty($onboardResponse->getAccountId());
         }
 
         /**
@@ -80,23 +75,24 @@ namespace Lib\Tests\Service\Onboard {
          * @throws OnboardException
          * @noinspection PhpUnreachableStatementInspection
          */
-        public function testGivenValidRequestTokenWhenVerifyOnboardingTelemetryPlatformWithWrongPrivateKeyThenThereShouldBeAnException()
+        public function testGivenValidRequestTokenWhenVerifyTelemetryPlatformWithWrongPrivateKeyThenThereShouldBeAnException()
         {
             $this->markTestSkipped('Will not run successfully without changing the registration code and Uuid.');
+
             self::expectException(OnboardException::class);
             self::expectExceptionCode(ErrorCodes::INVALID_MESSAGE);
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $onboardService = new SecuredOnboardService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
-            $onboardingParameters = new OnboardParameters();
-            $onboardingParameters->setUuid(UuidService::newUuid());
-            $onboardingParameters->setApplicationId(TelemetryPlatform::applicationId());
-            $onboardingParameters->setCertificationVersionId(TelemetryPlatform::certificationVersionId());
-            $onboardingParameters->setApplicationType(ApplicationTypeDefinitions::application());
-            $onboardingParameters->setCertificationType(CertificationTypeDefinitions::P12());
-            $onboardingParameters->setGatewayId(GatewayTypeDefinitions::mqtt());
-            $onboardingParameters->setRegistrationCode("e8c3c3c8b6");
-            $onboardingParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
-            $onboardService->verify($onboardingParameters, FarmingSoftware::privateKey());
+            $onboardParameters = new OnboardParameters();
+            $onboardParameters->setUuid(UuidService::newUuid());
+            $onboardParameters->setApplicationId(TelemetryPlatform::applicationId());
+            $onboardParameters->setCertificationVersionId(TelemetryPlatform::certificationVersionId());
+            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::APPLICATION);
+            $onboardParameters->setCertificationType(CertificationTypeDefinitions::PEM);
+            $onboardParameters->setGatewayId(GatewayTypeDefinitions::MQTT);
+            $onboardParameters->setRegistrationCode("e8c3c3c8b6");
+            $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
+            $onboardService->verify($onboardParameters, FarmingSoftware::privateKey());
         }
 
         /**
