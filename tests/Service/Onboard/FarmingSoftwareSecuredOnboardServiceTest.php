@@ -2,6 +2,7 @@
 
 namespace Lib\Tests\Service\Onboard {
 
+    use App\Api\Exceptions\AuthorizationException;
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OnboardException;
     use App\Definitions\ApplicationTypeDefinitions;
@@ -92,6 +93,7 @@ namespace Lib\Tests\Service\Onboard {
 
         /**
          * @covers AuthorizationService::parseAuthorizationToken()
+         * @throws AuthorizationException
          */
         public function testGetRegistrationCodeFromUri()
         {

@@ -4,6 +4,7 @@ namespace Lib\Tests\Service\Onboard {
 
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OnboardException;
+    use App\Api\Exceptions\VerificationException;
     use App\Definitions\ApplicationTypeDefinitions;
     use App\Definitions\CertificationTypeDefinitions;
     use App\Definitions\GatewayTypeDefinitions;
@@ -23,11 +24,11 @@ namespace Lib\Tests\Service\Onboard {
     {
         /**
          * @covers \App\Service\Onboard\SecuredOnboardService::verify
-         * @throws OnboardException
+         * @throws VerificationException
          */
         public function testGivenInvalidRequestTokenWhenVerifyTelemetryPlatformThenThereShouldBeAnException()
         {
-            self::expectException(OnboardException::class);
+            self::expectException(VerificationException::class);
             self::expectExceptionCode(ErrorCodes::BEARER_NOT_FOUND);
 
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
@@ -47,7 +48,7 @@ namespace Lib\Tests\Service\Onboard {
 
         /**
          * @covers SecuredOnboardService::verify
-         * @throws OnboardException
+         * @throws VerificationException
          * @noinspection PhpUnreachableStatementInspection
          */
         public function testGivenValidRequestTokenWhenVerifyTelemetryPlatformThenThereShouldBeAValidResponseWithAccountId()
@@ -72,7 +73,7 @@ namespace Lib\Tests\Service\Onboard {
 
         /**
          * @covers SecuredOnboardService::verify
-         * @throws OnboardException
+         * @throws VerificationException
          * @noinspection PhpUnreachableStatementInspection
          */
         public function testGivenValidRequestTokenWhenVerifyTelemetryPlatformWithWrongPrivateKeyThenThereShouldBeAnException()

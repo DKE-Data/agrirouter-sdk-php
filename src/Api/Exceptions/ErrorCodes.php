@@ -62,5 +62,10 @@ namespace App\Api\Exceptions {
          * Is used if the token from the authorization response can not be decoded.
          */
         public const COULD_NOT_PARSE_AUTHORIZATION_TOKEN = 10;
+
+        /**
+         * Is used if the authorization of the revoke request failed.
+         */
+        public const AUTHORIZATION_ERROR = 11;
     }
 }
