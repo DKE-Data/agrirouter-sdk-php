@@ -5,7 +5,7 @@ namespace App\Service\Common {
     use App\Api\Common\HttpClientInterface;
     use App\Api\Common\MessagingServiceInterface;
     use App\Api\Exceptions\ErrorCodes;
-    use App\Api\Exceptions\MessagingException;
+    use App\Api\Exceptions\OutboxException;
     use App\Api\Service\Parameters\MessagingParameters;
     use App\Dto\Messaging\Inner\Message;
     use App\Dto\Messaging\MessagingResult;
@@ -34,7 +34,7 @@ namespace App\Service\Common {
          * Send message to the AR using the given message parameters.
          * @param MessagingParameters $parameters Messaging parameters.
          * @return MessagingResult -
-         * @throws MessagingException Will be thrown in case of an error.
+         * @throws OutboxException Will be thrown in case of an error.
          */
         public function send($parameters): MessagingResult
         {
@@ -59,7 +59,7 @@ namespace App\Service\Common {
             $request = $this->httpClient->createRequest('POST', $parameters->getOnboardResponse()->getConnectionCriteria()->getMeasures(), $headers, $requestBody);
 
             try {
-                $this->httpClient->sendAsync($request,
+                $this->httpClient->sendRequest($request,
                     [
                         'cert' => [CertificateService::createCertificateFile($parameters->getOnboardResponse()), $parameters->getOnboardResponse()->getAuthentication()->getSecret()],
                         'ssl_key' => [CertificateService::createCertificateFile($parameters->getOnboardResponse()), $parameters->getOnboardResponse()->getAuthentication()->getSecret()]
@@ -71,9 +71,9 @@ namespace App\Service\Common {
                 return $messagingResult;
             } catch (Exception $exception) {
                 if ($exception->getCode() == 400) {
-                    throw new MessagingException($exception->getMessage(), ErrorCodes::INVALID_MESSAGE);
+                    throw new OutboxException($exception->getMessage(), ErrorCodes::INVALID_MESSAGE);
                 } else {
-                    throw new MessagingException($exception->getMessage(), ErrorCodes::UNDEFINED);
+                    throw new OutboxException($exception->getMessage(), ErrorCodes::UNDEFINED);
                 }
             }
         }

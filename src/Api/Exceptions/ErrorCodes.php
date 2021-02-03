@@ -62,5 +62,10 @@ namespace App\Api\Exceptions {
          * Is used if the token from the authorization response can not be decoded.
          */
         public const COULD_NOT_PARSE_AUTHORIZATION_TOKEN = 10;
+
+        /**
+         * Is used if the endpoint can not fetch messages from the outbox.
+         */
+        const COULD_NOT_FETCH_MESSAGES_FROM_OUTBOX = 11;
     }
 }
