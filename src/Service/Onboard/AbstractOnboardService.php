@@ -108,10 +108,10 @@ namespace App\Service\Onboard {
          * @return OnboardResponse The onboard response from the AR, mapped to the domain object.
          * @throws OnboardException Can be thrown during the onboard process.
          */
-        protected function sendRequest(RequestInterface $request): OnboardResponse
+        protected function send(RequestInterface $request): OnboardResponse
         {
             try {
-                $response = $this->httpClient->sendAsync($request);
+                $response = $this->httpClient->sendRequest($request);
                 $response->getBody()->rewind();
                 $content = $response->getBody()->getContents();
                 $onboardResponse = new OnboardResponse();

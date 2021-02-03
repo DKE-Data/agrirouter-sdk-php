@@ -4,7 +4,6 @@
 namespace App\Api\Common {
 
     use Exception;
-    use Psr\Http\Client\ClientInterface;
     use Psr\Http\Message\RequestInterface;
     use Psr\Http\Message\ResponseInterface;
 
@@ -13,16 +12,16 @@ namespace App\Api\Common {
      * This interface maps the asynchronous send method for the api and provides an abstract factory method for client dependent PSR-7 request implementations.
      * @package App\Api\Common
      */
-    interface HttpClientInterface extends ClientInterface
+    interface HttpClientInterface
     {
         /**
          * Sends a PSR-7 request asynchronous to a web server and returns a PSR-7 response.
          * @param RequestInterface $request The PSR-7 request.
          * @param array $options The options for the request
-         * @return ResponseInterface|null A PSR-7 response.
+         * @return ResponseInterface A PSR-7 response.
          * @throws Exception In case of error.
          */
-        public function sendAsync(RequestInterface $request, array $options = []): ?ResponseInterface;
+        public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface;
 
         /**
          * Creates a PSR-7 request with the given parameters.

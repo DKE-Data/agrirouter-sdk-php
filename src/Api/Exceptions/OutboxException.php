@@ -5,10 +5,10 @@ namespace App\Api\Exceptions {
     use JetBrains\PhpStorm\Pure;
 
     /**
-     * Generic messaging exception.
+     * Will be thrown if there is any problem during the interaction with the outbox.
      * @package App\Api\Exceptions
      */
-    class MessagingException extends BusinessException
+    class OutboxException extends BusinessException
     {
 
         /**
