@@ -2,7 +2,7 @@
 
 namespace App\Api\Service\Messaging {
 
-    use App\Api\Common\MessagingServiceInterface;
+    use App\Api\Messaging\MessagingServiceInterface;
 
     /**
      * Interface for the service to send capabilities for an endpoint.

@@ -2,10 +2,10 @@
 
 namespace App\Service\Common {
 
-    use App\Api\Common\HttpClientInterface;
-    use App\Api\Common\MessagingServiceInterface;
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OutboxException;
+    use App\Api\Messaging\HttpClientInterface;
+    use App\Api\Messaging\MessagingServiceInterface;
     use App\Api\Service\Parameters\MessagingParameters;
     use App\Dto\Messaging\Inner\Message;
     use App\Dto\Messaging\MessagingResult;

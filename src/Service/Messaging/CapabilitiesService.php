@@ -4,7 +4,7 @@ namespace App\Service\Messaging {
 
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification;
     use Agrirouter\Request\RequestEnvelope\Mode;
-    use App\Api\Common\MessagingServiceInterface;
+    use App\Api\Messaging\MessagingServiceInterface;
     use App\Api\Service\Messaging\CapabilitiesServiceInterface;
     use App\Api\Service\Messaging\EncodeMessageServiceInterface;
     use App\Api\Service\Parameters\MessagingParameters;

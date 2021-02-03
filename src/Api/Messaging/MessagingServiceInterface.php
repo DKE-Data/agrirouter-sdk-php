@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace App\Api\Common {
+namespace App\Api\Messaging {
 
     use App\Dto\Messaging\MessagingResult;
 
