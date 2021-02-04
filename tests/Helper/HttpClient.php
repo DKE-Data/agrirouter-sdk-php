@@ -30,12 +30,7 @@ namespace Lib\Tests\Helper {
             return new Request($method, $uri, $headers, $body);
         }
 
-        public function sendRequest(RequestInterface $request): ResponseInterface
-        {
-            return $this->sendRequest($request);
-        }
-
-        public function sendAsync(RequestInterface $request, array $options = []): ?ResponseInterface
+        public function sendRequest(RequestInterface $request, array $options = []): ResponseInterface
         {
             $result = null;
             $promise = $this->httpClient->sendAsync($request, $options)->

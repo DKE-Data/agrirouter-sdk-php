@@ -64,8 +64,13 @@ namespace App\Api\Exceptions {
         public const COULD_NOT_PARSE_AUTHORIZATION_TOKEN = 10;
 
         /**
+         * Is used if the endpoint can not fetch messages from the outbox.
+         */
+        const COULD_NOT_FETCH_MESSAGES_FROM_OUTBOX = 11;
+
+        /**
          * Is used if the authorization of the revoke request failed.
          */
-        public const AUTHORIZATION_ERROR = 11;
+        public const AUTHORIZATION_ERROR = 12;
     }
 }

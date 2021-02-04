@@ -3,7 +3,6 @@
 namespace Lib\Tests\Service\Onboard {
 
     use App\Api\Exceptions\ErrorCodes;
-    use App\Api\Exceptions\OnboardException;
     use App\Api\Exceptions\VerificationException;
     use App\Definitions\ApplicationTypeDefinitions;
     use App\Definitions\CertificationTypeDefinitions;
@@ -75,11 +74,11 @@ namespace Lib\Tests\Service\Onboard {
          * @throws VerificationException
          * @noinspection PhpUnreachableStatementInspection
          */
-        public function testGivenValidRequestTokenWhenVerifyOnboardFarmingSoftwareWithWrongPrivateKeyThenThereShouldBeAnException()
+        public function testGivenValidRequestTokenWhenVerifyOnboardingFarmingSoftwareWithWrongPrivateKeyThenThereShouldBeAnException()
         {
             $this->markTestSkipped('Will not run successfully without changing the registration code and Uuid.');
 
-            self::expectException(OnboardException::class);
+            self::expectException(VerificationException::class);
             self::expectExceptionCode(ErrorCodes::INVALID_MESSAGE);
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $onboardService = new SecuredOnboardService($this->getEnvironment(), $guzzleHttpClientBuilder->build());

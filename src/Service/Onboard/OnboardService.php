@@ -14,7 +14,7 @@ namespace App\Service\Onboard {
         public function onboard(OnboardParameters $onboardParameters, ?string $privateKey = null): OnboardResponse
         {
             $request = $this->createRequest($onboardParameters, $this->environment->onboardUrl(), $privateKey);
-            return $this->sendRequest($request);
+            return $this->send($request);
         }
     }
 }
