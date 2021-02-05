@@ -53,7 +53,7 @@ namespace App\Service\Messaging {
             $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_SUBSCRIPTION);
 
             $subscription = new Subscription();
-            $subscription->setTechnicalMessageTypes($parameters->getTechnicalMessageTypes());
+            $subscription->setTechnicalMessageTypes($parameters->getSubscriptionItems());
 
             $messagePayloadParameters = new MessagePayloadParameters();
             $messagePayloadParameters->setTypeUrl(TypeUrlService::getTypeUrl(Subscription::class));

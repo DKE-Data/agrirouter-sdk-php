@@ -10,17 +10,16 @@ namespace App\Service\Parameters {
      */
     class SubscriptionParameters extends MessageParameters
     {
-        private array $technicalMessageTypes;
+        private array $subscriptionItems;
 
-        public function getTechnicalMessageTypes(): array
+        public function getSubscriptionItems(): array
         {
-            return $this->technicalMessageTypes;
+            return $this->subscriptionItems;
         }
 
-        public function setTechnicalMessageTypes(array $technicalMessageTypes): void
+        public function setSubscriptionItems(array $subscriptionItems): void
         {
-            $this->technicalMessageTypes = $technicalMessageTypes;
+            $this->subscriptionItems = $subscriptionItems;
         }
-
     }
 }
