@@ -19,11 +19,12 @@ namespace App\Service\Onboard {
      */
     class RevokeService
     {
+        private const AGRIROUTER_EXPECTED_REVOKE_ENDPOINT_RESPONSE_CODE = 204;
         protected AbstractEnvironment $environment;
         protected HttpClientInterface $httpClient;
 
         /**
-         * RevokeService constructor.
+         * Constructor.
          * @param AbstractEnvironment $environment The environment to use for the onboard process.
          * @param HttpClientInterface $httpClient The http client used for the onboard process.
          */
@@ -58,17 +59,20 @@ namespace App\Service\Onboard {
             $revokeHttpRequest = $this->httpClient->createRequest('DELETE', $this->environment->revokeUrl(), $headers, $requestBody);
             try {
                 $response = $this->httpClient->sendAsync($revokeHttpRequest);
+                if ($response->getStatusCode() != self::AGRIROUTER_EXPECTED_REVOKE_ENDPOINT_RESPONSE_CODE) {
+                    throw new RevokeException("Unexpected response status: " . $response->getMessage() . ". Expected: "
+                        . self::AGRIROUTER_EXPECTED_REVOKE_ENDPOINT_RESPONSE_CODE . ".", ErrorCodes::UNEXPECTED_RESPONSE_STATUS);
+                }
+            } catch (RevokeException $revokeException) {
+                throw $revokeException;
             } catch (Exception $exception) {
                 if ($exception->getCode() == 400) {
                     throw new RevokeException($exception->getMessage(), ErrorCodes::INVALID_MESSAGE);
                 } elseif ($exception->getCode() == 401) {
-                    throw new RevokeException($exception->getMessage(), ErrorCodes::AUTHORIZATION_ERROR);
+                    throw new RevokeException($exception->getMessage(), ErrorCodes::AUTHORIZATION_FAILED);
                 } else {
                     throw new RevokeException($exception->getMessage(), ErrorCodes::UNDEFINED);
                 }
-            }
-            if ($response->getStatusCode() != 204) {
-                throw new RevokeException("Unexpected response status: " . $response->getMessage() . ".", ErrorCodes::UNDEFINED);
             }
         }
     }

@@ -23,7 +23,7 @@ namespace Lib\Tests\Service\Onboard {
          * @throws RevokeException
          * @throws SignatureException
          */
-        public function testGivenNonExistingEndpointWhenRevokingThenTheEndpointShouldBeRevoked()
+        public function testGivenNonExistingEndpointWhenRevokingTelemetryPlatformThenThereShouldBeAnException()
         {
             self::expectException(RevokeException::class);
             self::expectExceptionCode(ErrorCodes::INVALID_MESSAGE);
@@ -35,7 +35,6 @@ namespace Lib\Tests\Service\Onboard {
             $revokeParamaters->setAccountId(self::ACCOUNT_ID);
             $revokeParamaters->setApplicationId(TelemetryPlatform::applicationId());
             $revokeParamaters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
-
             $revokeService->revoke($revokeParamaters, TelemetryPlatform::privateKey());
         }
 
@@ -45,10 +44,9 @@ namespace Lib\Tests\Service\Onboard {
          * @throws SignatureException
          * @noinspection PhpUnreachableStatementInspection
          */
-        public function testGivenValidRequestTokenWhenOnboardTelemetryPlatformThenThereShouldBeAValidResponse()
+        public function testGivenExistingEndpointWhenRevokingTelemetryPlatformThenThereShouldBeAValidResponse()
         {
             $this->markTestSkipped('Will only run if there is an existing endpoint with the given endpoint ID.');
-            $this->doesNotPerformAssertions();
 
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $revokeService = new RevokeService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
@@ -58,7 +56,6 @@ namespace Lib\Tests\Service\Onboard {
             $revokeParamaters->setApplicationId(TelemetryPlatform::applicationId());
             $revokeParamaters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
             self::assertNull($revokeService->revoke($revokeParamaters, TelemetryPlatform::privateKey()));
-
         }
     }
 }

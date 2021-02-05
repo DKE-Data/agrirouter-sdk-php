@@ -13,7 +13,6 @@ namespace App\Service\Parameters {
         private string $applicationId;
         private int $offset;
 
-
         public function getAccountId(): string
         {
             return $this->accountId;

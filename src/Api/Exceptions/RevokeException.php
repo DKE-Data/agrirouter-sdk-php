@@ -6,7 +6,7 @@ namespace App\Api\Exceptions {
 
     /**
      * Will be thrown if there is an error during the revoke endpoint process.
-     * @package App\Exception
+     * @package App\Api\Exceptions
      */
     class RevokeException extends BusinessException
     {
