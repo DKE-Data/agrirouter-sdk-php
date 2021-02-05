@@ -27,7 +27,7 @@ namespace App\Service\Common {
 
         /**
          * Delivering the current time zone as a string representation.
-         * @param int $offset -
+         * @param int $offset .
          * @return string The current time zone.
          */
         #[Pure] public static function timeZone(int $offset): string

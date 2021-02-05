@@ -20,7 +20,7 @@ namespace App\Service\Messaging\Http {
 
         /**
          * Constructor.
-         * @param HttpClientInterface $httpClient -
+         * @param HttpClientInterface $httpClient .
          */
         public function __construct(HttpClientInterface $httpClient)
         {

@@ -5,7 +5,7 @@ namespace App\Service\Common {
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OutboxException;
     use App\Api\Messaging\HttpClientInterface;
-    use App\Api\Messaging\MessagingServiceInterface;
+    use App\Api\Service\Messaging\MessagingServiceInterface;
     use App\Api\Service\Parameters\MessagingParameters;
     use App\Dto\Messaging\Inner\Message;
     use App\Dto\Messaging\MessagingResult;
@@ -23,7 +23,7 @@ namespace App\Service\Common {
 
         /**
          * Constructor.
-         * @param HttpClientInterface $httpClient -
+         * @param HttpClientInterface $httpClient .
          */
         public function __construct(HttpClientInterface $httpClient)
         {
@@ -33,7 +33,7 @@ namespace App\Service\Common {
         /**
          * Send message to the AR using the given message parameters.
          * @param MessagingParameters $parameters Messaging parameters.
-         * @return MessagingResult -
+         * @return MessagingResult .
          * @throws OutboxException Will be thrown in case of an error.
          */
         public function send($parameters): MessagingResult
