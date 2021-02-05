@@ -19,5 +19,10 @@ namespace App\Definitions {
          */
         public const DKE_CAPABILITIES = "dke:capabilities";
 
+        /**
+         * Type 'dke:subscription'.
+         */
+        public const DKE_SUBSCRIPTION = "dke:subscription";
+
     }
 }

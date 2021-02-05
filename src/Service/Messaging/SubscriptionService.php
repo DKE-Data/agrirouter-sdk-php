@@ -2,7 +2,7 @@
 
 namespace App\Service\Messaging {
 
-    use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification;
+    use Agrirouter\Request\Payload\Endpoint\Subscription;
     use Agrirouter\Request\RequestEnvelope\Mode;
     use App\Api\Service\Messaging\EncodeMessageServiceInterface;
     use App\Api\Service\Messaging\MessagingServiceInterface;
@@ -13,18 +13,18 @@ namespace App\Service\Messaging {
     use App\Service\Common\EncodeMessageService;
     use App\Service\Common\TypeUrlService;
     use App\Service\Common\UuidService;
-    use App\Service\Parameters\CapabilityParameters;
     use App\Service\Parameters\MessageHeaderParameters;
     use App\Service\Parameters\MessagePayloadParameters;
+    use App\Service\Parameters\SubscriptionParameters;
     use JetBrains\PhpStorm\Pure;
 
     /**
-     * Service to send the capabilities to the AR.
+     * Service to send the subscriptions to the AR.
      * @template-implements MessagingServiceInterface<CapabilityParameters>
      * @template-implements EncodeMessageServiceInterface<CapabilityParameters>
      * @package App\Service\Messaging
      */
-    class CapabilitiesService implements MessagingServiceInterface, EncodeMessageServiceInterface
+    class SubscriptionService implements MessagingServiceInterface, EncodeMessageServiceInterface
     {
 
         private MessagingServiceInterface $messagingService;
@@ -40,7 +40,7 @@ namespace App\Service\Messaging {
 
         /**
          * Encoding of the message.
-         * @param CapabilityParameters $parameters .
+         * @param SubscriptionParameters $parameters .
          * @return EncodedMessage .
          */
         public function encode($parameters): EncodedMessage
@@ -50,19 +50,13 @@ namespace App\Service\Messaging {
             $messageHeaderParameters->setApplicationMessageSeqNo($parameters->getApplicationMessageSeqNo());
             $messageHeaderParameters->setTeamSetContextId($parameters->getTeamSetContextId());
             $messageHeaderParameters->setMode(Mode::DIRECT);
-            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_CAPABILITIES);
+            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_SUBSCRIPTION);
 
-            $capabilitySpecification = new CapabilitySpecification();
-            $capabilitySpecification->setAppCertificationId($parameters->getApplicationId());
-            $capabilitySpecification->setAppCertificationVersionId($parameters->getCertificationVersionId());
-            $capabilitySpecification->setEnablePushNotifications($parameters->getEnablePushNotification());
-            if (!count($parameters->getCapabilityParameters()) == 0) {
-                $capabilitySpecification->setCapabilities($parameters->getCapabilityParameters());
-            }
+            $subscription = new Subscription();
 
             $messagePayloadParameters = new MessagePayloadParameters();
-            $messagePayloadParameters->setTypeUrl(TypeUrlService::getTypeUrl(CapabilitySpecification::class));
-            $messagePayloadParameters->setValue($capabilitySpecification->serializeToString());
+            $messagePayloadParameters->setTypeUrl(TypeUrlService::getTypeUrl(Subscription::class));
+            $messagePayloadParameters->setValue($subscription->serializeToString());
 
             $encodeMessageService = new EncodeMessageService();
             $messageContent = $encodeMessageService->encode($messageHeaderParameters, $messagePayloadParameters);
@@ -75,7 +69,7 @@ namespace App\Service\Messaging {
 
         /**
          * Send message.
-         * @param CapabilityParameters $parameters .
+         * @param SubscriptionParameters $parameters .
          * @return MessagingResult .
          */
         public function send($parameters): MessagingResult
