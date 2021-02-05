@@ -13,7 +13,7 @@ namespace App\Service\Common {
 
         /**
          * Generate a new UUID.
-         * @return string -
+         * @return string .
          */
         #[Pure] public static function newUuid(): string
         {

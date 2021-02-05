@@ -2,10 +2,10 @@
 
 namespace App\Service\Onboard {
 
-    use App\Api\Common\HttpClientInterface;
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OnboardException;
     use App\Api\Exceptions\SignatureException;
+    use App\Api\Messaging\HttpClientInterface;
     use App\Dto\Onboard\OnboardResponse;
     use App\Dto\Requests\OnboardRequest;
     use App\Environment\AbstractEnvironment;

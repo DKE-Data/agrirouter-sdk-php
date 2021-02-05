@@ -2,19 +2,24 @@
 
 namespace Lib\Tests\Service\Messaging {
 
+    use Agrirouter\Commons\Message;
+    use Agrirouter\Commons\Messages;
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\Capability;
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\Direction;
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\PushNotification;
     use App\Api\Builder\CapabilityBuilder;
+    use App\Service\Common\DecodeMessagesService;
     use App\Service\Common\HttpMessagingService;
     use App\Service\Common\UuidService;
     use App\Service\Messaging\CapabilitiesService;
+    use App\Service\Messaging\Http\OutboxService;
     use App\Service\Parameters\CapabilityParameters;
     use Lib\Tests\Applications\CommunicationUnit;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
     use Lib\Tests\Helper\OnboardResponseRepository;
     use Lib\Tests\Service\AbstractIntegrationTestForServices;
+    use Lib\Tests\Service\Common\SleepTimer;
 
     class CapabilitiesServiceTest extends AbstractIntegrationTestForServices
     {
@@ -45,6 +50,35 @@ namespace Lib\Tests\Service\Messaging {
             self::assertNotEmpty($messagingResult);
             self::assertNotEmpty($messagingResult->getMessageIds());
             self::assertCount(1, $messagingResult->getMessageIds());
+
+            SleepTimer::letTheAgrirouterProcessTheMessage();
+
+            $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            self::assertEquals(200, $outboxResponse->getStatusCode());
+
+            $messages = $outboxResponse->getMessages();
+            self::assertCount(1, $messages);
+            self::assertNotNull($messages[0]->getCommand());
+            self::assertNotNull($messages[0]->getCommand()->getMessage());
+
+            $decodeMessagesService = new DecodeMessagesService();
+            $decodedMessages = $decodeMessagesService->decodeResponse($messages[0]->getCommand()->getMessage());
+            self::assertNotNull($decodedMessages);
+            self::assertEquals(400, $decodedMessages->getResponseEnvelope()->getResponseCode());
+
+            /** @var Messages $decodedDetails */
+            $decodedDetails = $decodeMessagesService->decodeDetails($decodedMessages->getResponsePayloadWrapper()->getDetails());
+            self::assertNotNull($decodedDetails);
+
+            $agrirouterMessages = $decodedDetails->getMessages();
+            self::assertEquals(1, $agrirouterMessages->count());
+
+            $iterator = $agrirouterMessages->getIterator();
+            /** @var Message $message */
+            foreach ($iterator as $message) {
+                self::assertEquals("Capability for That one is invalid! was ignored as it is not known to the certification.", $message->getMessage());
+            }
         }
 
         function testGivenEmptyCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
