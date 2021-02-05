@@ -2,7 +2,7 @@
 
 namespace App\Service\Onboard {
 
-    use App\Api\Exceptions\AuthorizationException;
+    use App\Api\Exceptions\DecodeMessageException;
     use App\Api\Exceptions\ErrorCodes;
     use App\Dto\Onboard\AuthorizationResult;
     use App\Dto\Onboard\AuthorizationToken;
@@ -63,20 +63,20 @@ namespace App\Service\Onboard {
          * Parsing the result which was attached as parameters to the URL.
          * @param string $authorizationResultUri The authorization result uri with the parameters to parse
          * @return AuthorizationResult The parsed authorization parameters
-         * @throws AuthorizationException Will be thrown if
+         * @throws DecodeMessageException Will be thrown if
          */
         public function parseAuthorizationResult(string $authorizationResultUri): AuthorizationResult
         {
             $parameters = explode('&', $authorizationResultUri);
             if (count($parameters) < 2 || count($parameters) > 4) {
-                throw new AuthorizationException("The number authorization result parameters '{$authorizationResultUri}' does not meet the specification", ErrorCodes::AUTHORIZATION_RESULT_PARAMETER_COUNT_ERROR);
+                throw new DecodeMessageException("The number authorization result parameters '{$authorizationResultUri}' does not meet the specification", ErrorCodes::AUTHORIZATION_RESULT_PARAMETER_COUNT_ERROR);
             }
 
             $authorizationResult = new AuthorizationResult();
             foreach ($parameters as $parameterString) {
                 $parameter = explode("=", $parameterString);
                 if (count($parameter) != 2)
-                    throw new AuthorizationException("Parameter without value in '$parameterString'.", ErrorCodes::AUTHORIZATION_PARAMETER_VALUE_MISSING);
+                    throw new DecodeMessageException("Parameter without value in '$parameterString'.", ErrorCodes::AUTHORIZATION_PARAMETER_VALUE_MISSING);
                 switch ($parameter[0]) {
                     case self::STATE:
                         $authorizationResult->setState($parameter[1]);
@@ -91,7 +91,7 @@ namespace App\Service\Onboard {
                         $authorizationResult->setError($parameter[1]);
                         break;
                     default:
-                        throw new AuthorizationException("Unknown Parameter '$parameter[0]' in Authorization response '$parameterString'.", ErrorCodes::UNKNOWN_AUTHORIZATION_PARAMETER);
+                        throw new DecodeMessageException("Unknown Parameter '$parameter[0]' in Authorization response '$parameterString'.", ErrorCodes::UNKNOWN_AUTHORIZATION_PARAMETER);
                 }
             }
             return $authorizationResult;
@@ -101,7 +101,7 @@ namespace App\Service\Onboard {
          * Parsing the token from the authorization result.
          * @param AuthorizationResult $authorizationResult The AuthorizationResult that contains the token to parse.
          * @return AuthorizationToken The parsed authorization token
-         * @throws AuthorizationException Will be thrown if the token can not be parsed.
+         * @throws DecodeMessageException Will be thrown if the token can not be parsed.
          */
         public function parseAuthorizationToken(AuthorizationResult $authorizationResult): AuthorizationToken
         {
@@ -111,7 +111,7 @@ namespace App\Service\Onboard {
             try {
                 $authorizationToken = $authorizationToken->jsonDeserialize($decodedToken);
             } catch (JsonException $e) {
-                throw new AuthorizationException("Could not parse JSON from token.", ErrorCodes::COULD_NOT_PARSE_AUTHORIZATION_TOKEN, $e);
+                throw new DecodeMessageException("Could not parse JSON from token.", ErrorCodes::COULD_NOT_PARSE_AUTHORIZATION_TOKEN, $e);
             }
             return $authorizationToken;
         }

@@ -2,7 +2,7 @@
 
 namespace Lib\Tests\Helper {
 
-    use App\Api\Common\HttpClientInterface;
+    use App\Api\Messaging\HttpClientInterface;
     use GuzzleHttp\Client;
     use GuzzleHttp\Psr7\Request;
     use Psr\Http\Message\RequestInterface;

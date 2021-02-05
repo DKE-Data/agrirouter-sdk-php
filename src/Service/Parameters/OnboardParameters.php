@@ -11,9 +11,8 @@ namespace App\Service\Parameters {
         private string $applicationId;
         private string $uuid;
         private string $certificationVersionId;
-        private string $GatewayId;
-        private string $CertificationType;
-        private string $applicationType;
+        private string $gatewayId;
+        private string $certificationType;
         private string $registrationCode;
         private int $offset;
 
@@ -49,32 +48,22 @@ namespace App\Service\Parameters {
 
         public function getGatewayId(): string
         {
-            return $this->GatewayId;
+            return $this->gatewayId;
         }
 
-        public function setGatewayId(string $GatewayId): void
+        public function setGatewayId(string $gatewayId): void
         {
-            $this->GatewayId = $GatewayId;
+            $this->gatewayId = $gatewayId;
         }
 
         public function getCertificationType(): string
         {
-            return $this->CertificationType;
+            return $this->certificationType;
         }
 
-        public function setCertificationType(string $CertificationType): void
+        public function setCertificationType(string $certificationType): void
         {
-            $this->CertificationType = $CertificationType;
-        }
-
-        public function getApplicationType(): string
-        {
-            return $this->applicationType;
-        }
-
-        public function setApplicationType(string $applicationType): void
-        {
-            $this->applicationType = $applicationType;
+            $this->certificationType = $certificationType;
         }
 
         public function getRegistrationCode(): string

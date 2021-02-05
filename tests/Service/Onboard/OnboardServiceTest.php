@@ -4,7 +4,6 @@ namespace Lib\Tests\Service\Onboard {
 
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OnboardException;
-    use App\Definitions\ApplicationTypeDefinitions;
     use App\Definitions\CertificationTypeDefinitions;
     use App\Definitions\GatewayTypeDefinitions;
     use App\Service\Common\UuidService;
@@ -32,7 +31,6 @@ namespace Lib\Tests\Service\Onboard {
             $onboardParameters->setUuid(UuidService::newUuid());
             $onboardParameters->setApplicationId(CommunicationUnit::applicationId());
             $onboardParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::APPLICATION);
             $onboardParameters->setCertificationType(CertificationTypeDefinitions::PEM);
             $onboardParameters->setGatewayId(GatewayTypeDefinitions::HTTP);
             $onboardParameters->setRegistrationCode("INVALID");
@@ -56,7 +54,6 @@ namespace Lib\Tests\Service\Onboard {
             $onboardParameters->setUuid(UuidService::newUuid());
             $onboardParameters->setApplicationId(CommunicationUnit::applicationId());
             $onboardParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $onboardParameters->setApplicationType(ApplicationTypeDefinitions::APPLICATION);
             $onboardParameters->setCertificationType(CertificationTypeDefinitions::PEM);
             $onboardParameters->setGatewayId(GatewayTypeDefinitions::HTTP);
             $onboardParameters->setRegistrationCode("d773852334");
