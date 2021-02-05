@@ -67,7 +67,7 @@ namespace App\Api\Exceptions {
          * Is used if the endpoint can not fetch messages from the outbox.
          */
         public const COULD_NOT_FETCH_MESSAGES_FROM_OUTBOX = 11;
-
+        public const COULD_NOT_FETCH_MESSAGES_FROM_OUTBOX = 11;
         /**
          * Is used if the message from the AR could not be decoded.
          */
@@ -77,6 +77,16 @@ namespace App\Api\Exceptions {
          * Is used if the message details from a message could not be decoded.
          */
         public const COULD_NOT_DECODE_DETAILS = 13;
+
+        /**
+         * Is used if the authorization of the revoke request failed.
+         */
+        public const AUTHORIZATION_FAILED = 12;
+
+        /**
+         * Is used if the message details from a message could not be decoded.
+         */
+        const COULD_NOT_DECODE_DETAILS = 13;
 
         /**
          * Is used if the response status of the agrirouter is not expected in the actual context.
