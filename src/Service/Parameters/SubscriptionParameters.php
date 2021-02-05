@@ -10,5 +10,17 @@ namespace App\Service\Parameters {
      */
     class SubscriptionParameters extends MessageParameters
     {
+        private array $technicalMessageTypes;
+
+        public function getTechnicalMessageTypes(): array
+        {
+            return $this->technicalMessageTypes;
+        }
+
+        public function setTechnicalMessageTypes(array $technicalMessageTypes): void
+        {
+            $this->technicalMessageTypes = $technicalMessageTypes;
+        }
+
     }
 }
