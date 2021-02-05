@@ -24,7 +24,7 @@ namespace App\Service\Messaging {
      * @template-implements EncodeMessageServiceInterface<CapabilityParameters>
      * @package App\Service\Messaging
      */
-    class CapabilitiesService implements MessagingServiceInterface, EncodeMessageServiceInterface
+    class CapabilityService implements MessagingServiceInterface, EncodeMessageServiceInterface
     {
 
         private MessagingServiceInterface $messagingService;
