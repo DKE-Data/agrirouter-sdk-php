@@ -5,7 +5,7 @@ namespace Lib\Tests\Agrirouter {
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification;
     use App\Service\Common\HttpMessagingService;
     use App\Service\Common\UuidService;
-    use App\Service\Messaging\CapabilitiesService;
+    use App\Service\Messaging\CapabilityService;
     use App\Service\Parameters\CapabilityParameters;
     use Lib\Tests\Applications\CommunicationUnit;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
@@ -23,7 +23,7 @@ namespace Lib\Tests\Agrirouter {
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+            $capabilitiesService = new CapabilityService($httpMessagingService);
             $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
             $capabilityParameters->setApplicationMessageSeqNo(1);
