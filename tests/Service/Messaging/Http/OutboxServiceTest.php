@@ -7,7 +7,7 @@ namespace Lib\Tests\Service\Messaging\Http {
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\PushNotification;
     use App\Service\Common\HttpMessagingService;
     use App\Service\Common\UuidService;
-    use App\Service\Messaging\CapabilitiesService;
+    use App\Service\Messaging\CapabilityService;
     use App\Service\Messaging\Http\OutboxService;
     use App\Service\Parameters\CapabilityParameters;
     use Lib\Tests\Applications\CommunicationUnit;
@@ -24,7 +24,7 @@ namespace Lib\Tests\Service\Messaging\Http {
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+            $capabilitiesService = new CapabilityService($httpMessagingService);
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
 
             $capabilityParameters = new CapabilityParameters();

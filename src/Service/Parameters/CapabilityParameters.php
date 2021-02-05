@@ -5,6 +5,10 @@ namespace App\Service\Parameters {
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\PushNotification;
     use App\Api\Service\Parameters\MessageParameters;
 
+    /**
+     * Parameter class to send capabilities to the AR.
+     * @package App\Service\Parameters
+     */
     class CapabilityParameters extends MessageParameters
     {
         private string $applicationId;

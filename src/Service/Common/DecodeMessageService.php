@@ -17,7 +17,7 @@ namespace App\Service\Common {
      * @template-implements DecodeMessagesServiceInterface<Messages>
      * @package App\Service\Messaging
      */
-    class DecodeMessagesService
+    class DecodeMessageService
     {
         /**
          * Decode a raw Base64 message from the AR.

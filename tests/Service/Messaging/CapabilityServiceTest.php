@@ -8,10 +8,10 @@ namespace Lib\Tests\Service\Messaging {
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\Direction;
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\PushNotification;
     use App\Api\Builder\CapabilityBuilder;
-    use App\Service\Common\DecodeMessagesService;
+    use App\Service\Common\DecodeMessageService;
     use App\Service\Common\HttpMessagingService;
     use App\Service\Common\UuidService;
-    use App\Service\Messaging\CapabilitiesService;
+    use App\Service\Messaging\CapabilityService;
     use App\Service\Messaging\Http\OutboxService;
     use App\Service\Parameters\CapabilityParameters;
     use Lib\Tests\Applications\CommunicationUnit;
@@ -21,14 +21,14 @@ namespace Lib\Tests\Service\Messaging {
     use Lib\Tests\Service\AbstractIntegrationTestForServices;
     use Lib\Tests\Service\Common\SleepTimer;
 
-    class CapabilitiesServiceTest extends AbstractIntegrationTestForServices
+    class CapabilityServiceTest extends AbstractIntegrationTestForServices
     {
 
         function testGivenInvalidCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldStillAcceptTheMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+            $capabilitiesService = new CapabilityService($httpMessagingService);
 
             $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
@@ -62,7 +62,7 @@ namespace Lib\Tests\Service\Messaging {
             self::assertNotNull($messages[0]->getCommand());
             self::assertNotNull($messages[0]->getCommand()->getMessage());
 
-            $decodeMessagesService = new DecodeMessagesService();
+            $decodeMessagesService = new DecodeMessageService();
             $decodedMessages = $decodeMessagesService->decodeResponse($messages[0]->getCommand()->getMessage());
             self::assertNotNull($decodedMessages);
             self::assertEquals(400, $decodedMessages->getResponseEnvelope()->getResponseCode());
@@ -85,7 +85,7 @@ namespace Lib\Tests\Service\Messaging {
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+            $capabilitiesService = new CapabilityService($httpMessagingService);
 
             $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
@@ -109,7 +109,7 @@ namespace Lib\Tests\Service\Messaging {
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+            $capabilitiesService = new CapabilityService($httpMessagingService);
 
             $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
@@ -154,7 +154,7 @@ namespace Lib\Tests\Service\Messaging {
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+            $capabilitiesService = new CapabilityService($httpMessagingService);
 
             $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
@@ -199,7 +199,7 @@ namespace Lib\Tests\Service\Messaging {
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+            $capabilitiesService = new CapabilityService($httpMessagingService);
 
             $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
@@ -244,7 +244,7 @@ namespace Lib\Tests\Service\Messaging {
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+            $capabilitiesService = new CapabilityService($httpMessagingService);
 
             $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
@@ -295,7 +295,7 @@ namespace Lib\Tests\Service\Messaging {
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+            $capabilitiesService = new CapabilityService($httpMessagingService);
 
             $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
@@ -346,7 +346,7 @@ namespace Lib\Tests\Service\Messaging {
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+            $capabilitiesService = new CapabilityService($httpMessagingService);
 
             $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
@@ -391,7 +391,7 @@ namespace Lib\Tests\Service\Messaging {
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+            $capabilitiesService = new CapabilityService($httpMessagingService);
 
             $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
@@ -436,7 +436,7 @@ namespace Lib\Tests\Service\Messaging {
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+            $capabilitiesService = new CapabilityService($httpMessagingService);
 
             $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
@@ -481,7 +481,7 @@ namespace Lib\Tests\Service\Messaging {
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $capabilitiesService = new CapabilitiesService($httpMessagingService);
+            $capabilitiesService = new CapabilityService($httpMessagingService);
 
             $capabilityParameters = new CapabilityParameters();
             $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
