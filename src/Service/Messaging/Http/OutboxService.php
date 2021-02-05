@@ -2,9 +2,9 @@
 
 namespace App\Service\Messaging\Http {
 
-    use App\Api\Common\HttpClientInterface;
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OutboxException;
+    use App\Api\Messaging\HttpClientInterface;
     use App\Dto\Messaging\Http\OutboxResponse;
     use App\Dto\Onboard\OnboardResponse;
     use App\Service\Common\CertificateService;
@@ -20,7 +20,7 @@ namespace App\Service\Messaging\Http {
 
         /**
          * Constructor.
-         * @param HttpClientInterface $httpClient -
+         * @param HttpClientInterface $httpClient .
          */
         public function __construct(HttpClientInterface $httpClient)
         {

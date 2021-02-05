@@ -25,7 +25,7 @@ namespace App\Api\Exceptions {
 
         /**
          * Overriding the default method.
-         * @return string -
+         * @return string .
          */
         public function __toString(): string
         {

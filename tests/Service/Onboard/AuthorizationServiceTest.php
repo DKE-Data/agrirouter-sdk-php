@@ -2,7 +2,7 @@
 
 namespace Lib\Tests\Service\Onboard {
 
-    use App\Api\Exceptions\AuthorizationException;
+    use App\Api\Exceptions\DecodeMessageException;
     use App\Service\Onboard\AuthorizationService;
     use Lib\Tests\Service\AbstractIntegrationTestForServices;
 
@@ -75,7 +75,7 @@ namespace Lib\Tests\Service\Onboard {
          */
         public function testGivenInvalidResponseWithToLessParametersThenArgumentErrorShouldBeThrown()
         {
-            $this->expectException(AuthorizationException::class);
+            $this->expectException(DecodeMessageException::class);
             $input = "token=eyJhY2NvdW50IjoiNWQ0N2E1MzctOTQ1NS00MTBkLWFhNmQtZmJkNjlhNWNmOTkwIiwicmVnY29kZSI6IjI2NGQwNjgzYzkiLCJleHBpcmVzIjoiMjAyMC0wMS0xNFQxMDowOTo1OS4zMTlaIn0%3D";
             $authorizationService = new AuthorizationService($this->getEnvironment());
             $authorizationService->parseAuthorizationResult($input);
@@ -86,7 +86,7 @@ namespace Lib\Tests\Service\Onboard {
          */
         public function testGivenInvalidResponseWithToManyParametersThenArgumentErrorShouldBeThrown()
         {
-            $this->expectException(AuthorizationException::class);
+            $this->expectException(DecodeMessageException::class);
             $input = "test=something&state=6eab2086-0ef2-4b64-94b0-2ce620e66ece&token=eyJhY2NvdW50IjoiNWQ0N2E1MzctOTQ1NS00MTBkLWFhNmQtZmJkNjlhNWNmOTkwIiwicmVnY29kZSI6IjI2NGQwNjgzYzkiLCJleHBpcmVzIjoiMjAyMC0wMS0xNFQxMDowOTo1OS4zMTlaIn0%3D&signature=AJOFQmO4Y%2FT8DlNOcTAfpymMFiZQBpJHr4%2FUOfrHuGpzst6UA4kQraJYJtUEKSeEaQ%2FHCf4rJlUcK14ygyGAUtGkca1Y1sUAC1lVggVnECFMnVQAyTQzSnd1DEXjqI8n4Ud4LujSF6oSbiK0DWg1U8U9swwAEQ73Z0SDna7M3OEirY8zPUhGFcRij%2FrJOEFujq2rW%2Bs267z1pnp6FNq%2BoK5nbPBuH0hvCZ57Fz3HI1VadyE77o6rOAZ1HXniGqCGr%2F6v4TqAQ22MY9xhMAfUihtwQ3VLtdHsGSu1OH%2Fs71IQczOzBgeIlMAl4mchRo3l16qSU4k4awufLq7LzDSf5Q%3D%3D&error=request_declined";
             $authorizationService = new AuthorizationService($this->getEnvironment());
             $authorizationService->parseAuthorizationResult($input);

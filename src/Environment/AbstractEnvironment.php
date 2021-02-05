@@ -11,25 +11,25 @@ namespace App\Environment {
 
         /**
          * Returning the API prefix for several AR URLs, like the onboard URL for example.
-         * @return string -
+         * @return string .
          */
         public abstract function apiPrefix(): string;
 
         /**
          * URL for the registration service.
-         * @return string -
+         * @return string .
          */
         public abstract function registrationServiceUrl(): string;
 
         /**
          * URL for the authorization service.
-         * @return string -
+         * @return string .
          */
         public abstract function authorizationServiceUrl(): string;
 
         /**
          * URL for the onboard request.
-         * @return string -
+         * @return string .
          */
         public function securedOnboardUrl(): string
         {
@@ -38,7 +38,7 @@ namespace App\Environment {
 
         /**
          * URL for the revoking request.
-         * @return string -
+         * @return string .
          */
         public function revokeUrl(): string
         {
@@ -47,7 +47,7 @@ namespace App\Environment {
 
         /**
          * URL for the onboard request.
-         * @return string -
+         * @return string .
          */
         public function onboardUrl(): string
         {
@@ -56,7 +56,7 @@ namespace App\Environment {
 
         /**
          * URL for the onboard request.
-         * @return string -
+         * @return string .
          */
         public function verificationUrl(): string
         {
@@ -65,8 +65,8 @@ namespace App\Environment {
 
         /**
          * URL for the authorization process.
-         * @param $applicationId -
-         * @return string -
+         * @param $applicationId .
+         * @return string .
          */
         public function authorizationUrl(string $applicationId): string
         {

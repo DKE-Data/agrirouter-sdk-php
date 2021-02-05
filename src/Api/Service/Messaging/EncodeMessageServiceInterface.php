@@ -14,7 +14,7 @@ namespace App\Api\Service\Messaging {
         /**
          * Encode a message using the given message parameters.
          * @param T $parameters Parameters for message sending.
-         * @return EncodedMessage -
+         * @return EncodedMessage .
          */
         public function encode($parameters): EncodedMessage;
 

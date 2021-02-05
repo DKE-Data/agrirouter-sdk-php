@@ -4,9 +4,8 @@ namespace App\Service\Messaging {
 
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification;
     use Agrirouter\Request\RequestEnvelope\Mode;
-    use App\Api\Common\MessagingServiceInterface;
-    use App\Api\Service\Messaging\CapabilitiesServiceInterface;
     use App\Api\Service\Messaging\EncodeMessageServiceInterface;
+    use App\Api\Service\Messaging\MessagingServiceInterface;
     use App\Api\Service\Parameters\MessagingParameters;
     use App\Definitions\TechnicalMessageTypeDefinitions;
     use App\Dto\Messaging\EncodedMessage;
@@ -17,14 +16,16 @@ namespace App\Service\Messaging {
     use App\Service\Parameters\CapabilityParameters;
     use App\Service\Parameters\MessageHeaderParameters;
     use App\Service\Parameters\MessagePayloadParameters;
+    use JetBrains\PhpStorm\Pure;
 
     /**
      * Service to send the capabilities to the AR.
      * @template-implements MessagingServiceInterface<CapabilityParameters>
      * @template-implements EncodeMessageServiceInterface<CapabilityParameters>
+     * @template-implements DecodeMessagesServiceInterface<Messages>
      * @package App\Service\Messaging
      */
-    class CapabilitiesService implements CapabilitiesServiceInterface, EncodeMessageServiceInterface
+    class CapabilitiesService implements MessagingServiceInterface, EncodeMessageServiceInterface
     {
 
         private MessagingServiceInterface $messagingService;
@@ -33,15 +34,15 @@ namespace App\Service\Messaging {
          * Constructor.
          * @param MessagingServiceInterface $messagingService Service for message sending.
          */
-        public function __construct(MessagingServiceInterface $messagingService)
+        #[Pure] public function __construct(MessagingServiceInterface $messagingService)
         {
             $this->messagingService = $messagingService;
         }
 
         /**
          * Encoding of the message.
-         * @param CapabilityParameters $parameters -
-         * @return EncodedMessage -
+         * @param CapabilityParameters $parameters .
+         * @return EncodedMessage .
          */
         public function encode($parameters): EncodedMessage
         {
@@ -75,8 +76,8 @@ namespace App\Service\Messaging {
 
         /**
          * Send message.
-         * @param CapabilityParameters $parameters -
-         * @return MessagingResult -
+         * @param CapabilityParameters $parameters .
+         * @return MessagingResult .
          */
         public function send($parameters): MessagingResult
         {
@@ -88,5 +89,6 @@ namespace App\Service\Messaging {
             $messagingParameters->setEncodedMessages([$encodedMessages->getContent()]);
             return $this->messagingService->send($messagingParameters);
         }
+
     }
 }
