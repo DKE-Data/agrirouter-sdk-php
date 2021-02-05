@@ -35,7 +35,7 @@ namespace Lib\Tests\Service\Messaging {
             $subscriptionItem = new MessageTypeSubscriptionItem();
             $subscriptionItem->setTechnicalMessageType("This one is invalid.");
             $subscriptionItems = [];
-            array_push($subscriptionItems,$subscriptionItem);
+            array_push($subscriptionItems, $subscriptionItem);
             $subscriptionParameters->setSubscriptionItems($subscriptionItems);
 
             $messagingResult = $subscriptionService->send($subscriptionParameters);
@@ -88,7 +88,7 @@ namespace Lib\Tests\Service\Messaging {
             $subscriptionItem = new MessageTypeSubscriptionItem();
             $subscriptionItem->setTechnicalMessageType(CapabilityTypeDefinitions::ISO_11783_TASKDATA_ZIP);
             $subscriptionItems = [];
-            array_push($subscriptionItems,$subscriptionItem);
+            array_push($subscriptionItems, $subscriptionItem);
             $subscriptionParameters->setSubscriptionItems($subscriptionItems);
 
             $messagingResult = $subscriptionService->send($subscriptionParameters);
