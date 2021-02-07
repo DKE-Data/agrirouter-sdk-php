@@ -2,10 +2,10 @@
 
 namespace App\Service\Onboard {
 
-    use App\Api\Common\HttpClientInterface;
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\RevokeException;
     use App\Api\Exceptions\SignatureException;
+    use App\Api\Messaging\HttpClientInterface;
     use App\Dto\Requests\RevokeRequest;
     use App\Environment\AbstractEnvironment;
     use App\Service\Common\SignatureService;
@@ -58,7 +58,7 @@ namespace App\Service\Onboard {
 
             $revokeHttpRequest = $this->httpClient->createRequest('DELETE', $this->environment->revokeUrl(), $headers, $requestBody);
             try {
-                $response = $this->httpClient->sendAsync($revokeHttpRequest);
+                $response = $this->httpClient->sendRequest($revokeHttpRequest);
                 if ($response->getStatusCode() != self::AGRIROUTER_EXPECTED_REVOKE_ENDPOINT_RESPONSE_CODE) {
                     throw new RevokeException("Unexpected response status: " . $response->getMessage() . ". Expected: "
                         . self::AGRIROUTER_EXPECTED_REVOKE_ENDPOINT_RESPONSE_CODE . ".", ErrorCodes::UNEXPECTED_RESPONSE_STATUS);
