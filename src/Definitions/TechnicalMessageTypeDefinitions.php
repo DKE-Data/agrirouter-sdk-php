@@ -24,5 +24,15 @@ namespace App\Definitions {
          */
         public const DKE_SUBSCRIPTION = "dke:subscription";
 
+        /**
+         * Type 'dke:list_endpoints'.
+         */
+        public const DKE_LIST_ENDPOINTS = "dke:list_endpoints";
+
+        /**
+         * Type 'dke:list_endpoints'.
+         */
+        public const DKE_LIST_ENDPOINTS_UNFILTERED = "dke:list_endpoints_unfiltered";
+
     }
 }

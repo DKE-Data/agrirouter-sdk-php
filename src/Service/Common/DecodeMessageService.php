@@ -3,6 +3,7 @@
 namespace App\Service\Common {
 
     use Agrirouter\Commons\Messages;
+    use Agrirouter\Response\Payload\Account\ListEndpointsResponse;
     use Agrirouter\Response\ResponseEnvelope;
     use Agrirouter\Response\ResponsePayloadWrapper;
     use App\Api\Exceptions\DecodeMessageException;
@@ -64,9 +65,14 @@ namespace App\Service\Common {
                     $messages = new Messages();
                     $messages->mergeFromString($details->getValue());
                     return $messages;
+                case TypeUrlService::getTypeUrl(ListEndpointsResponse::class):
+                    $listEndpointsResponse = new ListEndpointsResponse();
+                    $listEndpointsResponse->mergeFromString($details->getValue());
+                    return $listEndpointsResponse;
                 default:
                     throw new DecodeMessageException("Could not handle type '" . $details->getTypeUrl() . "' while decoding details.", ErrorCodes::COULD_NOT_DECODE_DETAILS);
             }
         }
+
     }
 }

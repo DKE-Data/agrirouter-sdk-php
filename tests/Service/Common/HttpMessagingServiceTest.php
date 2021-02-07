@@ -34,7 +34,7 @@ namespace Lib\Tests\Service\Common {
         function testGivenInvalidMessageWhenSendingMessageViaHttpThenTheServiceShouldThrowAnException()
         {
             self::expectException(OutboxException::class);
-            self::expectExceptionCode(ErrorCodes::INVALID_MESSAGE);
+            self::expectExceptionCode(intval(ErrorCodes::INVALID_MESSAGE));
 
             $onboardResponse = OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT);
 
