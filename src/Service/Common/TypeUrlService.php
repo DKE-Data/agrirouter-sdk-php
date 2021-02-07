@@ -3,6 +3,8 @@
 
 namespace App\Service\Common {
 
+    use Agrirouter\Commons\Messages;
+    use Agrirouter\Response\Payload\Account\ListEndpointsResponse;
     use Google\Protobuf\Internal\DescriptorPool;
 
     /**
@@ -13,6 +15,8 @@ namespace App\Service\Common {
     {
         private const PREFIX = "types.agrirouter.com/";
 
+        private static bool $metadataHasBeenInitialized = false;
+
         /**
          * Get the type URL for the given class.
          * @param mixed $clazz The class to return the type URL for.
@@ -20,11 +24,20 @@ namespace App\Service\Common {
          */
         public static function getTypeUrl($clazz): string
         {
+            self::registerMetadataObjectsForResponseTypes();
             $pool = DescriptorPool::getGeneratedPool();
             $descriptorByClassName = $pool->getDescriptorByClassName($clazz);
             $fullName = $descriptorByClassName->getFullName();
             return self::PREFIX . $fullName;
         }
+
+        private static function registerMetadataObjectsForResponseTypes()
+        {
+            self::$metadataHasBeenInitialized = true;
+            new Messages();
+            new ListEndpointsResponse();
+        }
+
 
     }
 }
