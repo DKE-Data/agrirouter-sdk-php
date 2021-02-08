@@ -19,7 +19,6 @@ namespace App\Service\Onboard {
      */
     class RevokeService
     {
-        private const AGRIROUTER_EXPECTED_REVOKE_ENDPOINT_RESPONSE_CODE = 204;
         protected AbstractEnvironment $environment;
         protected HttpClientInterface $httpClient;
 
@@ -59,13 +58,7 @@ namespace App\Service\Onboard {
 
             $revokeHttpRequest = $this->httpClient->createRequest('DELETE', $this->environment->revokeUrl(), $headers, $requestBody);
             try {
-                $response = $this->httpClient->sendRequest($revokeHttpRequest);
-                if ($response->getStatusCode() != self::AGRIROUTER_EXPECTED_REVOKE_ENDPOINT_RESPONSE_CODE) {
-                    throw new RevokeException("Unexpected response status: " . $response->getStatusCode() . ". Expected: "
-                        . self::AGRIROUTER_EXPECTED_REVOKE_ENDPOINT_RESPONSE_CODE . ".", ErrorCodes::UNEXPECTED_RESPONSE_STATUS);
-                }
-            } catch (RevokeException $revokeException) {
-                throw $revokeException;
+                $this->httpClient->sendRequest($revokeHttpRequest);
             } catch (Exception $exception) {
                 if ($exception->getCode() == 400) {
                     throw new RevokeException($exception->getMessage(), ErrorCodes::INVALID_MESSAGE);
