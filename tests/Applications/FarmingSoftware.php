@@ -11,44 +11,57 @@ class FarmingSoftware
 {
     public static function privateKey(): string
     {
-        return "-----BEGIN PRIVATE KEY-----\n" .
-            "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQD85DBkLGppK9Cl\n" .
-            "GCQzZYGer8Gs3IyX14IvPKxJgKGBksuX2XnNscgjL13ems69xRtpJ3SabmxgJ2q/\n" .
-            "L/gd2fxLu4oezy9QPv9QRTR3UVBJ9fICBNOYCaAQvfQ0R+bWzUyO+q2c6m5MPgfF\n" .
-            "PxjkFwoLz5x+kp0dI3LHJet/AxtRt99Xrp60RxoDu9I4gOxagB3W8ifO+MO6TPsi\n" .
-            "xyvxlC7u6zHZnh/QspcMRNjWY3n+RDqvQlXNRB26oym7H/fyzVJiwPYBeOzlRLix\n" .
-            "/5lFbm0DIuXajYrCX5+k6UdS+wTLOw5Y6LcirQ0HA+DDn6WOwI7yPf/rLd6pRGk2\n" .
-            "gY0dAgU/AgMBAAECggEABTemOElxtd5odMaQWN6FKGcqhNYVTy23brfgs9Zy67zQ\n" .
-            "1yC53566JTq/FtQeY/tAFm8Wg0NdxY8iJ6FxZlT4PndkTl5bfGLXZiaV8zIAiPaQ\n" .
-            "7qac5lohbQFaBOCT7/GtXMMXCr7e1bycWl77Uvt479oXSNTeSZccMT9VS33L4zpK\n" .
-            "rYAdHDNs7RqnKul8cyrv4aWjylfqYcUpFVJi6ZlzZnUE1A4ArIJneJUYfOU2LiJD\n" .
-            "7BragrBAJzAomIP2mt0GqMA2Kh/j8mRYp0WcmHjvTtmbex0xeuRNfjuAiQ8lUMzn\n" .
-            "Gf6OsAHDnacB+KcKr7CbBjKur3xjjcVNO521wU2bQQKBgQD/VSfDDb/3lV2FMcug\n" .
-            "nT2YryTmlw4908ODuzT0fSj5rKl4THEq3GXbwLpmt94nYvvBLN4gwFUepOgHkjAZ\n" .
-            "DnQRrEVUdHDqQJhf0jf6dett0PEU1uSp+Kj1W2FxH22x+9lNVCgqqT6ljEnPVvBa\n" .
-            "40g/AhOLd5/MBPUhHemmzjFZfwKBgQD9jWZ14jk0NNszV5CaD+pll7wZJLnry52D\n" .
-            "hRjDSchbMZf92s1hzc+EVCYIq+afNLH2rKOm9Nrmqp5mlsIBj/JMp8t5jF/6JcjM\n" .
-            "4yjvyrSpT7Pd/IsUJh+HiB5TUEN2F7TE1JG7PU8t7Pq0AbOQyU7BwW7VRVZPqsqM\n" .
-            "4T7V5PO0QQKBgQCquxghVxpbxOaJ36gXN80uQT7daXg+Y1FCznU0XlR9zrRrGkI5\n" .
-            "tLHvZUm+0YecspVAsG2/XJwOJ5p3JYs/1ehKwPSC6nFuUc8Rk5GWyi6oeaQamS7B\n" .
-            "cOIZXgckCy3ga1T8Xh+VlyGqtMnN+IYzX/K5HvxOr6iMVWxLvqKzxQA+pQKBgGZn\n" .
-            "hptT6/Cm7GU3F4LxrKStfN3W1HRkf1CQH+k30oDqbc2sYkj/G7IBXn8gFnv0h2/u\n" .
-            "WAZlXEfPXzxl5SNGZQEKwAZuaJEaU5hUosL+Zqr/MtEUX4Oaxh8yHbVedHCssGjS\n" .
-            "xa0O3PzaeoLbMQ/oDjP5EO94Gp0AiOAPVRaEat1BAoGAR1od3j3VlTI11jqhVBZ4\n" .
-            "/IcHPvexXzTcjdp9kvU0VerhPVMYeFi3kGf5T/yJJKnge5UbPBI+KQHmS9H9qSyL\n" .
-            "X6PdDeOLLCyX2Gxqcs2TPzmEICJiduKq9vgUwCeqjqxMi+XL/hazULAFrCoWHem+\n" .
-            "ky5DYh0syScvc4aoiJdXXXQ=\n" .
-            "-----END PRIVATE KEY-----";
+        return "-----BEGIN PRIVATE KEY-----\n"
+            . "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDCiSNJmpAbrqF5\n"
+            . "wOe4kPtavH50OxfjevZjgFhoG/lO+nkJz366655pjKqkwmlxF3GhoXMppAR2K+Dh\n"
+            . "x3g46dJGA/dG5Ju5TpLnPn3AskHJMcagGE+0Lb29pXUX7ZAdO0MrqIVSh9UZ3j2v\n"
+            . "+MlF4GOwUkOLPu8IgtKK13vlTu3qYKmFzSss9M3r/t7hZemGyGUq/GVZ8wvYWFTc\n"
+            . "SdBhOZBzGDpQmRKiL5wcF1HyZfmT8mwbPITzf9Pd+9cDvQT74Ohmu920wwQavS+n\n"
+            . "hPaOFEW9io9gIsKY3y81Qt4OR+xQ20BdmsRscWwWaSoQpjol0+f3OnTFmLMGvjuw\n"
+            . "y8keLp+zAgMBAAECggEAGm87MdHEelaBD8PkWQKufTZ28oFjLiCz4XJ70O3YM2C6\n"
+            . "2NfuzyScWphoSco3PMxkPwPq28IzbwFoZhXOYuF3FteMHwCKnqQsNysZOHmgkd/n\n"
+            . "LzMOhZvfmCknH7DC8A3xAzo7n6rgjMrT1Bk49HtY4IlVL1NGdQAd7wr4BYFzt/Dc\n"
+            . "8qXnqXWqWcvgktDQBKEPXc8XAQom6fWFcnx+CALUIx3c4QXaCgdG/EuWeaqqM14j\n"
+            . "2tM1PwVh3rxiDiwMJSDEQVSxkJtM9M+EEC6oCvBPE4txjaHBjQqsxZJ9po5Va00+\n"
+            . "Wm6DuPEfkKTxX1J0a/le8SA0JZ+Tlz/VXOySaeMKYQKBgQDpUoPOfpx/FfOIr4Tk\n"
+            . "311zqcPfY+XiCwq56CTfVYERF8QSDQAMuuW3K53SFLTwjgUEq7BwFshhhcTdRxsh\n"
+            . "QtKAHg4NpownmGnmQCG681eFTB4IiiGNMlEt6hXh3MQK4QfjDFL/0Y1tXStsM7xB\n"
+            . "ouwPOZweWmlv7u7kVEDx4kHEUwKBgQDVcYp2pI/SjXtsFF/LRy/0xW/dgRQMortV\n"
+            . "IPYkYvSO/w2dMV2wX1Ly78wFs4uj4ODDfyeVG2xDjn6svQR67FtHPLyBS+SwNTbY\n"
+            . "jfzRV1EydHweZgdw9/1yA9zvSPVMvieSgeiR++2YmEEtJYSEoxuBkVSnLAXKFy3/\n"
+            . "4RCHrhBLIQKBgB6im/XX//pbyn8u9JcMkPun1bUWK8/zPTRNu9GrK2gwI6lvFYuW\n"
+            . "WqUjT/SOjXdsXlJPrLn689KCOugG9xP17yetSpEWRh7Iz1bRItymKN6ysNrUMDWW\n"
+            . "3rvVmYvvbboz89InAxrdy+EJM7NgU56WosIZAVum6WMuDyXhvilEWPhLAoGALwnd\n"
+            . "tPXhSEqr147J6befhvb4Bz3KGFrIpCMme7BfKyBkdK8LcbIgSq+0K9F8xbnqbssY\n"
+            . "AxFPE7hUjGb/lMN//jwRYwFBvd+MXb8050GyAEeRjvV3UFsmvLjDOOzAOpBxkiUV\n"
+            . "Bw8ZNpbfTj7FbKGxjyVjHZBjGj1vgsOr6+rdZmECgYEA5gBLtqvsebobo86J4LL7\n"
+            . "6VaXtgbgShm8GYMfTDPxkmAv4a89Lpec2UQ6EaVt7xHSdk4hMidfZHGambOtd+Zh\n"
+            . "DTWnVSzxt91ZSEcDc3gTxK3hBltTga+9Y63S+/6vVykWKRtAvqkiEEgLNnNXOFNX\n"
+            . "lE8ylEsO1whZyzKceV8uaqA=\n"
+            . "-----END PRIVATE KEY-----\n";
+    }
+
+    public static function publicKey(): string
+    {
+        return "-----BEGIN PUBLIC KEY-----\n"
+            . "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwokjSZqQG66hecDnuJD7\n"
+            . "Wrx+dDsX43r2Y4BYaBv5Tvp5Cc9+uuueaYyqpMJpcRdxoaFzKaQEdivg4cd4OOnS\n"
+            . "RgP3RuSbuU6S5z59wLJByTHGoBhPtC29vaV1F+2QHTtDK6iFUofVGd49r/jJReBj\n"
+            . "sFJDiz7vCILSitd75U7t6mCphc0rLPTN6/7e4WXphshlKvxlWfML2FhU3EnQYTmQ\n"
+            . "cxg6UJkSoi+cHBdR8mX5k/JsGzyE83/T3fvXA70E++DoZrvdtMMEGr0vp4T2jhRF\n"
+            . "vYqPYCLCmN8vNULeDkfsUNtAXZrEbHFsFmkqEKY6JdPn9zp0xZizBr47sMvJHi6f\n"
+            . "swIDAQAB\n"
+            . "-----END PUBLIC KEY-----\n";
     }
 
     public static function applicationId(): string
     {
-        return "16b1c3ab-55ef-412c-952b-f280424272e1";
+        return "905152eb-c526-47a3-b871-aa46d065bb4c";
     }
 
     public static function certificationVersionId(): string
     {
-        return "2141fce0-dbf7-405f-a9b9-58a72f5d3e5d";
+        return "c8ee0fc3-056c-4d81-8eba-fb4f8208c827";
     }
 
 }
