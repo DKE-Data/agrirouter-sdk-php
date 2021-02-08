@@ -71,7 +71,7 @@ namespace Lib\Tests\Service\Onboard {
          * @throws VerificationException
          * @noinspection PhpUnreachableStatementInspection
          */
-        public function testGivenValidRequestTokenWhenVerifyOnboardingFarmingSoftwareWithWrongPrivateKeyThenThereShouldBeAnException()
+        public function testGivenValidRequestTokenWhenVerifyOnboardFarmingSoftwareWithWrongPrivateKeyThenThereShouldBeAnException()
         {
             $this->markTestSkipped('Will not run successfully without changing the registration code and Uuid.');
 

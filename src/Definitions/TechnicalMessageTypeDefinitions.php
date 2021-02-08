@@ -34,5 +34,10 @@ namespace App\Definitions {
          */
         public const DKE_LIST_ENDPOINTS_UNFILTERED = "dke:list_endpoints_unfiltered";
 
+        /**
+         * Type 'dke:feed_confirm'.
+         */
+        public const DKE_FEED_CONFIRM = "dke:feed_confirm";
+
     }
 }
