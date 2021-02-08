@@ -39,5 +39,10 @@ namespace App\Definitions {
          */
         public const DKE_FEED_CONFIRM = "dke:feed_confirm";
 
+        /**
+         * Type 'dke:feed_delete'.
+         */
+        public const DKE_FEED_DELETE = "dke:feed_delete";
+
     }
 }
