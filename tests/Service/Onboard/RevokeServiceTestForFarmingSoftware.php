@@ -45,7 +45,7 @@ namespace Lib\Tests\Service\Onboard {
          * @noinspection PhpUnreachableStatementInspection
          * @noinspection PhpVoidFunctionResultUsedInspection
          */
-        public function testGivenExistingEndpointWhenRevokingFarmingSoftwareThenThereShouldBeAValidResponse():void
+        public function testGivenExistingEndpointWhenRevokingFarmingSoftwareThenThereShouldBeAValidResponse(): void
         {
             $this->markTestSkipped('Will only run if there is an existing endpoint with the given endpoint ID.');
 
