@@ -63,7 +63,7 @@ namespace App\Service\Onboard {
          * Parsing the result which was attached as parameters to the URL.
          * @param string $authorizationResultUri The authorization result uri with the parameters to parse
          * @return AuthorizationResult The parsed authorization parameters
-         * @throws DecodeMessageException Will be thrown if
+         * @throws DecodeMessageException Will be thrown if the authorization result uri doesn't meet the specification.
          */
         public function parseAuthorizationResult(string $authorizationResultUri): AuthorizationResult
         {

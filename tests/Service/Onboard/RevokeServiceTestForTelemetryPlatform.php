@@ -30,12 +30,12 @@ namespace Lib\Tests\Service\Onboard {
 
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $revokeService = new RevokeService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
-            $revokeParamaters = new RevokeParameters();
-            $revokeParamaters->setEndpointIds(array(UuidService::newUuid(), UuidService::newUuid()));
-            $revokeParamaters->setAccountId(self::ACCOUNT_ID);
-            $revokeParamaters->setApplicationId(TelemetryPlatform::applicationId());
-            $revokeParamaters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
-            $revokeService->revoke($revokeParamaters, TelemetryPlatform::privateKey());
+            $revokeParameters = new RevokeParameters();
+            $revokeParameters->setEndpointIds(array(UuidService::newUuid(), UuidService::newUuid()));
+            $revokeParameters->setAccountId(self::ACCOUNT_ID);
+            $revokeParameters->setApplicationId(TelemetryPlatform::applicationId());
+            $revokeParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
+            $revokeService->revoke($revokeParameters, TelemetryPlatform::privateKey());
         }
 
         /**
@@ -43,6 +43,7 @@ namespace Lib\Tests\Service\Onboard {
          * @throws RevokeException
          * @throws SignatureException
          * @noinspection PhpUnreachableStatementInspection
+         * @noinspection PhpVoidFunctionResultUsedInspection
          */
         public function testGivenExistingEndpointWhenRevokingTelemetryPlatformThenThereShouldBeAValidResponse()
         {
@@ -50,12 +51,12 @@ namespace Lib\Tests\Service\Onboard {
 
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $revokeService = new RevokeService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
-            $revokeParamaters = new RevokeParameters();
-            $revokeParamaters->setEndpointIds(array('72fd03ff-5e8e-4f6e-a54f-0aed8cec18f0'));
-            $revokeParamaters->setAccountId(self::ACCOUNT_ID);
-            $revokeParamaters->setApplicationId(TelemetryPlatform::applicationId());
-            $revokeParamaters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
-            self::assertNull($revokeService->revoke($revokeParamaters, TelemetryPlatform::privateKey()));
+            $revokeParameters = new RevokeParameters();
+            $revokeParameters->setEndpointIds(array('72fd03ff-5e8e-4f6e-a54f-0aed8cec18f0'));
+            $revokeParameters->setAccountId(self::ACCOUNT_ID);
+            $revokeParameters->setApplicationId(TelemetryPlatform::applicationId());
+            $revokeParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
+            self::assertNull($revokeService->revoke($revokeParameters, TelemetryPlatform::privateKey()));
         }
     }
 }

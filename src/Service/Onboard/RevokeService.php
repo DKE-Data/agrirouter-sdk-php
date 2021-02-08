@@ -40,6 +40,7 @@ namespace App\Service\Onboard {
          * @param string The private key for the secured revocation process.
          * @throws RevokeException Will be thrown if there are errors during the revocation process.
          * @throws SignatureException Will be thrown if failures occur while the signature for the request is created.
+         * @throws Exception Will be thrown in any other error case.
          */
         public function revoke(RevokeParameters $revokeParameters, string $privateKey)
         {
@@ -60,7 +61,7 @@ namespace App\Service\Onboard {
             try {
                 $response = $this->httpClient->sendRequest($revokeHttpRequest);
                 if ($response->getStatusCode() != self::AGRIROUTER_EXPECTED_REVOKE_ENDPOINT_RESPONSE_CODE) {
-                    throw new RevokeException("Unexpected response status: " . $response->getMessage() . ". Expected: "
+                    throw new RevokeException("Unexpected response status: " . $response->getStatusCode() . ". Expected: "
                         . self::AGRIROUTER_EXPECTED_REVOKE_ENDPOINT_RESPONSE_CODE . ".", ErrorCodes::UNEXPECTED_RESPONSE_STATUS);
                 }
             } catch (RevokeException $revokeException) {
