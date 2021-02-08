@@ -8,6 +8,8 @@ namespace Lib\Tests\Service\Messaging {
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\Direction;
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\PushNotification;
     use App\Api\Builder\CapabilityBuilder;
+    use App\Api\Exceptions\DecodeMessageException;
+    use App\Api\Exceptions\OutboxException;
     use App\Service\Common\DecodeMessageService;
     use App\Service\Common\HttpMessagingService;
     use App\Service\Common\UuidService;
@@ -24,6 +26,11 @@ namespace Lib\Tests\Service\Messaging {
     class CapabilityServiceTest extends AbstractIntegrationTestForServices
     {
 
+        /**
+         * @covers CapabilityService::send()
+         * @throws DecodeMessageException
+         * @throws OutboxException
+         */
         function testGivenInvalidCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldStillAcceptTheMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
@@ -81,6 +88,9 @@ namespace Lib\Tests\Service\Messaging {
             }
         }
 
+        /**
+         * @covers CapabilityService::send()
+         */
         function testGivenEmptyCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
@@ -105,6 +115,9 @@ namespace Lib\Tests\Service\Messaging {
             self::assertCount(1, $messagingResult->getMessageIds());
         }
 
+        /**
+         * @covers CapabilityService::send()
+         */
         function testGivenTaskdataCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
@@ -150,6 +163,9 @@ namespace Lib\Tests\Service\Messaging {
             self::assertCount(1, $messagingResult->getMessageIds());
         }
 
+        /**
+         * @covers CapabilityService::send()
+         */
         function testGivenDeviceDescriptionCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
@@ -195,6 +211,9 @@ namespace Lib\Tests\Service\Messaging {
             self::assertCount(1, $messagingResult->getMessageIds());
         }
 
+        /**
+         * @covers CapabilityService::send()
+         */
         function testGivenTimeLogCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
@@ -240,6 +259,9 @@ namespace Lib\Tests\Service\Messaging {
             self::assertCount(1, $messagingResult->getMessageIds());
         }
 
+        /**
+         * @covers CapabilityService::send()
+         */
         function testGivenImageCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
@@ -291,6 +313,9 @@ namespace Lib\Tests\Service\Messaging {
             self::assertCount(1, $messagingResult->getMessageIds());
         }
 
+        /**
+         * @covers CapabilityService::send()
+         */
         function testGivenVideoCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
@@ -342,6 +367,9 @@ namespace Lib\Tests\Service\Messaging {
             self::assertCount(1, $messagingResult->getMessageIds());
         }
 
+        /**
+         * @covers CapabilityService::send()
+         */
         function testGivenShapeCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
@@ -387,6 +415,9 @@ namespace Lib\Tests\Service\Messaging {
             self::assertCount(1, $messagingResult->getMessageIds());
         }
 
+        /**
+         * @covers CapabilityService::send()
+         */
         function testGivenPdfCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
@@ -432,6 +463,9 @@ namespace Lib\Tests\Service\Messaging {
             self::assertCount(1, $messagingResult->getMessageIds());
         }
 
+        /**
+         * @covers CapabilityService::send()
+         */
         function testGivenGpsInfoCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
@@ -477,6 +511,9 @@ namespace Lib\Tests\Service\Messaging {
             self::assertCount(1, $messagingResult->getMessageIds());
         }
 
+        /**
+         * @covers CapabilityService::send()
+         */
         function testGivenAllCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
