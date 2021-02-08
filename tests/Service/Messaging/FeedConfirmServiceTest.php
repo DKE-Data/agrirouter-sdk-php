@@ -4,48 +4,94 @@ namespace Lib\Tests\Service\Messaging {
 
     use Agrirouter\Commons\Message;
     use Agrirouter\Commons\Messages;
-    use Agrirouter\Request\Payload\Endpoint\Subscription\MessageTypeSubscriptionItem;
     use App\Api\Exceptions\DecodeMessageException;
     use App\Api\Exceptions\OutboxException;
-    use App\Definitions\CapabilityTypeDefinitions;
     use App\Service\Common\DecodeMessageService;
     use App\Service\Common\HttpMessagingService;
     use App\Service\Common\UuidService;
+    use App\Service\Messaging\FeedConfirmService;
     use App\Service\Messaging\Http\OutboxService;
-    use App\Service\Messaging\SubscriptionService;
-    use App\Service\Parameters\SubscriptionParameters;
+    use App\Service\Parameters\FeedConfirmParameters;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
     use Lib\Tests\Helper\OnboardResponseRepository;
     use Lib\Tests\Service\AbstractIntegrationTestForServices;
     use Lib\Tests\Service\Common\SleepTimer;
 
-    class SubscriptionServiceTest extends AbstractIntegrationTestForServices
+    class FeedConfirmServiceTest extends AbstractIntegrationTestForServices
     {
 
         /**
-         * @covers SubscriptionService::send()
+         * @covers FeedConfirmService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
          */
-        function testGivenInvalidSubscriptionWhenSendingSubscriptionThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
+        function testGivenInvalidMessageIdForConfirmationWhenSendingMessageConfirmationThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $subscriptionService = new SubscriptionService($httpMessagingService);
+            $feedConfirmService = new FeedConfirmService($httpMessagingService);
 
-            $subscriptionParameters = new SubscriptionParameters();
-            $subscriptionParameters->setApplicationMessageId(UuidService::newUuid());
-            $subscriptionParameters->setApplicationMessageSeqNo(1);
-            $subscriptionParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $feedConfirmParameters = new FeedConfirmParameters();
+            $feedConfirmParameters->setApplicationMessageId(UuidService::newUuid());
+            $feedConfirmParameters->setApplicationMessageSeqNo(1);
+            $feedConfirmParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $feedConfirmParameters->setMessageIds([UuidService::newUuid()]);
 
-            $subscriptionItem = new MessageTypeSubscriptionItem();
-            $subscriptionItem->setTechnicalMessageType("This one is invalid.");
-            $subscriptionItems = [];
-            array_push($subscriptionItems, $subscriptionItem);
-            $subscriptionParameters->setSubscriptionItems($subscriptionItems);
+            $messagingResult = $feedConfirmService->send($feedConfirmParameters);
 
-            $messagingResult = $subscriptionService->send($subscriptionParameters);
+            self::assertNotEmpty($messagingResult);
+            self::assertNotEmpty($messagingResult->getMessageIds());
+            self::assertCount(1, $messagingResult->getMessageIds());
+
+            SleepTimer::letTheAgrirouterProcessTheMessage();
+
+            $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            self::assertEquals(200, $outboxResponse->getStatusCode());
+
+            $messages = $outboxResponse->getMessages();
+            self::assertCount(1, $messages);
+            self::assertNotNull($messages[0]->getCommand());
+            self::assertNotNull($messages[0]->getCommand()->getMessage());
+
+            $decodeMessagesService = new DecodeMessageService();
+            $decodedMessages = $decodeMessagesService->decodeResponse($messages[0]->getCommand()->getMessage());
+            self::assertNotNull($decodedMessages);
+            self::assertEquals(200, $decodedMessages->getResponseEnvelope()->getResponseCode());
+
+            /** @var Messages $decodedDetails */
+            $decodedDetails = $decodeMessagesService->decodeDetails($decodedMessages->getResponsePayloadWrapper()->getDetails());
+            self::assertNotNull($decodedDetails);
+
+            $agrirouterMessages = $decodedDetails->getMessages();
+            self::assertEquals(1, $agrirouterMessages->count());
+
+            $iterator = $agrirouterMessages->getIterator();
+            /** @var Message $message */
+            foreach ($iterator as $message) {
+                self::assertEquals("VAL_000205", $message->getMessageCode());
+                self::assertEquals("Feed message cannot be found.", $message->getMessage());
+            }
+        }
+
+        /**
+         * @covers FeedConfirmService::send()
+         * @throws DecodeMessageException
+         * @throws OutboxException
+         */
+        function testGivenEmptyMessageIdForConfirmationWhenSendingMessageConfirmationThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
+        {
+            $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
+            $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
+            $feedConfirmService = new FeedConfirmService($httpMessagingService);
+
+            $feedConfirmParameters = new FeedConfirmParameters();
+            $feedConfirmParameters->setApplicationMessageId(UuidService::newUuid());
+            $feedConfirmParameters->setApplicationMessageSeqNo(1);
+            $feedConfirmParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+
+            $messagingResult = $feedConfirmService->send($feedConfirmParameters);
 
             self::assertNotEmpty($messagingResult);
             self::assertNotEmpty($messagingResult->getMessageIds());
@@ -77,53 +123,9 @@ namespace Lib\Tests\Service\Messaging {
             $iterator = $agrirouterMessages->getIterator();
             /** @var Message $message */
             foreach ($iterator as $message) {
-                self::assertEquals("Subscription to \"This one is invalid.\" is not valid per reported capabilities.", $message->getMessage());
+                self::assertEquals("VAL_000017", $message->getMessageCode());
+                self::assertEquals("messageIds information required to process message is missing or malformed.", $message->getMessage());
             }
-        }
-
-        /**
-         * @covers SubscriptionService::send()
-         * @throws DecodeMessageException
-         * @throws OutboxException
-         */
-        function testGivenValidSubscriptionWhenSendingSubscriptionThenTheAgrirouterShouldAcceptTheMessage()
-        {
-            $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
-            $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $subscriptionService = new SubscriptionService($httpMessagingService);
-
-            $subscriptionParameters = new SubscriptionParameters();
-            $subscriptionParameters->setApplicationMessageId(UuidService::newUuid());
-            $subscriptionParameters->setApplicationMessageSeqNo(1);
-            $subscriptionParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
-
-            $subscriptionItem = new MessageTypeSubscriptionItem();
-            $subscriptionItem->setTechnicalMessageType(CapabilityTypeDefinitions::ISO_11783_TASKDATA_ZIP);
-            $subscriptionItems = [];
-            array_push($subscriptionItems, $subscriptionItem);
-            $subscriptionParameters->setSubscriptionItems($subscriptionItems);
-
-            $messagingResult = $subscriptionService->send($subscriptionParameters);
-
-            self::assertNotEmpty($messagingResult);
-            self::assertNotEmpty($messagingResult->getMessageIds());
-            self::assertCount(1, $messagingResult->getMessageIds());
-
-            SleepTimer::letTheAgrirouterProcessTheMessage();
-
-            $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
-            self::assertEquals(200, $outboxResponse->getStatusCode());
-
-            $messages = $outboxResponse->getMessages();
-            self::assertCount(1, $messages);
-            self::assertNotNull($messages[0]->getCommand());
-            self::assertNotNull($messages[0]->getCommand()->getMessage());
-
-            $decodeMessagesService = new DecodeMessageService();
-            $decodedMessages = $decodeMessagesService->decodeResponse($messages[0]->getCommand()->getMessage());
-            self::assertNotNull($decodedMessages);
-            self::assertEquals(201, $decodedMessages->getResponseEnvelope()->getResponseCode());
         }
 
     }

@@ -4,6 +4,8 @@ namespace Lib\Tests\Service\Messaging {
 
     use Agrirouter\Request\Payload\Account\ListEndpointsQuery\Direction;
     use Agrirouter\Response\Payload\Account\ListEndpointsResponse;
+    use App\Api\Exceptions\DecodeMessageException;
+    use App\Api\Exceptions\OutboxException;
     use App\Definitions\CapabilityTypeDefinitions;
     use App\Service\Common\DecodeMessageService;
     use App\Service\Common\HttpMessagingService;
@@ -20,6 +22,11 @@ namespace Lib\Tests\Service\Messaging {
     class ListEndpointsServiceTest extends AbstractIntegrationTestForServices
     {
 
+        /**
+         * @covers ListEndpointsService::send()
+         * @throws DecodeMessageException
+         * @throws OutboxException
+         */
         function testGivenValidQueryWhenSendingListEndpointsMessageThenTheAgrirouterShouldAcceptTheMessageAndReturnTheQueryResult()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
@@ -75,6 +82,11 @@ namespace Lib\Tests\Service\Messaging {
             }
         }
 
+        /**
+         * @covers ListEndpointsService::send()
+         * @throws DecodeMessageException
+         * @throws OutboxException
+         */
         function testGivenInvalidQueryWhenSendingListEndpointsFilteredMessageThenTheAgrirouterShouldAcceptTheMessageAndReturnAnErrorMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
