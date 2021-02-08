@@ -29,6 +29,7 @@
   },
   "require-dev": {
     "guzzlehttp/guzzle": "^7.0",
+    "php-mqtt/client": "^v1.0.0",
     "monolog/monolog": "^2.2.0",
     "phpunit/phpunit": "^9.5.0"
   }
