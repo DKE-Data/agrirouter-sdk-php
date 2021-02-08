@@ -2,7 +2,7 @@
 
 namespace App\Service\Messaging {
 
-    use Agrirouter\Feed\Request\MessageConfirm;
+    use Agrirouter\Feed\Request\MessageDelete;
     use Agrirouter\Request\RequestEnvelope\Mode;
     use App\Api\Service\Messaging\EncodeMessageServiceInterface;
     use App\Api\Service\Messaging\MessagingServiceInterface;
@@ -13,18 +13,18 @@ namespace App\Service\Messaging {
     use App\Service\Common\EncodeMessageService;
     use App\Service\Common\TypeUrlService;
     use App\Service\Common\UuidService;
-    use App\Service\Parameters\FeedConfirmParameters;
+    use App\Service\Parameters\FeedDeleteParameters;
     use App\Service\Parameters\MessageHeaderParameters;
     use App\Service\Parameters\MessagePayloadParameters;
     use JetBrains\PhpStorm\Pure;
 
     /**
-     * Service to send the message confirmations to the AR.
-     * @template-implements MessagingServiceInterface<ConfirmMessageParameters>
-     * @template-implements EncodeMessageServiceInterface<ConfirmMessageParameters>
+     * Service to send the delete message request to the AR.
+     * @template-implements MessagingServiceInterface<DeleteMessageParameters>
+     * @template-implements EncodeMessageServiceInterface<DeleteMessageParameters>
      * @package App\Service\Messaging
      */
-    class FeedConfirmService implements MessagingServiceInterface, EncodeMessageServiceInterface
+    class FeedDeleteService implements MessagingServiceInterface, EncodeMessageServiceInterface
     {
 
         private MessagingServiceInterface $messagingService;
@@ -40,7 +40,7 @@ namespace App\Service\Messaging {
 
         /**
          * Encoding of the message.
-         * @param FeedConfirmParameters $parameters .
+         * @param FeedDeleteParameters $parameters .
          * @return EncodedMessage .
          */
         public function encode($parameters): EncodedMessage
@@ -50,13 +50,17 @@ namespace App\Service\Messaging {
             $messageHeaderParameters->setApplicationMessageSeqNo($parameters->getApplicationMessageSeqNo());
             $messageHeaderParameters->setTeamSetContextId($parameters->getTeamSetContextId());
             $messageHeaderParameters->setMode(Mode::DIRECT);
-            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_FEED_CONFIRM);
+            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_FEED_DELETE);
 
-            $messageConfirm = new MessageConfirm();
+            $messageConfirm = new MessageDelete();
             $messageConfirm->setMessageIds($parameters->getMessageIds());
+            $messageConfirm->setSenders($parameters->getSenders());
+            if (!is_null($parameters->getValidityPeriod())) {
+                $messageConfirm->setValidityPeriod($parameters->getValidityPeriod());
+            }
 
             $messagePayloadParameters = new MessagePayloadParameters();
-            $messagePayloadParameters->setTypeUrl(TypeUrlService::getTypeUrl(MessageConfirm::class));
+            $messagePayloadParameters->setTypeUrl(TypeUrlService::getTypeUrl(MessageDelete::class));
             $messagePayloadParameters->setValue($messageConfirm->serializeToString());
 
             $encodeMessageService = new EncodeMessageService();
@@ -70,7 +74,7 @@ namespace App\Service\Messaging {
 
         /**
          * Send message.
-         * @param FeedConfirmParameters $parameters .
+         * @param FeedDeleteParameters $parameters .
          * @return MessagingResult .
          */
         public function send($parameters): MessagingResult
