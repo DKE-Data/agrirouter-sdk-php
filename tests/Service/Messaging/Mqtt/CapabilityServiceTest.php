@@ -12,21 +12,20 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
     use Exception;
     use Lib\Tests\Applications\FarmingSoftware;
     use Lib\Tests\Helper\Identifier;
-    use Lib\Tests\Helper\LoggerBuilder;
     use Lib\Tests\Helper\OnboardResponseRepository;
     use Lib\Tests\Helper\PhpMqttClientBuilder;
+    use Lib\Tests\Service\AbstractIntegrationTestForServices;
     use PhpMqtt\Client\Exceptions\ProtocolNotSupportedException;
-    use PHPUnit\Framework\TestCase;
     use function PHPUnit\Framework\assertNotNull;
 
-    class CapabilitiesServiceTest extends TestCase
+    class CapabilityServiceTest extends AbstractIntegrationTestForServices
     {
         /**
          * @covers CapabilityService::send()
          * @throws ProtocolNotSupportedException
          * @throws Exception
          */
-        public function testConnectMqttClientToFarmingSoftwareEndpoint()
+        public function testGivenInvalidCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldStillAcceptTheMessage()
         {
             $onboardResponse = OnboardResponseRepository::read(Identifier::FARMING_SOFTWARE_MQTT);
             assertNotNull($onboardResponse->getConnectionCriteria());
@@ -36,9 +35,9 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $phpMqttClient = $phpMqttClientBuilder->build();
             assertNotNull($phpMqttClient);
             $phpMqttClient->connect($onboardResponse);
-            self::assertTrue($phpMqttClient->isConnected());
+            $this::assertTrue($phpMqttClient->isConnected());
 
-            $logger = LoggerBuilder::createConsoleLogger();
+            $logger = $this->getLogger();
             $receivedDecodedMessage = null;
             $phpMqttClient->registerMessageReceivedEventHandler($phpMqttClient->getHandler($logger, $receivedDecodedMessage));
             $phpMqttClient->subscribe($onboardResponse->getConnectionCriteria()->getCommands(), qualityOfService: 2);

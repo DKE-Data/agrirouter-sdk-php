@@ -23,6 +23,12 @@ namespace Lib\Tests\Helper {
      */
     class MqttClient implements MqttClientInterface
     {
+        public const MQTT_CONNECT_TIMEOUT = 20;
+        public const MQTT_SOCKET_TIMEOUT = 20;
+        public const MQTT_USE_TLS = true;
+        public const MQTT_USE_CLEAN_SESSION = true;
+        public const MQTT_KEEP_ALIVE_INTERVAL = 60;
+
         private PhpMqttClient $mqttClient;
         private ?Logger $logger;
 

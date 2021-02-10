@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-
 namespace Lib\Tests\Helper {
 
     use PhpMqtt\Client\Exceptions\ProtocolNotSupportedException;

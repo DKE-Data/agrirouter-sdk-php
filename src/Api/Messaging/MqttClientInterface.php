@@ -10,12 +10,6 @@ namespace App\Api\Messaging {
      */
     interface MqttClientInterface
     {
-        public const MQTT_CONNECT_TIMEOUT = 20;
-        public const MQTT_SOCKET_TIMEOUT = 20;
-        public const MQTT_USE_TLS = true;
-        public const MQTT_USE_CLEAN_SESSION = true;
-        public const MQTT_KEEP_ALIVE_INTERVAL = 60;
-
         /**
          * Connects the client to the agrirouter mqtt broker.
          * @param OnboardResponse $onboardResponse The onboard response with the necessary connection parameters.
