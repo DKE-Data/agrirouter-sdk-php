@@ -44,5 +44,15 @@ namespace App\Definitions {
          */
         public const DKE_FEED_DELETE = "dke:feed_delete";
 
+        /**
+         * Type 'dke:feed_header_query'.
+         */
+        public const DKE_FEED_HEADER_QUERY = "dke:feed_header_query";
+
+        /**
+         * Type 'dke:feed_message_query'.
+         */
+        public const DKE_FEED_MESSAGE_QUERY = "dke:feed_message_query";
+
     }
 }

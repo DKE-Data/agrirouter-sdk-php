@@ -3,6 +3,7 @@
 namespace App\Service\Common {
 
     use Agrirouter\Commons\Messages;
+    use Agrirouter\Feed\Response\HeaderQueryResponse;
     use Agrirouter\Response\Payload\Account\ListEndpointsResponse;
     use Agrirouter\Response\ResponseEnvelope;
     use Agrirouter\Response\ResponsePayloadWrapper;
@@ -56,6 +57,7 @@ namespace App\Service\Common {
          * @param Any $details .
          * @return mixed Depends on the type URL of the details.
          * @throws DecodeMessageException .
+         * @throws Exception
          * @noinspection PhpMixedReturnTypeCanBeReducedInspection
          */
         public function decodeDetails(Any $details): mixed
@@ -69,6 +71,10 @@ namespace App\Service\Common {
                     $listEndpointsResponse = new ListEndpointsResponse();
                     $listEndpointsResponse->mergeFromString($details->getValue());
                     return $listEndpointsResponse;
+                case TypeUrlService::getTypeUrl(HeaderQueryResponse::class):
+                    $headerQueryResponse = new HeaderQueryResponse();
+                    $headerQueryResponse->mergeFromString($details->getValue());
+                    return $headerQueryResponse;
                 default:
                     throw new DecodeMessageException("Could not handle type '" . $details->getTypeUrl() . "' while decoding details.", ErrorCodes::COULD_NOT_DECODE_DETAILS);
             }

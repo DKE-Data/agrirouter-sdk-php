@@ -4,6 +4,7 @@
 namespace App\Service\Common {
 
     use Agrirouter\Commons\Messages;
+    use Agrirouter\Feed\Response\HeaderQueryResponse;
     use Agrirouter\Response\Payload\Account\ListEndpointsResponse;
     use Google\Protobuf\Internal\DescriptorPool;
 
@@ -36,8 +37,8 @@ namespace App\Service\Common {
             self::$metadataHasBeenInitialized = true;
             new Messages();
             new ListEndpointsResponse();
+            new HeaderQueryResponse();
         }
-
 
     }
 }
