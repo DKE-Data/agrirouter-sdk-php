@@ -1,6 +1,5 @@
 <?php declare(strict_types=1);
 
-
 namespace App\Service\Common {
 
     use Agrirouter\Commons\Messages;
@@ -22,6 +21,7 @@ namespace App\Service\Common {
          * Get the type URL for the given class.
          * @param mixed $clazz The class to return the type URL for.
          * @return string The type URL for the given type.
+         * @noinspection PhpMissingParamTypeInspection
          */
         public static function getTypeUrl($clazz): string
         {

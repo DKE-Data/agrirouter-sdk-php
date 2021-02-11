@@ -32,6 +32,7 @@ namespace App\Service\Messaging\Http {
          * @param OnboardResponse $onboardResponse The onboard response for the endpoint.
          * @return OutboxResponse The response for the request.
          * @throws OutboxException Will be thrown if there is any error during the polling.
+         * @throws Exception
          */
         public function fetch(OnboardResponse $onboardResponse): OutboxResponse
         {

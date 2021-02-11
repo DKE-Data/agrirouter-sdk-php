@@ -42,6 +42,7 @@ namespace App\Service\Messaging {
          * Encoding of the message.
          * @param QueryHeadersParameters $parameters .
          * @return EncodedMessage .
+         * @noinspection PhpMissingParamTypeInspection
          */
         public function encode($parameters): EncodedMessage
         {
@@ -74,6 +75,7 @@ namespace App\Service\Messaging {
          * Send message.
          * @param QueryHeadersParameters $parameters .
          * @return MessagingResult .
+         * @noinspection PhpMissingParamTypeInspection
          */
         public function send($parameters): MessagingResult
         {

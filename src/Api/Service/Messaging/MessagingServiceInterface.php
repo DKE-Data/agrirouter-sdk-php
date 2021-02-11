@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php /** @noinspection PhpMissingParamTypeInspection */
+declare(strict_types=1);
 
 namespace App\Api\Service\Messaging {
 

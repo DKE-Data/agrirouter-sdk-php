@@ -29,6 +29,7 @@ namespace App\Service\Common {
          * Send message to the AR using the given message parameters.
          * @param MessagingParameters $parameters Messaging parameters.
          * @return MessagingResult -
+         * @noinspection PhpMissingParamTypeInspection
          */
         public function send($parameters): MessagingResult
         {
