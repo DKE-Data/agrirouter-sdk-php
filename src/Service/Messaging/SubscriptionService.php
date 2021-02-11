@@ -51,7 +51,7 @@ namespace App\Service\Messaging {
             $messageHeaderParameters->setApplicationMessageSeqNo($parameters->getApplicationMessageSeqNo());
             $messageHeaderParameters->setTeamSetContextId($parameters->getTeamSetContextId());
             $messageHeaderParameters->setMode(Mode::DIRECT);
-            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_SUBSCRIPTION);
+            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::SUBSCRIPTION);
 
             $subscription = new Subscription();
             $subscription->setTechnicalMessageTypes($parameters->getSubscriptionItems());

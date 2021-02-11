@@ -18,7 +18,7 @@ namespace Lib\Tests\Agrirouter {
     {
 
         /**
-         * @covers \App\Service\Messaging\CapabilitiesServiceInterface::encode
+         * @covers \App\Service\Cloud\CapabilitiesServiceInterface::encode
          * @throws Exception
          */
         public function testGivenCapabilityParametersWhenEncodingTheMessageThenTheCapabilitiesServiceShouldCreateAnEncodedMessage()

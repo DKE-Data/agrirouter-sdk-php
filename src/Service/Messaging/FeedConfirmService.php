@@ -51,7 +51,7 @@ namespace App\Service\Messaging {
             $messageHeaderParameters->setApplicationMessageSeqNo($parameters->getApplicationMessageSeqNo());
             $messageHeaderParameters->setTeamSetContextId($parameters->getTeamSetContextId());
             $messageHeaderParameters->setMode(Mode::DIRECT);
-            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_FEED_CONFIRM);
+            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::FEED_CONFIRM);
 
             $messageConfirm = new MessageConfirm();
             $messageConfirm->setMessageIds($parameters->getMessageIds());

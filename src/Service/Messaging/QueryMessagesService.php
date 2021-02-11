@@ -52,7 +52,7 @@ namespace App\Service\Messaging {
             $messageHeaderParameters->setApplicationMessageSeqNo($parameters->getApplicationMessageSeqNo());
             $messageHeaderParameters->setTeamSetContextId($parameters->getTeamSetContextId());
             $messageHeaderParameters->setMode(Mode::DIRECT);
-            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_FEED_MESSAGE_QUERY);
+            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::FEED_MESSAGE_QUERY);
 
             $messageQuery = new MessageQuery();
             $messageQuery->setSenders($parameters->getSenders());
