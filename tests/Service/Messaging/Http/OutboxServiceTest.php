@@ -32,7 +32,7 @@ namespace Lib\Tests\Service\Messaging\Http {
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
             $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
 
             $capability = new Capability();
@@ -50,7 +50,7 @@ namespace Lib\Tests\Service\Messaging\Http {
             self::assertNotEmpty($messagingResult->getMessageIds());
             self::assertCount(1, $messagingResult->getMessageIds());
 
-            $response = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $response = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $response->getStatusCode());
             $messages = $response->getMessages();
             self::assertCount(1, $messages);

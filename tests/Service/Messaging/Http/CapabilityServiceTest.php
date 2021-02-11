@@ -42,7 +42,7 @@ namespace Lib\Tests\Service\Messaging {
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
             $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
 
             $capability = new Capability();
@@ -61,7 +61,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();
@@ -102,7 +102,7 @@ namespace Lib\Tests\Service\Messaging {
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
             $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
 
             $capabilityBuilder = new CapabilityBuilder();
@@ -129,7 +129,7 @@ namespace Lib\Tests\Service\Messaging {
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
             $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
 
             $capabilityBuilder = new CapabilityBuilder();
@@ -177,7 +177,7 @@ namespace Lib\Tests\Service\Messaging {
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
             $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
 
             $capabilityBuilder = new CapabilityBuilder();
@@ -225,7 +225,7 @@ namespace Lib\Tests\Service\Messaging {
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
             $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
 
             $capabilityBuilder = new CapabilityBuilder();
@@ -273,7 +273,7 @@ namespace Lib\Tests\Service\Messaging {
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
             $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
 
             $capabilityBuilder = new CapabilityBuilder();
@@ -327,7 +327,7 @@ namespace Lib\Tests\Service\Messaging {
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
             $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
 
             $capabilityBuilder = new CapabilityBuilder();
@@ -381,7 +381,7 @@ namespace Lib\Tests\Service\Messaging {
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
             $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
 
             $capabilityBuilder = new CapabilityBuilder();
@@ -429,7 +429,7 @@ namespace Lib\Tests\Service\Messaging {
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
             $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
 
             $capabilityBuilder = new CapabilityBuilder();
@@ -477,7 +477,7 @@ namespace Lib\Tests\Service\Messaging {
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
             $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
 
             $capabilityBuilder = new CapabilityBuilder();
@@ -525,7 +525,7 @@ namespace Lib\Tests\Service\Messaging {
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
             $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
 
             $capabilityBuilder = new CapabilityBuilder();

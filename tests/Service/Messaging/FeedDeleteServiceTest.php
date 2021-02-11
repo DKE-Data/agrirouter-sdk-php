@@ -37,7 +37,7 @@ namespace Lib\Tests\Service\Messaging {
             $feedDeleteParameters = new FeedDeleteParameters();
             $feedDeleteParameters->setApplicationMessageId(UuidService::newUuid());
             $feedDeleteParameters->setApplicationMessageSeqNo(1);
-            $feedDeleteParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $feedDeleteParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
 
             $messagingResult = $feedDeleteService->send($feedDeleteParameters);
 
@@ -48,7 +48,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();
@@ -90,7 +90,7 @@ namespace Lib\Tests\Service\Messaging {
             $feedDeleteParameters = new FeedDeleteParameters();
             $feedDeleteParameters->setApplicationMessageId(UuidService::newUuid());
             $feedDeleteParameters->setApplicationMessageSeqNo(1);
-            $feedDeleteParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $feedDeleteParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $feedDeleteParameters->setMessageIds([UuidService::newUuid()]);
 
             $messagingResult = $feedDeleteService->send($feedDeleteParameters);
@@ -102,7 +102,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();
@@ -144,7 +144,7 @@ namespace Lib\Tests\Service\Messaging {
             $feedDeleteParameters = new FeedDeleteParameters();
             $feedDeleteParameters->setApplicationMessageId(UuidService::newUuid());
             $feedDeleteParameters->setApplicationMessageSeqNo(1);
-            $feedDeleteParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $feedDeleteParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $feedDeleteParameters->setSenders([UuidService::newUuid()]);
 
             $messagingResult = $feedDeleteService->send($feedDeleteParameters);
@@ -156,7 +156,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();
@@ -198,7 +198,7 @@ namespace Lib\Tests\Service\Messaging {
             $feedDeleteParameters = new FeedDeleteParameters();
             $feedDeleteParameters->setApplicationMessageId(UuidService::newUuid());
             $feedDeleteParameters->setApplicationMessageSeqNo(1);
-            $feedDeleteParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $feedDeleteParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $validityPeriod = new ValidityPeriod();
             $sentFrom = new Timestamp();
             $sentTo = new Timestamp();
@@ -215,7 +215,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();
