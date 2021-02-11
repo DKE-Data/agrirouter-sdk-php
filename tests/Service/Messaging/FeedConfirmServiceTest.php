@@ -35,7 +35,7 @@ namespace Lib\Tests\Service\Messaging {
             $feedConfirmParameters = new FeedConfirmParameters();
             $feedConfirmParameters->setApplicationMessageId(UuidService::newUuid());
             $feedConfirmParameters->setApplicationMessageSeqNo(1);
-            $feedConfirmParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $feedConfirmParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $feedConfirmParameters->setMessageIds([UuidService::newUuid()]);
 
             $messagingResult = $feedConfirmService->send($feedConfirmParameters);
@@ -47,7 +47,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();
@@ -89,7 +89,7 @@ namespace Lib\Tests\Service\Messaging {
             $feedConfirmParameters = new FeedConfirmParameters();
             $feedConfirmParameters->setApplicationMessageId(UuidService::newUuid());
             $feedConfirmParameters->setApplicationMessageSeqNo(1);
-            $feedConfirmParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $feedConfirmParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
 
             $messagingResult = $feedConfirmService->send($feedConfirmParameters);
 
@@ -100,7 +100,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();

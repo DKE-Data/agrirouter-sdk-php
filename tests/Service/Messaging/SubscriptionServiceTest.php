@@ -37,7 +37,7 @@ namespace Lib\Tests\Service\Messaging {
             $subscriptionParameters = new SubscriptionParameters();
             $subscriptionParameters->setApplicationMessageId(UuidService::newUuid());
             $subscriptionParameters->setApplicationMessageSeqNo(1);
-            $subscriptionParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $subscriptionParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
 
             $subscriptionItem = new MessageTypeSubscriptionItem();
             $subscriptionItem->setTechnicalMessageType("This one is invalid.");
@@ -54,7 +54,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();
@@ -95,7 +95,7 @@ namespace Lib\Tests\Service\Messaging {
             $subscriptionParameters = new SubscriptionParameters();
             $subscriptionParameters->setApplicationMessageId(UuidService::newUuid());
             $subscriptionParameters->setApplicationMessageSeqNo(1);
-            $subscriptionParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $subscriptionParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
 
             $subscriptionItem = new MessageTypeSubscriptionItem();
             $subscriptionItem->setTechnicalMessageType(CapabilityTypeDefinitions::ISO_11783_TASKDATA_ZIP);
@@ -112,7 +112,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();

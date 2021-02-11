@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Lib\Tests\Service\Common {
 
     use Exception;
@@ -22,6 +21,30 @@ namespace Lib\Tests\Service\Common {
         public function testConnectMqttClientToFarmingSoftwareEndpoint()
         {
             $onboardResponse = OnboardResponseRepository::read(Identifier::FARMING_SOFTWARE_MQTT);
+            assertNotNull($onboardResponse->getConnectionCriteria());
+
+            $phpMqttClientBuilder = new PhpMqttClientBuilder($onboardResponse->getConnectionCriteria()->getHost(),
+                $onboardResponse->getConnectionCriteria()->getPort(),
+                $onboardResponse->getConnectionCriteria()->getClientId());
+
+            $phpMqttClient = $phpMqttClientBuilder->build();
+            assertNotNull($phpMqttClient);
+
+            $phpMqttClient->connect($onboardResponse);
+            self::assertTrue($phpMqttClient->isConnected());
+
+            $phpMqttClient->disconnect();
+            self::assertFalse($phpMqttClient->isConnected());
+        }
+
+        /**
+         * @covers MqttClient::connect()
+         * @throws ProtocolNotSupportedException
+         * @throws Exception
+         */
+        public function testConnectMqttClientToCommunicationUnitEndpoint()
+        {
+            $onboardResponse = OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_MQTT);
             assertNotNull($onboardResponse->getConnectionCriteria());
 
             $phpMqttClientBuilder = new PhpMqttClientBuilder($onboardResponse->getConnectionCriteria()->getHost(),

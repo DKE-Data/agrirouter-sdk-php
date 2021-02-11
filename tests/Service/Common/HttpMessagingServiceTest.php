@@ -36,7 +36,7 @@ namespace Lib\Tests\Service\Common {
             self::expectException(OutboxException::class);
             self::expectExceptionCode(intval(ErrorCodes::INVALID_MESSAGE));
 
-            $onboardResponse = OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT);
+            $onboardResponse = OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP);
 
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());

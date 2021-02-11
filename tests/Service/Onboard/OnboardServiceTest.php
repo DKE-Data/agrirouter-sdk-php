@@ -71,5 +71,42 @@ namespace Lib\Tests\Service\Onboard {
             $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getCommands());
             $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getMeasures());
         }
+
+        /**
+         * @covers OnboardService::onboard
+         * @throws OnboardException
+         * @noinspection PhpUnreachableStatementInspection
+         */
+        public function testGivenValidRequestTokenWhenOnboardCommunicationUnitForMqttWithPemCertificateThenThereShouldBeAValidResponse()
+        {
+            $this->markTestIncomplete('Will not run successfully without changing the registration code.');
+
+            $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
+            $onboardService = new OnboardService($this->getEnvironment(), $guzzleHttpClientBuilder->build());
+            $onboardParameters = new OnboardParameters();
+            $onboardParameters->setUuid(UuidService::newUuid());
+            $onboardParameters->setApplicationId(CommunicationUnit::applicationId());
+            $onboardParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
+            $onboardParameters->setCertificationType(CertificationTypeDefinitions::PEM);
+            $onboardParameters->setGatewayId(GatewayTypeDefinitions::MQTT);
+            $onboardParameters->setRegistrationCode("f1d6e85c55");
+            $onboardParameters->setOffset(timezone_offset_get(new DateTimeZone('Europe/Berlin'), new DateTime()));
+            $onboardResponse = $onboardService->onboard($onboardParameters);
+
+            $this->assertNotEmpty($onboardResponse->getSensorAlternateId());
+            $this->assertNotEmpty($onboardResponse->getDeviceAlternateId());
+            $this->assertNotEmpty($onboardResponse->getCapabilityAlternateId());
+
+            $this->assertNotEmpty($onboardResponse->getAuthentication()->getCertificate());
+            $this->assertNotEmpty($onboardResponse->getAuthentication()->getSecret());
+            $this->assertNotEmpty($onboardResponse->getAuthentication()->getType());
+
+            $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getCommands());
+            $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getMeasures());
+
+            $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getHost());
+            $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getClientId());
+            $this->assertNotEmpty($onboardResponse->getConnectionCriteria()->getPort());
+        }
     }
 }

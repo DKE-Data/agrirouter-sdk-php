@@ -29,7 +29,7 @@ namespace Lib\Tests\Agrirouter {
             $capabilityParameters->setApplicationMessageSeqNo(1);
             $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
             $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
-            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $capabilityParameters->setEnablePushNotification(CapabilitySpecification\PushNotification::DISABLED);
             $encodedMessage = $capabilitiesService->encode($capabilityParameters);
             self::assertNotEmpty($encodedMessage);
