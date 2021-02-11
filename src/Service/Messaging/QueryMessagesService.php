@@ -16,16 +16,16 @@ namespace App\Service\Messaging {
     use App\Service\Common\UuidService;
     use App\Service\Parameters\MessageHeaderParameters;
     use App\Service\Parameters\MessagePayloadParameters;
-    use App\Service\Parameters\QueryHeadersParameters;
+    use App\Service\Parameters\QueryMessagesParameters;
     use JetBrains\PhpStorm\Pure;
 
     /**
      * Service to fetch the message headers from the AR.
-     * @template-implements MessagingServiceInterface<QueryHeadersParameters>
-     * @template-implements EncodeMessageServiceInterface<QueryHeadersParameters>
+     * @template-implements MessagingServiceInterface<QueryMessagesParameters>
+     * @template-implements EncodeMessageServiceInterface<QueryMessagesParameters>
      * @package App\Service\Messaging
      */
-    class QueryHeadersService implements MessagingServiceInterface, EncodeMessageServiceInterface
+    class QueryMessagesService implements MessagingServiceInterface, EncodeMessageServiceInterface
     {
 
         private MessagingServiceInterface $messagingService;
@@ -41,7 +41,7 @@ namespace App\Service\Messaging {
 
         /**
          * Encoding of the message.
-         * @param QueryHeadersParameters $parameters .
+         * @param QueryMessagesParameters $parameters .
          * @return EncodedMessage .
          * @noinspection PhpMissingParamTypeInspection
          */
@@ -52,7 +52,7 @@ namespace App\Service\Messaging {
             $messageHeaderParameters->setApplicationMessageSeqNo($parameters->getApplicationMessageSeqNo());
             $messageHeaderParameters->setTeamSetContextId($parameters->getTeamSetContextId());
             $messageHeaderParameters->setMode(Mode::DIRECT);
-            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_FEED_HEADER_QUERY);
+            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_FEED_MESSAGE_QUERY);
 
             $messageQuery = new MessageQuery();
             $messageQuery->setSenders($parameters->getSenders());
@@ -74,7 +74,7 @@ namespace App\Service\Messaging {
 
         /**
          * Send message.
-         * @param QueryHeadersParameters $parameters .
+         * @param QueryMessagesParameters $parameters .
          * @return MessagingResult .
          * @noinspection PhpMissingParamTypeInspection
          */
