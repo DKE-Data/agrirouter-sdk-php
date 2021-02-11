@@ -127,7 +127,11 @@ namespace App\Dto\Onboard {
                         $this->measures = $fieldValue;
                         break;
                     case self::PORT:
-                        $this->port = $fieldValue;
+                        if (is_int($fieldValue)) {
+                            $this->port = "" . $fieldValue;
+                        } else {
+                            $this->port = $fieldValue;
+                        }
                         break;
                     default:
                         throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);

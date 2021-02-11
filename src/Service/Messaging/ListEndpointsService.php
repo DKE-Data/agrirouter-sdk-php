@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Service\Messaging {
 
@@ -42,6 +42,7 @@ namespace App\Service\Messaging {
          * Encoding of the message.
          * @param ListEndpointsParameters $parameters .
          * @return EncodedMessage .
+         * @noinspection PhpMissingParamTypeInspection
          */
         public function encode($parameters): EncodedMessage
         {
@@ -78,6 +79,7 @@ namespace App\Service\Messaging {
          * Send message.
          * @param ListEndpointsParameters $parameters .
          * @return MessagingResult .
+         * @noinspection PhpMissingParamTypeInspection
          */
         public function send($parameters): MessagingResult
         {

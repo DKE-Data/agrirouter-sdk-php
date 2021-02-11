@@ -2,7 +2,7 @@
 
 namespace App\Service\Messaging {
 
-    use Agrirouter\Request\Payload\Endpoint\Subscription;
+    use Agrirouter\Feed\Request\MessageQuery;
     use Agrirouter\Request\RequestEnvelope\Mode;
     use App\Api\Service\Messaging\EncodeMessageServiceInterface;
     use App\Api\Service\Messaging\MessagingServiceInterface;
@@ -15,16 +15,16 @@ namespace App\Service\Messaging {
     use App\Service\Common\UuidService;
     use App\Service\Parameters\MessageHeaderParameters;
     use App\Service\Parameters\MessagePayloadParameters;
-    use App\Service\Parameters\SubscriptionParameters;
+    use App\Service\Parameters\QueryHeadersParameters;
     use JetBrains\PhpStorm\Pure;
 
     /**
-     * Service to send the subscriptions to the AR.
-     * @template-implements MessagingServiceInterface<CapabilityParameters>
-     * @template-implements EncodeMessageServiceInterface<CapabilityParameters>
+     * Service to fetch the message headers from the AR.
+     * @template-implements MessagingServiceInterface<QueryHeadersParameters>
+     * @template-implements EncodeMessageServiceInterface<QueryHeadersParameters>
      * @package App\Service\Messaging
      */
-    class SubscriptionService implements MessagingServiceInterface, EncodeMessageServiceInterface
+    class QueryHeadersService implements MessagingServiceInterface, EncodeMessageServiceInterface
     {
 
         private MessagingServiceInterface $messagingService;
@@ -40,7 +40,7 @@ namespace App\Service\Messaging {
 
         /**
          * Encoding of the message.
-         * @param SubscriptionParameters $parameters .
+         * @param QueryHeadersParameters $parameters .
          * @return EncodedMessage .
          * @noinspection PhpMissingParamTypeInspection
          */
@@ -51,14 +51,16 @@ namespace App\Service\Messaging {
             $messageHeaderParameters->setApplicationMessageSeqNo($parameters->getApplicationMessageSeqNo());
             $messageHeaderParameters->setTeamSetContextId($parameters->getTeamSetContextId());
             $messageHeaderParameters->setMode(Mode::DIRECT);
-            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_SUBSCRIPTION);
+            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_FEED_HEADER_QUERY);
 
-            $subscription = new Subscription();
-            $subscription->setTechnicalMessageTypes($parameters->getSubscriptionItems());
+            $messageQuery = new MessageQuery();
+            $messageQuery->setSenders($parameters->getSenders());
+            $messageQuery->setMessageIds($parameters->getMessageIds());
+            $messageQuery->setValidityPeriod($parameters->getValidityPeriod());
 
             $messagePayloadParameters = new MessagePayloadParameters();
-            $messagePayloadParameters->setTypeUrl(TypeUrlService::getTypeUrl(Subscription::class));
-            $messagePayloadParameters->setValue($subscription->serializeToString());
+            $messagePayloadParameters->setTypeUrl(TypeUrlService::getTypeUrl(MessageQuery::class));
+            $messagePayloadParameters->setValue($messageQuery->serializeToString());
 
             $encodeMessageService = new EncodeMessageService();
             $messageContent = $encodeMessageService->encode($messageHeaderParameters, $messagePayloadParameters);
@@ -71,7 +73,7 @@ namespace App\Service\Messaging {
 
         /**
          * Send message.
-         * @param SubscriptionParameters $parameters .
+         * @param QueryHeadersParameters $parameters .
          * @return MessagingResult .
          * @noinspection PhpMissingParamTypeInspection
          */

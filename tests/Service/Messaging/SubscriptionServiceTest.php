@@ -14,6 +14,7 @@ namespace Lib\Tests\Service\Messaging {
     use App\Service\Messaging\Http\OutboxService;
     use App\Service\Messaging\SubscriptionService;
     use App\Service\Parameters\SubscriptionParameters;
+    use Exception;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
     use Lib\Tests\Helper\OnboardResponseRepository;
@@ -27,6 +28,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers SubscriptionService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenInvalidSubscriptionWhenSendingSubscriptionThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
@@ -37,7 +39,7 @@ namespace Lib\Tests\Service\Messaging {
             $subscriptionParameters = new SubscriptionParameters();
             $subscriptionParameters->setApplicationMessageId(UuidService::newUuid());
             $subscriptionParameters->setApplicationMessageSeqNo(1);
-            $subscriptionParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $subscriptionParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
 
             $subscriptionItem = new MessageTypeSubscriptionItem();
             $subscriptionItem->setTechnicalMessageType("This one is invalid.");
@@ -54,7 +56,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();
@@ -85,6 +87,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers SubscriptionService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenValidSubscriptionWhenSendingSubscriptionThenTheAgrirouterShouldAcceptTheMessage()
         {
@@ -95,7 +98,7 @@ namespace Lib\Tests\Service\Messaging {
             $subscriptionParameters = new SubscriptionParameters();
             $subscriptionParameters->setApplicationMessageId(UuidService::newUuid());
             $subscriptionParameters->setApplicationMessageSeqNo(1);
-            $subscriptionParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $subscriptionParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
 
             $subscriptionItem = new MessageTypeSubscriptionItem();
             $subscriptionItem->setTechnicalMessageType(CapabilityTypeDefinitions::ISO_11783_TASKDATA_ZIP);
@@ -112,7 +115,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();

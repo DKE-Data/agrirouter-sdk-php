@@ -7,6 +7,7 @@ namespace Lib\Tests\Service\Common {
     use App\Api\Service\Parameters\MessagingParameters;
     use App\Service\Common\HttpMessagingService;
     use Error;
+    use Exception;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
     use Lib\Tests\Helper\OnboardResponseRepository;
@@ -17,6 +18,7 @@ namespace Lib\Tests\Service\Common {
 
         /**
          * @covers HttpMessagingService::send()
+         * @throws OutboxException
          */
         function testGivenInvalidParametersWhenSendingMessageViaHttpThenTheServiceShouldThrowAnException()
         {
@@ -30,13 +32,14 @@ namespace Lib\Tests\Service\Common {
 
         /**
          * @covers HttpMessagingService::send()
+         * @throws Exception
          */
         function testGivenInvalidMessageWhenSendingMessageViaHttpThenTheServiceShouldThrowAnException()
         {
             self::expectException(OutboxException::class);
             self::expectExceptionCode(intval(ErrorCodes::INVALID_MESSAGE));
 
-            $onboardResponse = OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT);
+            $onboardResponse = OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP);
 
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());

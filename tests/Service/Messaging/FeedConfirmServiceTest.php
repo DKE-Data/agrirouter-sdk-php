@@ -12,6 +12,7 @@ namespace Lib\Tests\Service\Messaging {
     use App\Service\Messaging\FeedConfirmService;
     use App\Service\Messaging\Http\OutboxService;
     use App\Service\Parameters\FeedConfirmParameters;
+    use Exception;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
     use Lib\Tests\Helper\OnboardResponseRepository;
@@ -25,6 +26,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers FeedConfirmService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenInvalidMessageIdForConfirmationWhenSendingMessageConfirmationThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
@@ -35,7 +37,7 @@ namespace Lib\Tests\Service\Messaging {
             $feedConfirmParameters = new FeedConfirmParameters();
             $feedConfirmParameters->setApplicationMessageId(UuidService::newUuid());
             $feedConfirmParameters->setApplicationMessageSeqNo(1);
-            $feedConfirmParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $feedConfirmParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $feedConfirmParameters->setMessageIds([UuidService::newUuid()]);
 
             $messagingResult = $feedConfirmService->send($feedConfirmParameters);
@@ -47,7 +49,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();
@@ -79,6 +81,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers FeedConfirmService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenEmptyMessageIdForConfirmationWhenSendingMessageConfirmationThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
@@ -89,7 +92,7 @@ namespace Lib\Tests\Service\Messaging {
             $feedConfirmParameters = new FeedConfirmParameters();
             $feedConfirmParameters->setApplicationMessageId(UuidService::newUuid());
             $feedConfirmParameters->setApplicationMessageSeqNo(1);
-            $feedConfirmParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $feedConfirmParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
 
             $messagingResult = $feedConfirmService->send($feedConfirmParameters);
 
@@ -100,7 +103,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();

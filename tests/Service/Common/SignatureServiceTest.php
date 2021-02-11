@@ -73,6 +73,7 @@ namespace Lib\Tests\Service\Common {
 
         /**
          * @covers SignatureService::createXAgrirouterSignature
+         * @throws SignatureException
          */
         public function testGivenValidCertificatesWhenCreatingTheXAgrirouterSignatureThenTheCreatedSignatureShouldBeOk()
         {
@@ -82,6 +83,7 @@ namespace Lib\Tests\Service\Common {
 
         /**
          * @covers SignatureService::verifySignature
+         * @throws SignatureException
          */
         public function testGivenValidCertificatesWhenVerifyingTheCreatedSignatureThenTheResultShouldBeOk()
         {

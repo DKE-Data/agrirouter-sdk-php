@@ -37,6 +37,7 @@ namespace Lib\Tests\Service\Onboard {
 
         /**
          * @covers AuthorizationService::parseAuthorizationResult()
+         * @throws DecodeMessageException
          */
         public function testGivenValidResponseWhenParsingTheResultThenTheAuthorizationRequestObjectWShouldBeFilled()
         {
@@ -51,6 +52,7 @@ namespace Lib\Tests\Service\Onboard {
 
         /**
          * @covers AuthorizationService::parseAuthorizationToken()
+         * @throws DecodeMessageException
          */
         public function testGivenValidResponseWhenParsingTheTokenThenTheAuthorizationTokenObjectWShouldBeFilled()
         {
@@ -94,6 +96,7 @@ namespace Lib\Tests\Service\Onboard {
 
         /**
          * @covers AuthorizationService::parseAuthorizationToken()
+         * @throws DecodeMessageException
          */
         public function testGivenDeclineConnectionResponseWhenParsingTheTokenThenTheAuthorizationServiceShouldThrowSpecificException()
         {

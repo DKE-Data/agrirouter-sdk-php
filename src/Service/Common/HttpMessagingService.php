@@ -1,23 +1,21 @@
-<?php declare(strict_types=1);
+<?php /** @noinspection PhpMissingParamTypeInspection */
+declare(strict_types=1);
 
 namespace App\Service\Common {
 
     use App\Api\Exceptions\ErrorCodes;
     use App\Api\Exceptions\OutboxException;
     use App\Api\Messaging\HttpClientInterface;
-    use App\Api\Service\Messaging\MessagingServiceInterface;
     use App\Api\Service\Parameters\MessagingParameters;
-    use App\Dto\Messaging\Inner\Message;
     use App\Dto\Messaging\MessagingResult;
-    use App\Dto\Requests\MessageRequest;
     use Exception;
 
     /**
-     * Service to send messages to the AR.
+     * Service to send messages to the AR via HTTP.
      * @package App\Service\Common
      * @template-implements MessagingServiceInterface<MessagingParameters>
      */
-    class HttpMessagingService implements MessagingServiceInterface
+    class HttpMessagingService extends AbstractMessagingService
     {
         private HttpClientInterface $httpClient;
 
@@ -35,23 +33,11 @@ namespace App\Service\Common {
          * @param MessagingParameters $parameters Messaging parameters.
          * @return MessagingResult .
          * @throws OutboxException Will be thrown in case of an error.
+         * @throws Exception Will be thrown in case of an error.
          */
         public function send($parameters): MessagingResult
         {
-            $messageRequest = new MessageRequest();
-            $messageRequest->setSensorAlternateId($parameters->getOnboardResponse()->getSensorAlternateId());
-            $messageRequest->setCapabilityAlternateId($parameters->getOnboardResponse()->getCapabilityAlternateId());
-
-            $messages = [];
-            foreach ($parameters->getEncodedMessages() as $encodedMessage) {
-                $message = new Message();
-                $message->setContent($encodedMessage);
-                $message->setTimestamp(UtcDataService::nowAsUnixTimestamp());
-                array_push($messages, $message);
-            }
-            $messageRequest->setMessages($messages);
-
-            $requestBody = json_encode($messageRequest);
+            $requestBody = json_encode($this->createMessageRequest($parameters));
             $headers = [
                 'Content-type' => 'application/json',
             ];

@@ -13,6 +13,7 @@ namespace Lib\Tests\Service\Messaging {
     use App\Service\Messaging\Http\OutboxService;
     use App\Service\Messaging\ListEndpointsService;
     use App\Service\Parameters\ListEndpointsParameters;
+    use Exception;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
     use Lib\Tests\Helper\OnboardResponseRepository;
@@ -26,6 +27,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers ListEndpointsService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenValidQueryWhenSendingListEndpointsMessageThenTheAgrirouterShouldAcceptTheMessageAndReturnTheQueryResult()
         {
@@ -36,7 +38,7 @@ namespace Lib\Tests\Service\Messaging {
             $listEndpointsParameters = new ListEndpointsParameters();
             $listEndpointsParameters->setApplicationMessageId(UuidService::newUuid());
             $listEndpointsParameters->setApplicationMessageSeqNo(1);
-            $listEndpointsParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $listEndpointsParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $listEndpointsParameters->setTechnicalMessageType(CapabilityTypeDefinitions::ISO_11783_TASKDATA_ZIP);
             $listEndpointsParameters->setDirection(Direction::SEND_RECEIVE);
 
@@ -49,7 +51,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();
@@ -86,6 +88,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers ListEndpointsService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenInvalidQueryWhenSendingListEndpointsFilteredMessageThenTheAgrirouterShouldAcceptTheMessageAndReturnAnErrorMessage()
         {
@@ -96,7 +99,7 @@ namespace Lib\Tests\Service\Messaging {
             $listEndpointsParameters = new ListEndpointsParameters();
             $listEndpointsParameters->setApplicationMessageId(UuidService::newUuid());
             $listEndpointsParameters->setApplicationMessageSeqNo(1);
-            $listEndpointsParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $listEndpointsParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $listEndpointsParameters->setTechnicalMessageType(CapabilityTypeDefinitions::ISO_11783_TASKDATA_ZIP);
             $listEndpointsParameters->setDirection(Direction::SEND_RECEIVE);
             $listEndpointsParameters->setFiltered(true);
@@ -110,7 +113,7 @@ namespace Lib\Tests\Service\Messaging {
             SleepTimer::letTheAgrirouterProcessTheMessage();
 
             $outboxService = new OutboxService($guzzleHttpClientBuilder->build());
-            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT));
+            $outboxResponse = $outboxService->fetch(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             self::assertEquals(200, $outboxResponse->getStatusCode());
 
             $messages = $outboxResponse->getMessages();

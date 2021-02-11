@@ -2,14 +2,10 @@
 
 namespace Lib\Tests\Helper {
 
-    use DateTimeZone;
     use GuzzleHttp\Client;
     use GuzzleHttp\HandlerStack;
     use GuzzleHttp\MessageFormatter;
     use GuzzleHttp\Middleware;
-    use Monolog\Formatter\LineFormatter;
-    use Monolog\Handler\StreamHandler;
-    use Monolog\Logger;
     use Psr\Log\LoggerInterface;
 
     /**
@@ -35,27 +31,11 @@ namespace Lib\Tests\Helper {
          */
         private function createHttpClient(): Client
         {
-            $logger = self::createConsoleLogger();
+            $logger = LoggerBuilder::createConsoleLogger();
             return new Client([
                 'handler' => self::createHandlerStack($logger),
                 'verify' => false
             ]);
-        }
-
-        /**
-         * Creates a standard logging Handler for logging requests and responses to the console.
-         * @return Logger The default console logger.
-         */
-        private function createConsoleLogger(): Logger
-        {
-            $logger = new Logger('HttpClientConsole');
-            $dateFormat = "d.m.Y, H:i:s";
-            $formatter = new LineFormatter(null, $dateFormat, false, true);
-            $handler = new StreamHandler('php://stdout', Logger::INFO);
-            $handler->setFormatter($formatter);
-            $logger->pushHandler($handler);
-            $logger->setTimezone(new DateTimeZone('Europe/Berlin'));
-            return $logger;
         }
 
         /**
