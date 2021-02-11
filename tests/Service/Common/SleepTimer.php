@@ -2,6 +2,11 @@
 
 namespace Lib\Tests\Service\Common {
 
+    use Lib\Tests\Helper\MqttClient;
+    use PhpMqtt\Client\Exceptions\DataTransferException;
+    use PhpMqtt\Client\Exceptions\MqttClientException;
+    use PhpMqtt\Client\Exceptions\ProtocolViolationException;
+
     /**
      * Timer.
      * @package Lib\Tests\Service\Common
@@ -12,11 +17,18 @@ namespace Lib\Tests\Service\Common {
         /**
          * Sleep for a dedicated time and let the AR process the message.
          * @param int $seconds Seconds to sleep.
+         * @param MqttClient|null $mqttClient
+         * @throws DataTransferException
+         * @throws MqttClientException
+         * @throws ProtocolViolationException
          */
-        public static function letTheAgrirouterProcessTheMessage(int $seconds = 3)
+        public static function letTheAgrirouterProcessTheMessage(int $seconds = 3, MqttClient $mqttClient = null)
         {
-            sleep($seconds);
+            if ($mqttClient !== null) {
+                $mqttClient->wait($seconds);
+            } else {
+                sleep($seconds);
+            }
         }
-
     }
 }

@@ -4,6 +4,7 @@ namespace Lib\Tests\Service\Common {
 
     use Exception;
     use Lib\Tests\Helper\Identifier;
+    use Lib\Tests\Helper\LoggerBuilder;
     use Lib\Tests\Helper\MqttClient;
     use Lib\Tests\Helper\OnboardResponseRepository;
     use Lib\Tests\Helper\PhpMqttClientBuilder;
@@ -23,11 +24,12 @@ namespace Lib\Tests\Service\Common {
             $onboardResponse = OnboardResponseRepository::read(Identifier::FARMING_SOFTWARE_MQTT);
             assertNotNull($onboardResponse->getConnectionCriteria());
 
-            $phpMqttClientBuilder = new PhpMqttClientBuilder($onboardResponse->getConnectionCriteria()->getHost(),
-                $onboardResponse->getConnectionCriteria()->getPort(),
-                $onboardResponse->getConnectionCriteria()->getClientId());
+            $phpMqttClientBuilder = new PhpMqttClientBuilder();
 
-            $phpMqttClient = $phpMqttClientBuilder->build();
+            $phpMqttClient = $phpMqttClientBuilder
+                ->withLogger(LoggerBuilder::createConsoleLogger())
+                ->withOnboardResponse($onboardResponse)
+                ->build();
             assertNotNull($phpMqttClient);
 
             $phpMqttClient->connect($onboardResponse);
@@ -47,11 +49,12 @@ namespace Lib\Tests\Service\Common {
             $onboardResponse = OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_MQTT);
             assertNotNull($onboardResponse->getConnectionCriteria());
 
-            $phpMqttClientBuilder = new PhpMqttClientBuilder($onboardResponse->getConnectionCriteria()->getHost(),
-                $onboardResponse->getConnectionCriteria()->getPort(),
-                $onboardResponse->getConnectionCriteria()->getClientId());
+            $phpMqttClientBuilder = new PhpMqttClientBuilder();
 
-            $phpMqttClient = $phpMqttClientBuilder->build();
+            $phpMqttClient = $phpMqttClientBuilder
+                ->withLogger(LoggerBuilder::createConsoleLogger())
+                ->withOnboardResponse($onboardResponse)
+                ->build();
             assertNotNull($phpMqttClient);
 
             $phpMqttClient->connect($onboardResponse);

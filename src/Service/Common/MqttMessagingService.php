@@ -33,7 +33,7 @@ namespace App\Service\Common {
         public function send($parameters): MessagingResult
         {
             $mqttPayload = json_encode($this->createMessageRequest($parameters));
-            $this->mqttClient->publish($parameters->getOnboardResponse()->getConnectionCriteria()->getMeasures(), $mqttPayload, BaseMessageProcessor::QOS_EXACTLY_ONCE, true);
+            $this->mqttClient->publish($parameters->getOnboardResponse()->getConnectionCriteria()->getMeasures(), $mqttPayload, qualityOfService: BaseMessageProcessor::QOS_EXACTLY_ONCE, retain: true);
             $messagingResult = new MessagingResult();
             $messageIds = [];
             array_push($messageIds, $parameters->getApplicationMessageId());

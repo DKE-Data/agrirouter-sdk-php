@@ -5,13 +5,13 @@ namespace Lib\Tests\Service {
     use App\Environment\AbstractEnvironment;
     use App\Environment\QualityAssuranceEnvironment;
     use Lib\Tests\Helper\LoggerBuilder;
-    use Monolog\Logger;
     use PHPUnit\Framework\TestCase;
+    use Psr\Log\LoggerInterface;
 
     abstract class AbstractIntegrationTestForServices extends TestCase
     {
         private AbstractEnvironment $environment;
-        private Logger $logger;
+        private LoggerInterface $logger;
 
         public function __construct()
         {
@@ -25,7 +25,7 @@ namespace Lib\Tests\Service {
             return $this->environment;
         }
 
-        public function getLogger(): Logger
+        public function getLogger(): LoggerInterface
         {
             return $this->logger;
         }

@@ -2,7 +2,9 @@
 
 namespace Lib\Tests\Helper {
 
+    use App\Dto\Onboard\OnboardResponse;
     use PhpMqtt\Client\Exceptions\ProtocolNotSupportedException;
+    use Psr\Log\LoggerInterface;
 
     /**
      * Manages the PhpMqttClient with Logging.
@@ -10,31 +12,56 @@ namespace Lib\Tests\Helper {
      */
     class PhpMqttClientBuilder
     {
-        private MqttClient $mqttClient;
+        private LoggerInterface $logger;
+        private string $host;
+        private string $clientId;
+        private int $port;
+        private OnboardResponse $onboardResponse;
 
         /**
-         * Constructor.
-         * @param string $host
-         * @param string $port
-         * @param string $clientId
-         * @throws ProtocolNotSupportedException
+         * Sets the logger for the mqtt client.
+         * @param LoggerInterface $logger The psr compatible logger.
+         * @return $this -
          */
-        public function __construct(string $host, string $port, string $clientId)
+        public function withLogger(LoggerInterface $logger): self
         {
-            $this->mqttClient = new MqttClient(new \PhpMqtt\Client\MqttClient(
-                host: $host,
-                port: (int)$port,
-                clientId: $clientId,
-                logger: LoggerBuilder::createConsoleLogger()));
+            $this->logger = $logger;
+            return $this;
         }
+
+        /**
+         * Sets the onboard response for the mqtt client.
+         * @param OnboardResponse $onboardResponse The onboard response.
+         * @return $this -
+         */
+        public function withOnboardResponse(OnboardResponse $onboardResponse):self
+        {
+            $this->onboardResponse = $onboardResponse;
+            $connectionCriteria = $this->onboardResponse->getConnectionCriteria();
+            $this->host = $connectionCriteria->getHost();
+            $this->port = (int)$connectionCriteria->getPort();
+            $this->clientId = $connectionCriteria->getClientId();
+
+            return $this;
+        }
+
 
         /**
          * Get the MQTT client.
          * @return MqttClient -
+         * @throws ProtocolNotSupportedException
          */
         public function build(): MqttClient
         {
-            return $this->mqttClient;
+
+            return new MqttClient(
+                new \PhpMqtt\Client\MqttClient(
+                    host: $this->host,
+                    port: $this->port,
+                    clientId: $this->clientId,
+                    logger: $this->logger)
+                , $this->onboardResponse
+                , $this->logger);
         }
     }
 }

@@ -5,9 +5,7 @@ namespace Lib\Tests\Helper {
     use App\Api\Messaging\MqttClientInterface;
     use App\Dto\Onboard\OnboardResponse;
     use App\Service\Common\CertificateService;
-    use App\Service\Common\DecodeMessageService;
     use JetBrains\PhpStorm\Pure;
-    use Monolog\Logger;
     use PhpMqtt\Client\ConnectionSettings;
     use PhpMqtt\Client\Exceptions\ConfigurationInvalidException;
     use PhpMqtt\Client\Exceptions\ConnectingToBrokerFailedException;
@@ -16,6 +14,7 @@ namespace Lib\Tests\Helper {
     use PhpMqtt\Client\Exceptions\ProtocolViolationException;
     use PhpMqtt\Client\Exceptions\RepositoryException;
     use PhpMqtt\Client\MqttClient as PhpMqttClient;
+    use Psr\Log\LoggerInterface;
 
     /**
      * MQTT client implementation to wrap the PhpMqtt client.
@@ -30,17 +29,20 @@ namespace Lib\Tests\Helper {
         public const MQTT_KEEP_ALIVE_INTERVAL = 60;
 
         private PhpMqttClient $mqttClient;
-        private ?Logger $logger;
+        private ?LoggerInterface $logger;
+        private OnboardResponse $onboardResponse;
 
         /**
          * Constructor.
          * @param PhpMqttClient $mqttClient The PhpMqtt client.
-         * @param Logger|null $logger
+         * @param OnboardResponse $onboardResponse The onboard response with the connection parameters.
+         * @param LoggerInterface|null $logger The logger used for logging.
          */
-        public function __construct(PhpMqttClient $mqttClient, ?Logger $logger = null)
+        #[Pure] public function __construct(PhpMqttClient $mqttClient, OnboardResponse $onboardResponse, ?LoggerInterface $logger = null)
         {
             $this->mqttClient = $mqttClient;
             $this->logger = $logger;
+            $this->onboardResponse = $onboardResponse;
         }
 
         /**
@@ -48,9 +50,9 @@ namespace Lib\Tests\Helper {
          * @throws ConfigurationInvalidException
          * @throws ConnectingToBrokerFailedException
          */
-        public function connect(OnboardResponse $onboardResponse): void
+        public function connect(): void
         {
-            $clientCertPath = CertificateService::createCertificateFile($onboardResponse);
+            $clientCertPath = CertificateService::createCertificateFile($this->onboardResponse);
             $mqttConnectionSettings = (new ConnectionSettings())
                 ->setConnectTimeout(self::MQTT_CONNECT_TIMEOUT)
                 ->setSocketTimeout(self::MQTT_SOCKET_TIMEOUT)
@@ -58,7 +60,7 @@ namespace Lib\Tests\Helper {
                 ->setKeepAliveInterval(self::MQTT_KEEP_ALIVE_INTERVAL)
                 ->setTlsClientCertificateFile($clientCertPath)
                 ->setTlsClientCertificateKeyFile($clientCertPath)
-                ->setTlsClientCertificateKeyPassphrase($onboardResponse->getAuthentication()->getSecret());
+                ->setTlsClientCertificateKeyPassphrase($this->onboardResponse->getAuthentication()->getSecret());
             $this->mqttClient->connect($mqttConnectionSettings, self::MQTT_USE_CLEAN_SESSION);
         }
 
@@ -76,9 +78,9 @@ namespace Lib\Tests\Helper {
          * @throws DataTransferException
          * @throws RepositoryException
          */
-        public function subscribe(string $topic, callable $callback = null, int $qualityOfService = 0): void
+        public function subscribe(string $topic = null, callable $callback = null, int $qualityOfService = 2): void
         {
-            $this->mqttClient->subscribe($topic, $callback, $qualityOfService = 0);
+            $this->mqttClient->subscribe($topic, $callback, $qualityOfService);
         }
 
         /**
@@ -86,7 +88,7 @@ namespace Lib\Tests\Helper {
          * @throws DataTransferException
          * @throws RepositoryException
          */
-        public function unsubscribe(string $topic): void
+        public function unsubscribe(string $topic = null): void
         {
             $this->mqttClient->unsubscribe($topic);
         }
@@ -110,43 +112,44 @@ namespace Lib\Tests\Helper {
         }
 
         /**
-         * Waits until a new message arrives on the topic of the client.
+         * Interrupts the waiting loop of the client.
+         */
+        public function interrupt(): void
+        {
+            $this->mqttClient->interrupt();
+        }
+
+        /**
+         * Waits for a given time period until a new message arrives on the topic of the client.
+         * Can be interrupted with a call of the interrupt() method of the client.
+         * @param int $seconds Time to wait for messages in the outbox.
          * @throws DataTransferException -
          * @throws MqttClientException -
          * @throws ProtocolViolationException -
          */
-        public function wait(): void
+        public function wait(int $seconds = 5): void
         {
-            $this->mqttClient->loop();
+            $maxRuntime = (float)$seconds;
+
+            $this->mqttClient->registerLoopEventHandler($this->getLoopEventHandler($maxRuntime));
+            $this->mqttClient->loop(true);
+            $this->mqttClient->unregisterLoopEventHandler();
         }
 
         /**
-         * Returns the message handler for php mqtt.
-         * @param $logger Logger A logger for the handler.
-         * @param $receivedDecodedMessage - Object reference store for the received messages.
-         * @return callable The callable handler.
+         * Creates a callback function for the php mqtt client loop event handler. Normally the loop runs endless if not interrupted.
+         * This callback interrupts the loop after the given amount of seconds.
+         * @param float $maxRuntime Maximum time to wait in seconds.
+         * @return callable - The closure for the LoopEventHandler of the php mqtt client.
          */
-        public function getHandler(Logger &$logger, &$receivedDecodedMessage): callable
+        private function getLoopEventHandler(float &$maxRuntime): callable
         {
-            return function (PhpMqttClient $client, string $topic, string $message)
-            use (&$logger, &$receivedDecodedMessage) {
-                $logger->info("We received a message on topic [$topic]: $message");
-                $decodedMessage = json_decode($message, true);
-                $command = $decodedMessage['command'];
-                $decodeMessageService = new DecodeMessageService();
-                $receivedDecodedMessage = $decodeMessageService->decodeResponse($command['message']);
-
-                $client->interrupt();
+            return function (PhpMqttClient $client, float $elapsedTime) use (&$maxRuntime) {
+                if ($elapsedTime >= $maxRuntime) {
+                    $client->interrupt();
+                    return;
+                }
             };
-        }
-
-        /**
-         * Registers the message received callback method for the php mqtt client.
-         * @param callable $handler A callback method.
-         */
-        public function registerMessageReceivedEventHandler(callable $handler): void
-        {
-            $this->mqttClient->registerMessageReceivedEventHandler($handler);
         }
     }
 }
