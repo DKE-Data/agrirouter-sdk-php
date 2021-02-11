@@ -4,6 +4,7 @@ namespace App\Service\Common {
 
     use Agrirouter\Commons\Messages;
     use Agrirouter\Feed\Response\HeaderQueryResponse;
+    use Agrirouter\Feed\Response\MessageQueryResponse;
     use Agrirouter\Response\Payload\Account\ListEndpointsResponse;
     use Agrirouter\Response\ResponseEnvelope;
     use Agrirouter\Response\ResponsePayloadWrapper;
@@ -75,6 +76,10 @@ namespace App\Service\Common {
                     $headerQueryResponse = new HeaderQueryResponse();
                     $headerQueryResponse->mergeFromString($details->getValue());
                     return $headerQueryResponse;
+                case TypeUrlService::getTypeUrl(MessageQueryResponse::class):
+                    $messageQueryResponse = new MessageQueryResponse();
+                    $messageQueryResponse->mergeFromString($details->getValue());
+                    return $messageQueryResponse;
                 default:
                     throw new DecodeMessageException("Could not handle type '" . $details->getTypeUrl() . "' while decoding details.", ErrorCodes::COULD_NOT_DECODE_DETAILS);
             }

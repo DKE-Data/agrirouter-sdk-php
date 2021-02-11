@@ -4,6 +4,7 @@ namespace App\Service\Common {
 
     use Agrirouter\Commons\Messages;
     use Agrirouter\Feed\Response\HeaderQueryResponse;
+    use Agrirouter\Feed\Response\MessageQueryResponse;
     use Agrirouter\Response\Payload\Account\ListEndpointsResponse;
     use Google\Protobuf\Internal\DescriptorPool;
 
@@ -38,6 +39,7 @@ namespace App\Service\Common {
             new Messages();
             new ListEndpointsResponse();
             new HeaderQueryResponse();
+            new MessageQueryResponse();
         }
 
     }
