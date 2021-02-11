@@ -52,7 +52,7 @@ namespace App\Service\Messaging {
             $messageHeaderParameters->setApplicationMessageSeqNo($parameters->getApplicationMessageSeqNo());
             $messageHeaderParameters->setTeamSetContextId($parameters->getTeamSetContextId());
             $messageHeaderParameters->setMode(Mode::DIRECT);
-            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_FEED_DELETE);
+            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::FEED_DELETE);
 
             $messageConfirm = new MessageDelete();
             $messageConfirm->setMessageIds($parameters->getMessageIds());
