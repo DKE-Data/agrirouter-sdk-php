@@ -7,6 +7,7 @@ namespace Lib\Tests\Agrirouter {
     use App\Service\Common\UuidService;
     use App\Service\Messaging\CapabilityService;
     use App\Service\Parameters\CapabilityParameters;
+    use Exception;
     use Lib\Tests\Applications\CommunicationUnit;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
@@ -18,6 +19,7 @@ namespace Lib\Tests\Agrirouter {
 
         /**
          * @covers \App\Service\Messaging\CapabilitiesServiceInterface::encode
+         * @throws Exception
          */
         public function testGivenCapabilityParametersWhenEncodingTheMessageThenTheCapabilitiesServiceShouldCreateAnEncodedMessage()
         {

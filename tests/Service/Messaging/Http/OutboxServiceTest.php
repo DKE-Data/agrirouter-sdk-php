@@ -5,11 +5,13 @@ namespace Lib\Tests\Service\Messaging\Http {
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\Capability;
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\Direction;
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\PushNotification;
+    use App\Api\Exceptions\OutboxException;
     use App\Service\Common\HttpMessagingService;
     use App\Service\Common\UuidService;
     use App\Service\Messaging\CapabilityService;
     use App\Service\Messaging\Http\OutboxService;
     use App\Service\Parameters\CapabilityParameters;
+    use Exception;
     use Lib\Tests\Applications\CommunicationUnit;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
@@ -20,6 +22,11 @@ namespace Lib\Tests\Service\Messaging\Http {
     class OutboxServiceTest extends AbstractIntegrationTestForServices
     {
 
+        /**
+         * @covers OutboxService::fetch()
+         * @throws OutboxException
+         * @throws Exception
+         */
         function testGivenInvalidCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldStillAcceptTheMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();

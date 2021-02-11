@@ -14,6 +14,7 @@ namespace Lib\Tests\Service\Messaging {
     use App\Service\Messaging\Http\OutboxService;
     use App\Service\Messaging\SubscriptionService;
     use App\Service\Parameters\SubscriptionParameters;
+    use Exception;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
     use Lib\Tests\Helper\OnboardResponseRepository;
@@ -27,6 +28,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers SubscriptionService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenInvalidSubscriptionWhenSendingSubscriptionThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
@@ -85,6 +87,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers SubscriptionService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenValidSubscriptionWhenSendingSubscriptionThenTheAgrirouterShouldAcceptTheMessage()
         {

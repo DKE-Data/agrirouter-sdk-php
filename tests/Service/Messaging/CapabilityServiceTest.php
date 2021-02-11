@@ -16,6 +16,7 @@ namespace Lib\Tests\Service\Messaging {
     use App\Service\Messaging\CapabilityService;
     use App\Service\Messaging\Http\OutboxService;
     use App\Service\Parameters\CapabilityParameters;
+    use Exception;
     use Lib\Tests\Applications\CommunicationUnit;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
@@ -30,6 +31,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers CapabilityService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenInvalidCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldStillAcceptTheMessage()
         {
@@ -90,6 +92,7 @@ namespace Lib\Tests\Service\Messaging {
 
         /**
          * @covers CapabilityService::send()
+         * @throws Exception
          */
         function testGivenEmptyCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
@@ -117,6 +120,7 @@ namespace Lib\Tests\Service\Messaging {
 
         /**
          * @covers CapabilityService::send()
+         * @throws Exception
          */
         function testGivenTaskdataCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
@@ -165,6 +169,7 @@ namespace Lib\Tests\Service\Messaging {
 
         /**
          * @covers CapabilityService::send()
+         * @throws Exception
          */
         function testGivenDeviceDescriptionCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
@@ -213,6 +218,7 @@ namespace Lib\Tests\Service\Messaging {
 
         /**
          * @covers CapabilityService::send()
+         * @throws Exception
          */
         function testGivenTimeLogCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
@@ -261,6 +267,7 @@ namespace Lib\Tests\Service\Messaging {
 
         /**
          * @covers CapabilityService::send()
+         * @throws Exception
          */
         function testGivenImageCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
@@ -315,6 +322,7 @@ namespace Lib\Tests\Service\Messaging {
 
         /**
          * @covers CapabilityService::send()
+         * @throws Exception
          */
         function testGivenVideoCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
@@ -369,6 +377,7 @@ namespace Lib\Tests\Service\Messaging {
 
         /**
          * @covers CapabilityService::send()
+         * @throws Exception
          */
         function testGivenShapeCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
@@ -417,6 +426,7 @@ namespace Lib\Tests\Service\Messaging {
 
         /**
          * @covers CapabilityService::send()
+         * @throws Exception
          */
         function testGivenPdfCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
@@ -465,6 +475,7 @@ namespace Lib\Tests\Service\Messaging {
 
         /**
          * @covers CapabilityService::send()
+         * @throws Exception
          */
         function testGivenGpsInfoCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
@@ -513,6 +524,7 @@ namespace Lib\Tests\Service\Messaging {
 
         /**
          * @covers CapabilityService::send()
+         * @throws Exception
          */
         function testGivenAllCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {

@@ -13,6 +13,7 @@ namespace Lib\Tests\Service\Messaging {
     use App\Service\Messaging\FeedDeleteService;
     use App\Service\Messaging\Http\OutboxService;
     use App\Service\Parameters\FeedDeleteParameters;
+    use Exception;
     use Google\Protobuf\Timestamp;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
@@ -27,6 +28,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers FeedDeleteService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenMissingFilterCriteriaForDeletionWhenSendingDeleteMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
@@ -80,6 +82,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers FeedDeleteService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenInvalidMessageIdForDeletionWhenSendingDeleteMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
@@ -134,6 +137,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers FeedDeleteService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenInvalidSenderIdForDeletionWhenSendingDeleteMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
@@ -188,6 +192,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers FeedDeleteService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenValidityPeriodAndMissingMessagesForDeletionWhenSendingDeleteMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {

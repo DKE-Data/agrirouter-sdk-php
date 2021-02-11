@@ -131,6 +131,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers QueryHeadersService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenInvalidSenderIdForHeaderQueryWhenSendingQueryHeadersMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
@@ -178,6 +179,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers QueryHeadersService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenValidityPeriodAndMissingMessagesForHeaderQueryWhenSendingQueryHeadersMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {

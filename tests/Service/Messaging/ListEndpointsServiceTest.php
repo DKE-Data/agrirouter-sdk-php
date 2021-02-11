@@ -13,6 +13,7 @@ namespace Lib\Tests\Service\Messaging {
     use App\Service\Messaging\Http\OutboxService;
     use App\Service\Messaging\ListEndpointsService;
     use App\Service\Parameters\ListEndpointsParameters;
+    use Exception;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
     use Lib\Tests\Helper\OnboardResponseRepository;
@@ -26,6 +27,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers ListEndpointsService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenValidQueryWhenSendingListEndpointsMessageThenTheAgrirouterShouldAcceptTheMessageAndReturnTheQueryResult()
         {
@@ -86,6 +88,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers ListEndpointsService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenInvalidQueryWhenSendingListEndpointsFilteredMessageThenTheAgrirouterShouldAcceptTheMessageAndReturnAnErrorMessage()
         {
