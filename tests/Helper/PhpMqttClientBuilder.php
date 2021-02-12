@@ -45,7 +45,6 @@ namespace Lib\Tests\Helper {
             return $this;
         }
 
-
         /**
          * Get the MQTT client.
          * @return MqttClient -

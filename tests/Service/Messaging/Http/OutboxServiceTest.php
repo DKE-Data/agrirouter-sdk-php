@@ -1,6 +1,6 @@
 <?php
 
-namespace Lib\Tests\Service\Messaging\Http {
+namespace Lib\Tests\Service\Messaging\Http\Http {
 
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\Capability;
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\Direction;

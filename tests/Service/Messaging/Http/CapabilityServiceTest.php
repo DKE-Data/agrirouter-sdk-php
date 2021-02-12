@@ -1,6 +1,6 @@
 <?php
 
-namespace Lib\Tests\Service\Messaging {
+namespace Lib\Tests\Service\Messaging\Http {
 
     use Agrirouter\Commons\Message;
     use Agrirouter\Commons\Messages;

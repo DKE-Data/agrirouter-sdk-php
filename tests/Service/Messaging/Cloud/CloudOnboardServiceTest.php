@@ -1,6 +1,6 @@
 <?php
 
-namespace Lib\Tests\Service\Messaging\Cloud {
+namespace Lib\Tests\Service\Messaging\Http\Cloud {
 
     use Agrirouter\Cloud\Registration\OnboardingRequest\EndpointRegistrationDetails;
     use Agrirouter\Commons\Message;
