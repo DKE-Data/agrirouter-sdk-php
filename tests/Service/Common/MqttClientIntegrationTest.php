@@ -66,7 +66,6 @@ namespace Lib\Tests\Service\Common {
             $phpMqttClient->disconnect();
             self::assertFalse($phpMqttClient->isConnected());
         }
-
     }
 }
 

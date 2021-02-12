@@ -28,9 +28,9 @@ namespace App\Api\Messaging {
 
         /**
          * Unsubscribe from an agrirouter topic.
-         * @param string|null $topic The topic name to subscribe to.
+         * @param string $topic The topic name to subscribe to.
          */
-        public function unsubscribe(string $topic = null): void;
+        public function unsubscribe(string $topic): void;
 
         /**
          * Checks if the client is connected to the agrirouter.

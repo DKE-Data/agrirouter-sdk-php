@@ -42,6 +42,7 @@ namespace App\Service\Messaging {
          * Encoding of the message.
          * @param SubscriptionParameters $parameters .
          * @return EncodedMessage .
+         * @noinspection PhpMissingParamTypeInspection
          */
         public function encode($parameters): EncodedMessage
         {
@@ -50,7 +51,7 @@ namespace App\Service\Messaging {
             $messageHeaderParameters->setApplicationMessageSeqNo($parameters->getApplicationMessageSeqNo());
             $messageHeaderParameters->setTeamSetContextId($parameters->getTeamSetContextId());
             $messageHeaderParameters->setMode(Mode::DIRECT);
-            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_SUBSCRIPTION);
+            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::SUBSCRIPTION);
 
             $subscription = new Subscription();
             $subscription->setTechnicalMessageTypes($parameters->getSubscriptionItems());
@@ -72,6 +73,7 @@ namespace App\Service\Messaging {
          * Send message.
          * @param SubscriptionParameters $parameters .
          * @return MessagingResult .
+         * @noinspection PhpMissingParamTypeInspection
          */
         public function send($parameters): MessagingResult
         {

@@ -1,8 +1,8 @@
 <?php declare(strict_types=1);
 
-namespace App\Service\Messaging {
+namespace App\Service\Cloud {
 
-    use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification;
+    use Agrirouter\Cloud\Registration\OnboardingRequest;
     use Agrirouter\Request\RequestEnvelope\Mode;
     use App\Api\Service\Messaging\EncodeMessageServiceInterface;
     use App\Api\Service\Messaging\MessagingServiceInterface;
@@ -13,18 +13,18 @@ namespace App\Service\Messaging {
     use App\Service\Common\EncodeMessageService;
     use App\Service\Common\TypeUrlService;
     use App\Service\Common\UuidService;
-    use App\Service\Parameters\CapabilityParameters;
+    use App\Service\Parameters\CloudOnboardParameters;
     use App\Service\Parameters\MessageHeaderParameters;
     use App\Service\Parameters\MessagePayloadParameters;
     use JetBrains\PhpStorm\Pure;
 
     /**
-     * Service to send the capabilities to the AR.
-     * @template-implements MessagingServiceInterface<CapabilityParameters>
-     * @template-implements EncodeMessageServiceInterface<CapabilityParameters>
+     * Service to send the cloud onboard message to the AR.
+     * @template-implements MessagingServiceInterface<CloudOnboardParameters>
+     * @template-implements EncodeMessageServiceInterface<CloudOnboardParameters>
      * @package App\Service\Messaging
      */
-    class CapabilityService implements MessagingServiceInterface, EncodeMessageServiceInterface
+    class CloudOnboardService implements MessagingServiceInterface, EncodeMessageServiceInterface
     {
 
         private MessagingServiceInterface $messagingService;
@@ -40,7 +40,7 @@ namespace App\Service\Messaging {
 
         /**
          * Encoding of the message.
-         * @param CapabilityParameters $parameters .
+         * @param CloudOnboardParameters $parameters .
          * @return EncodedMessage .
          * @noinspection PhpMissingParamTypeInspection
          */
@@ -51,19 +51,14 @@ namespace App\Service\Messaging {
             $messageHeaderParameters->setApplicationMessageSeqNo($parameters->getApplicationMessageSeqNo());
             $messageHeaderParameters->setTeamSetContextId($parameters->getTeamSetContextId());
             $messageHeaderParameters->setMode(Mode::DIRECT);
-            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::CAPABILITIES);
+            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::CLOUD_ONBOARD_ENDPOINTS);
 
-            $capabilitySpecification = new CapabilitySpecification();
-            $capabilitySpecification->setAppCertificationId($parameters->getApplicationId());
-            $capabilitySpecification->setAppCertificationVersionId($parameters->getCertificationVersionId());
-            $capabilitySpecification->setEnablePushNotifications($parameters->getEnablePushNotification());
-            if (!count($parameters->getCapabilityParameters()) == 0) {
-                $capabilitySpecification->setCapabilities($parameters->getCapabilityParameters());
-            }
+            $onboardingRequest = new OnboardingRequest();
+            $onboardingRequest->setOnboardingRequests($parameters->getOnboardingRequests());
 
             $messagePayloadParameters = new MessagePayloadParameters();
-            $messagePayloadParameters->setTypeUrl(TypeUrlService::getTypeUrl(CapabilitySpecification::class));
-            $messagePayloadParameters->setValue($capabilitySpecification->serializeToString());
+            $messagePayloadParameters->setTypeUrl(TypeUrlService::getTypeUrl(OnboardingRequest::class));
+            $messagePayloadParameters->setValue($onboardingRequest->serializeToString());
 
             $encodeMessageService = new EncodeMessageService();
             $messageContent = $encodeMessageService->encode($messageHeaderParameters, $messagePayloadParameters);
@@ -76,7 +71,7 @@ namespace App\Service\Messaging {
 
         /**
          * Send message.
-         * @param CapabilityParameters $parameters .
+         * @param CloudOnboardParameters $parameters .
          * @return MessagingResult .
          * @noinspection PhpMissingParamTypeInspection
          */

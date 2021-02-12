@@ -12,6 +12,7 @@ namespace Lib\Tests\Service\Messaging {
     use App\Service\Messaging\FeedConfirmService;
     use App\Service\Messaging\Http\OutboxService;
     use App\Service\Parameters\FeedConfirmParameters;
+    use Exception;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
     use Lib\Tests\Helper\OnboardResponseRepository;
@@ -25,6 +26,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers FeedConfirmService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenInvalidMessageIdForConfirmationWhenSendingMessageConfirmationThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
@@ -79,6 +81,7 @@ namespace Lib\Tests\Service\Messaging {
          * @covers FeedConfirmService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
+         * @throws Exception
          */
         function testGivenEmptyMessageIdForConfirmationWhenSendingMessageConfirmationThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {

@@ -27,6 +27,7 @@ namespace App\Service\Onboard {
          * @param string $privateKey The private key for the secured onboard process.
          * @return VerificationResponse The verification response from the agrirouter for secured onboard requests. OnboardException for normal onboard requests.
          * @throws VerificationException Will be thrown if the onboard process was not successful.
+         * @throws Exception
          */
         public function verify(OnboardParameters $onboardParameters, string $privateKey): VerificationResponse
         {

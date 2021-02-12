@@ -1,7 +1,8 @@
 <?php
 
-
 namespace App\Api\Service\Parameters {
+
+    use App\Api\Exceptions\ValidationException;
 
     /**
      * Interface to mark parameters as validatable.
@@ -12,7 +13,7 @@ namespace App\Api\Service\Parameters {
 
         /**
          * Will validate the parameters.
-         * In case of an error the method should throw an exception.
+         * @throws ValidationException Will be thrown if there is a validation error.
          */
         public function validate(): void;
 

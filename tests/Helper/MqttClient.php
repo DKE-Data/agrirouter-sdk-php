@@ -78,7 +78,7 @@ namespace Lib\Tests\Helper {
          * @throws DataTransferException
          * @throws RepositoryException
          */
-        public function subscribe(string $topic = null, callable $callback = null, int $qualityOfService = 2): void
+        public function subscribe(string $topic, callable $callback = null, int $qualityOfService = 2): void
         {
             $this->mqttClient->subscribe($topic, $callback, $qualityOfService);
         }
@@ -88,7 +88,7 @@ namespace Lib\Tests\Helper {
          * @throws DataTransferException
          * @throws RepositoryException
          */
-        public function unsubscribe(string $topic = null): void
+        public function unsubscribe(string $topic): void
         {
             $this->mqttClient->unsubscribe($topic);
         }

@@ -1,9 +1,10 @@
 <?php declare(strict_types=1);
 
-
 namespace App\Service\Common {
 
     use Agrirouter\Commons\Messages;
+    use Agrirouter\Feed\Response\HeaderQueryResponse;
+    use Agrirouter\Feed\Response\MessageQueryResponse;
     use Agrirouter\Response\Payload\Account\ListEndpointsResponse;
     use Google\Protobuf\Internal\DescriptorPool;
 
@@ -21,6 +22,7 @@ namespace App\Service\Common {
          * Get the type URL for the given class.
          * @param mixed $clazz The class to return the type URL for.
          * @return string The type URL for the given type.
+         * @noinspection PhpMissingParamTypeInspection
          */
         public static function getTypeUrl($clazz): string
         {
@@ -36,8 +38,9 @@ namespace App\Service\Common {
             self::$metadataHasBeenInitialized = true;
             new Messages();
             new ListEndpointsResponse();
+            new HeaderQueryResponse();
+            new MessageQueryResponse();
         }
-
 
     }
 }

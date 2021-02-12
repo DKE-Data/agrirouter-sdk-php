@@ -5,14 +5,15 @@ namespace Lib\Tests\Service\Messaging {
     use Agrirouter\Commons\Message;
     use Agrirouter\Commons\Messages;
     use Agrirouter\Feed\Request\ValidityPeriod;
+    use Agrirouter\Feed\Response\HeaderQueryResponse;
     use App\Api\Exceptions\DecodeMessageException;
     use App\Api\Exceptions\OutboxException;
     use App\Service\Common\DecodeMessageService;
     use App\Service\Common\HttpMessagingService;
     use App\Service\Common\UuidService;
-    use App\Service\Messaging\FeedDeleteService;
     use App\Service\Messaging\Http\OutboxService;
-    use App\Service\Parameters\FeedDeleteParameters;
+    use App\Service\Messaging\QueryMessagesService;
+    use App\Service\Parameters\QueryMessagesParameters;
     use Exception;
     use Google\Protobuf\Timestamp;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
@@ -21,27 +22,27 @@ namespace Lib\Tests\Service\Messaging {
     use Lib\Tests\Service\AbstractIntegrationTestForServices;
     use Lib\Tests\Service\Common\SleepTimer;
 
-    class FeedDeleteServiceTest extends AbstractIntegrationTestForServices
+    class QueryMessagesServiceTest extends AbstractIntegrationTestForServices
     {
 
         /**
-         * @covers FeedDeleteService::send()
+         * @covers QueryMessagesService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
          * @throws Exception
          */
-        function testGivenMissingFilterCriteriaForDeletionWhenSendingDeleteMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
+        function testGivenMissingFilterCriteriaForMessageQueryWhenSendingQueryMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $feedDeleteService = new FeedDeleteService($httpMessagingService);
+            $queryHeadersService = new QueryMessagesService($httpMessagingService);
 
-            $feedDeleteParameters = new FeedDeleteParameters();
-            $feedDeleteParameters->setApplicationMessageId(UuidService::newUuid());
-            $feedDeleteParameters->setApplicationMessageSeqNo(1);
-            $feedDeleteParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
+            $queryMessagesParameters = new QueryMessagesParameters();
+            $queryMessagesParameters->setApplicationMessageId(UuidService::newUuid());
+            $queryMessagesParameters->setApplicationMessageSeqNo(1);
+            $queryMessagesParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
 
-            $messagingResult = $feedDeleteService->send($feedDeleteParameters);
+            $messagingResult = $queryHeadersService->send($queryMessagesParameters);
 
             self::assertNotEmpty($messagingResult);
             self::assertNotEmpty($messagingResult->getMessageIds());
@@ -73,30 +74,30 @@ namespace Lib\Tests\Service\Messaging {
             $iterator = $agrirouterMessages->getIterator();
             /** @var Message $message */
             foreach ($iterator as $message) {
-                self::assertEquals("VAL_000018", $message->getMessageCode());
-                self::assertEquals("Information required to process message is missing or malformed. Query does not contain any filtering criteria: messageIds, senders or validityPeriod", $message->getMessage());
+                self::assertEquals("VAL_000017", $message->getMessageCode());
+                self::assertEquals("Query does not contain any filtering criteria: messageIds, senders or validityPeriod. Information required to process message is missing or malformed.", $message->getMessage());
             }
         }
 
         /**
-         * @covers FeedDeleteService::send()
+         * @covers QueryMessagesService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
          * @throws Exception
          */
-        function testGivenInvalidMessageIdForDeletionWhenSendingDeleteMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
+        function testGivenInvalidMessageIdForMessageQueryWhenSendingQueryMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $feedDeleteService = new FeedDeleteService($httpMessagingService);
+            $queryHeadersService = new QueryMessagesService($httpMessagingService);
 
-            $feedDeleteParameters = new FeedDeleteParameters();
-            $feedDeleteParameters->setApplicationMessageId(UuidService::newUuid());
-            $feedDeleteParameters->setApplicationMessageSeqNo(1);
-            $feedDeleteParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
-            $feedDeleteParameters->setMessageIds([UuidService::newUuid()]);
+            $queryMessagesParameters = new QueryMessagesParameters();
+            $queryMessagesParameters->setApplicationMessageId(UuidService::newUuid());
+            $queryMessagesParameters->setApplicationMessageSeqNo(1);
+            $queryMessagesParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
+            $queryMessagesParameters->setMessageIds([UuidService::newUuid()]);
 
-            $messagingResult = $feedDeleteService->send($feedDeleteParameters);
+            $messagingResult = $queryHeadersService->send($queryMessagesParameters);
 
             self::assertNotEmpty($messagingResult);
             self::assertNotEmpty($messagingResult->getMessageIds());
@@ -118,40 +119,33 @@ namespace Lib\Tests\Service\Messaging {
             self::assertNotNull($decodedMessages);
             self::assertEquals(204, $decodedMessages->getResponseEnvelope()->getResponseCode());
 
-            /** @var Messages $decodedDetails */
+            /** @var HeaderQueryResponse $decodedDetails */
             $decodedDetails = $decodeMessagesService->decodeDetails($decodedMessages->getResponsePayloadWrapper()->getDetails());
             self::assertNotNull($decodedDetails);
 
-            $agrirouterMessages = $decodedDetails->getMessages();
-            self::assertEquals(1, $agrirouterMessages->count());
-
-            $iterator = $agrirouterMessages->getIterator();
-            /** @var Message $message */
-            foreach ($iterator as $message) {
-                self::assertEquals("VAL_000208", $message->getMessageCode());
-                self::assertEquals("Feed does not contain any data to be deleted.", $message->getMessage());
-            }
+            $queryMetrics = $decodedDetails->getQueryMetrics();
+            self::assertEquals(0, $queryMetrics->getTotalMessagesInQuery());
         }
 
         /**
-         * @covers FeedDeleteService::send()
+         * @covers QueryMessagesService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
          * @throws Exception
          */
-        function testGivenInvalidSenderIdForDeletionWhenSendingDeleteMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
+        function testGivenInvalidSenderIdForMessageQueryWhenSendingQueryMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $feedDeleteService = new FeedDeleteService($httpMessagingService);
+            $queryHeadersService = new QueryMessagesService($httpMessagingService);
 
-            $feedDeleteParameters = new FeedDeleteParameters();
-            $feedDeleteParameters->setApplicationMessageId(UuidService::newUuid());
-            $feedDeleteParameters->setApplicationMessageSeqNo(1);
-            $feedDeleteParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
-            $feedDeleteParameters->setSenders([UuidService::newUuid()]);
+            $queryMessagesParameters = new QueryMessagesParameters();
+            $queryMessagesParameters->setApplicationMessageId(UuidService::newUuid());
+            $queryMessagesParameters->setApplicationMessageSeqNo(1);
+            $queryMessagesParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
+            $queryMessagesParameters->setSenders([UuidService::newUuid()]);
 
-            $messagingResult = $feedDeleteService->send($feedDeleteParameters);
+            $messagingResult = $queryHeadersService->send($queryMessagesParameters);
 
             self::assertNotEmpty($messagingResult);
             self::assertNotEmpty($messagingResult->getMessageIds());
@@ -173,45 +167,38 @@ namespace Lib\Tests\Service\Messaging {
             self::assertNotNull($decodedMessages);
             self::assertEquals(204, $decodedMessages->getResponseEnvelope()->getResponseCode());
 
-            /** @var Messages $decodedDetails */
+            /** @var HeaderQueryResponse $decodedDetails */
             $decodedDetails = $decodeMessagesService->decodeDetails($decodedMessages->getResponsePayloadWrapper()->getDetails());
             self::assertNotNull($decodedDetails);
 
-            $agrirouterMessages = $decodedDetails->getMessages();
-            self::assertEquals(1, $agrirouterMessages->count());
-
-            $iterator = $agrirouterMessages->getIterator();
-            /** @var Message $message */
-            foreach ($iterator as $message) {
-                self::assertEquals("VAL_000208", $message->getMessageCode());
-                self::assertEquals("Feed does not contain any data to be deleted.", $message->getMessage());
-            }
+            $queryMetrics = $decodedDetails->getQueryMetrics();
+            self::assertEquals(0, $queryMetrics->getTotalMessagesInQuery());
         }
 
         /**
-         * @covers FeedDeleteService::send()
+         * @covers QueryMessagesService::send()
          * @throws DecodeMessageException
          * @throws OutboxException
          * @throws Exception
          */
-        function testGivenValidityPeriodAndMissingMessagesForDeletionWhenSendingDeleteMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
+        function testGivenValidityPeriodAndMissingMessagesForMessageQueryWhenSendingQueryMessageRequestThenTheAgrirouterShouldStillAcceptTheMessageButReturnAnAckWithMessage()
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
-            $feedDeleteService = new FeedDeleteService($httpMessagingService);
+            $queryHeadersService = new QueryMessagesService($httpMessagingService);
 
-            $feedDeleteParameters = new FeedDeleteParameters();
-            $feedDeleteParameters->setApplicationMessageId(UuidService::newUuid());
-            $feedDeleteParameters->setApplicationMessageSeqNo(1);
-            $feedDeleteParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
+            $queryMessagesParameters = new QueryMessagesParameters();
+            $queryMessagesParameters->setApplicationMessageId(UuidService::newUuid());
+            $queryMessagesParameters->setApplicationMessageSeqNo(1);
+            $queryMessagesParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
             $validityPeriod = new ValidityPeriod();
             $sentFrom = new Timestamp();
             $sentTo = new Timestamp();
             $validityPeriod->setSentFrom($sentFrom);
             $validityPeriod->setSentTo($sentTo);
-            $feedDeleteParameters->setValidityPeriod($validityPeriod);
+            $queryMessagesParameters->setValidityPeriod($validityPeriod);
 
-            $messagingResult = $feedDeleteService->send($feedDeleteParameters);
+            $messagingResult = $queryHeadersService->send($queryMessagesParameters);
 
             self::assertNotEmpty($messagingResult);
             self::assertNotEmpty($messagingResult->getMessageIds());
@@ -233,19 +220,12 @@ namespace Lib\Tests\Service\Messaging {
             self::assertNotNull($decodedMessages);
             self::assertEquals(204, $decodedMessages->getResponseEnvelope()->getResponseCode());
 
-            /** @var Messages $decodedDetails */
+            /** @var HeaderQueryResponse $decodedDetails */
             $decodedDetails = $decodeMessagesService->decodeDetails($decodedMessages->getResponsePayloadWrapper()->getDetails());
             self::assertNotNull($decodedDetails);
 
-            $agrirouterMessages = $decodedDetails->getMessages();
-            self::assertEquals(1, $agrirouterMessages->count());
-
-            $iterator = $agrirouterMessages->getIterator();
-            /** @var Message $message */
-            foreach ($iterator as $message) {
-                self::assertEquals("VAL_000208", $message->getMessageCode());
-                self::assertEquals("Feed does not contain any data to be deleted.", $message->getMessage());
-            }
+            $queryMetrics = $decodedDetails->getQueryMetrics();
+            self::assertEquals(0, $queryMetrics->getTotalMessagesInQuery());
         }
 
     }

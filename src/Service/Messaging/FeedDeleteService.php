@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php /** @noinspection PhpMissingParamTypeInspection */
+/** @noinspection PhpMissingParamTypeInspection */
+declare(strict_types=1);
 
 namespace App\Service\Messaging {
 
@@ -50,7 +52,7 @@ namespace App\Service\Messaging {
             $messageHeaderParameters->setApplicationMessageSeqNo($parameters->getApplicationMessageSeqNo());
             $messageHeaderParameters->setTeamSetContextId($parameters->getTeamSetContextId());
             $messageHeaderParameters->setMode(Mode::DIRECT);
-            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::DKE_FEED_DELETE);
+            $messageHeaderParameters->setTechnicalMessageType(TechnicalMessageTypeDefinitions::FEED_DELETE);
 
             $messageConfirm = new MessageDelete();
             $messageConfirm->setMessageIds($parameters->getMessageIds());
