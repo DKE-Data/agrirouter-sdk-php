@@ -31,7 +31,8 @@ namespace Lib\Tests\Helper {
          */
         private function createHttpClient(): Client
         {
-            $logger = LoggerBuilder::createConsoleLogger();
+            $loggerBuilder = new MonologLoggerBuilder();
+            $logger = $loggerBuilder->withTestConsoleDefaultValues("GuzzleHttpClient")->build();
             return new Client([
                 'handler' => self::createHandlerStack($logger),
                 'verify' => false

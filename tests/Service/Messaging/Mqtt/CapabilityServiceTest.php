@@ -18,7 +18,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
     use Exception;
     use Lib\Tests\Applications\FarmingSoftware;
     use Lib\Tests\Helper\Identifier;
-    use Lib\Tests\Helper\LoggerBuilder;
+    use Lib\Tests\Helper\MonologLoggerBuilder;
     use Lib\Tests\Helper\MqttClient;
     use Lib\Tests\Helper\OnboardResponseRepository;
     use Lib\Tests\Helper\PhpMqttClientBuilder;
@@ -27,15 +27,14 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
     use PhpMqtt\Client\Exceptions\ConfigurationInvalidException;
     use PhpMqtt\Client\Exceptions\ConnectingToBrokerFailedException;
     use PhpMqtt\Client\Exceptions\DataTransferException;
+    use PhpMqtt\Client\Exceptions\MqttClientException;
     use PhpMqtt\Client\Exceptions\ProtocolNotSupportedException;
+    use PhpMqtt\Client\Exceptions\ProtocolViolationException;
     use PhpMqtt\Client\Exceptions\RepositoryException;
-    use Psr\Log\LoggerInterface;
-    use function PHPUnit\Framework\assertNotNull;
 
     class CapabilityServiceTest extends AbstractIntegrationTestForServices
     {
         private static MqttClient $mqttClient;
-        private static LoggerInterface $logger;
         private static OnboardResponse $onboardResponse;
 
         /**
@@ -46,13 +45,13 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
          */
         public static function setUpBeforeClass(): void
         {
-            self::$logger = LoggerBuilder::createConsoleLogger();
+            $loggerBuilder = new MonologLoggerBuilder();
             self::$onboardResponse = OnboardResponseRepository::read(Identifier::FARMING_SOFTWARE_MQTT);
             self::$mqttClient = (new PhpMqttClientBuilder())
-                ->withLogger(self::$logger)
+                ->withLogger($loggerBuilder->withTestConsoleDefaultValues("PhpMqttClient")->build())
                 ->withOnboardResponse(self::$onboardResponse)->build();
 
-            assertNotNull(self::$mqttClient);
+            self::assertNotNull(self::$mqttClient);
             self::$mqttClient->connect();
             self::assertTrue(self::$mqttClient->isConnected());
         }
@@ -68,11 +67,14 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
         /**
          * @covers CapabilityService::send()
-         * @throws Exception
+         * @throws DataTransferException
+         * @throws MqttClientException
+         * @throws ProtocolViolationException
+         * @throws RepositoryException
          */
         public function testGivenInvalidCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldStillAcceptTheMessage()
         {
-            $logger = self::$logger;
+            $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
             self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
                 function (string $topic, string $message) use (&$mqttClient, &$logger) {
@@ -126,11 +128,14 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
         /**
          * @covers CapabilityService::send()
-         * @throws Exception
+         * @throws DataTransferException
+         * @throws MqttClientException
+         * @throws ProtocolViolationException
+         * @throws RepositoryException
          */
         function testGivenEmptyCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
-            $logger = self::$logger;
+            $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
             $applicationMessageId = "";
 
@@ -146,7 +151,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
                     $decodeMessagesService = new DecodeMessageService();
                     /** @var DecodedMessage $decodedMessages */
                     $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
-                    $this->getLogger()->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
                         [
                             'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
                             'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
@@ -176,11 +181,14 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
         /**
          * @covers CapabilityService::send()
-         * @throws Exception
+         * @throws DataTransferException
+         * @throws MqttClientException
+         * @throws ProtocolViolationException
+         * @throws RepositoryException
          */
         function testGivenTaskDataCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
-            $logger = self::$logger;
+            $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
             $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
 
@@ -198,7 +206,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
                     /** @var DecodedMessage $decodedMessages */
                     $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
 
-                    $this->getLogger()->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
                         [
                             'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
                             'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
@@ -233,6 +241,654 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $capabilityBuilder = new CapabilityBuilder();
             $capabilities = $capabilityBuilder->withTaskdata(Direction::SEND_RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[2]);
+            $capabilityService->send($capabilityParameters);
+
+            $counter = 0;
+            do {
+                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                $counter++;
+            } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
+            self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
+            self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
+        }
+
+        /**
+         * @covers CapabilityService::send()
+         * @throws DataTransferException
+         * @throws RepositoryException
+         * @throws MqttClientException
+         * @throws ProtocolViolationException
+         */
+        function testGivenDeviceDescriptionCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
+        {
+            $logger = $this->getLogger();
+            $mqttClient = self::$mqttClient;
+            $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
+
+            self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                    $logger->info("We received a message on topic [{topic}]: {message}",
+                        [
+                            'topic' => $topic,
+                            'message' => $message
+                        ]);
+                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                    $receivedMessage = json_decode($message, true);
+
+                    $decodeMessagesService = new DecodeMessageService();
+                    /** @var DecodedMessage $decodedMessages */
+                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+
+                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                        [
+                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                        ]);
+
+                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+
+                    $logger->info("Leaving callback...");
+                    $mqttClient->interrupt();
+                });
+
+            $capabilityService = new CapabilityService(new MqttMessagingService(self::$mqttClient));
+            $capabilityParameters = new CapabilityParameters();
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[0]);
+            $capabilityParameters->setApplicationMessageSeqNo(1);
+            $capabilityParameters->setApplicationId(FarmingSoftware::applicationId());
+            $capabilityParameters->setCertificationVersionId(FarmingSoftware::certificationVersionId());
+            $capabilityParameters->setOnboardResponse(self::$onboardResponse);
+            $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withDeviceDescription(Direction::SEND)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withDeviceDescription(Direction::RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[1]);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withDeviceDescription(Direction::SEND_RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[2]);
+            $capabilityService->send($capabilityParameters);
+
+            $counter = 0;
+            do {
+                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                $counter++;
+            } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
+            self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
+            self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
+        }
+
+        /**
+         * @covers CapabilityService::send()
+         * @throws DataTransferException
+         * @throws MqttClientException
+         * @throws ProtocolViolationException
+         * @throws RepositoryException
+         */
+        function testGivenTimeLogCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
+        {
+            $logger = $this->getLogger();
+            $mqttClient = self::$mqttClient;
+            $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
+
+            self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                    $logger->info("We received a message on topic [{topic}]: {message}",
+                        [
+                            'topic' => $topic,
+                            'message' => $message
+                        ]);
+                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                    $receivedMessage = json_decode($message, true);
+
+                    $decodeMessagesService = new DecodeMessageService();
+                    /** @var DecodedMessage $decodedMessages */
+                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+
+                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                        [
+                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                        ]);
+
+                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+
+                    $logger->info("Leaving callback...");
+                    $mqttClient->interrupt();
+                });
+
+            $capabilityService = new CapabilityService(new MqttMessagingService(self::$mqttClient));
+            $capabilityParameters = new CapabilityParameters();
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[0]);
+            $capabilityParameters->setApplicationMessageSeqNo(1);
+            $capabilityParameters->setApplicationId(FarmingSoftware::applicationId());
+            $capabilityParameters->setCertificationVersionId(FarmingSoftware::certificationVersionId());
+            $capabilityParameters->setOnboardResponse(self::$onboardResponse);
+            $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withTimeLog(Direction::SEND)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withTimeLog(Direction::RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[1]);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withTimeLog(Direction::SEND_RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[2]);
+            $capabilityService->send($capabilityParameters);
+
+            $counter = 0;
+            do {
+                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                $counter++;
+            } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
+            self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
+            self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
+        }
+
+        /**
+         * @covers CapabilityService::send()
+         * @throws DataTransferException
+         * @throws MqttClientException
+         * @throws ProtocolViolationException
+         * @throws RepositoryException
+         */
+        function testGivenImageCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
+        {
+            $logger = $this->getLogger();
+            $mqttClient = self::$mqttClient;
+            $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
+
+            self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                    $logger->info("We received a message on topic [{topic}]: {message}",
+                        [
+                            'topic' => $topic,
+                            'message' => $message
+                        ]);
+                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                    $receivedMessage = json_decode($message, true);
+
+                    $decodeMessagesService = new DecodeMessageService();
+                    /** @var DecodedMessage $decodedMessages */
+                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+
+                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                        [
+                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                        ]);
+
+                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+
+                    $logger->info("Leaving callback...");
+                    $mqttClient->interrupt();
+                });
+
+            $capabilityService = new CapabilityService(new MqttMessagingService(self::$mqttClient));
+            $capabilityParameters = new CapabilityParameters();
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[0]);
+            $capabilityParameters->setApplicationMessageSeqNo(1);
+            $capabilityParameters->setApplicationId(FarmingSoftware::applicationId());
+            $capabilityParameters->setCertificationVersionId(FarmingSoftware::certificationVersionId());
+            $capabilityParameters->setOnboardResponse(self::$onboardResponse);
+            $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withBmp(Direction::SEND)
+                ->withJpg(Direction::SEND)
+                ->withPng(Direction::SEND)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withBmp(Direction::RECEIVE)
+                ->withJpg(Direction::RECEIVE)
+                ->withPng(Direction::RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[1]);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withBmp(Direction::SEND_RECEIVE)
+                ->withJpg(Direction::SEND_RECEIVE)
+                ->withPng(Direction::SEND_RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[2]);
+            $capabilityService->send($capabilityParameters);
+
+            $counter = 0;
+            do {
+                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                $counter++;
+            } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
+            self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
+            self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
+        }
+
+        /**
+         * @covers CapabilityService::send()
+         * @throws DataTransferException
+         * @throws MqttClientException
+         * @throws ProtocolViolationException
+         * @throws RepositoryException
+         */
+        function testGivenVideoCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
+        {
+            $logger = $this->getLogger();
+            $mqttClient = self::$mqttClient;
+            $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
+
+            self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                    $logger->info("We received a message on topic [{topic}]: {message}",
+                        [
+                            'topic' => $topic,
+                            'message' => $message
+                        ]);
+                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                    $receivedMessage = json_decode($message, true);
+
+                    $decodeMessagesService = new DecodeMessageService();
+                    /** @var DecodedMessage $decodedMessages */
+                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+
+                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                        [
+                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                        ]);
+
+                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+
+                    $logger->info("Leaving callback...");
+                    $mqttClient->interrupt();
+                });
+
+            $capabilityService = new CapabilityService(new MqttMessagingService(self::$mqttClient));
+            $capabilityParameters = new CapabilityParameters();
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[0]);
+            $capabilityParameters->setApplicationMessageSeqNo(1);
+            $capabilityParameters->setApplicationId(FarmingSoftware::applicationId());
+            $capabilityParameters->setCertificationVersionId(FarmingSoftware::certificationVersionId());
+            $capabilityParameters->setOnboardResponse(self::$onboardResponse);
+            $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withAvi(Direction::SEND)
+                ->withMp4(Direction::SEND)
+                ->withWmv(Direction::SEND)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withAvi(Direction::RECEIVE)
+                ->withMp4(Direction::RECEIVE)
+                ->withWmv(Direction::RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[1]);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withAvi(Direction::SEND_RECEIVE)
+                ->withMp4(Direction::SEND_RECEIVE)
+                ->withWmv(Direction::SEND_RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[2]);
+            $capabilityService->send($capabilityParameters);
+
+            $counter = 0;
+            do {
+                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                $counter++;
+            } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
+            self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
+            self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
+        }
+
+        /**
+         * @covers CapabilityService::send()
+         * @throws DataTransferException
+         * @throws MqttClientException
+         * @throws ProtocolViolationException
+         * @throws RepositoryException
+         */
+        function testGivenShapeCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
+        {
+            $logger = $this->getLogger();
+            $mqttClient = self::$mqttClient;
+            $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
+
+            self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                    $logger->info("We received a message on topic [{topic}]: {message}",
+                        [
+                            'topic' => $topic,
+                            'message' => $message
+                        ]);
+                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                    $receivedMessage = json_decode($message, true);
+
+                    $decodeMessagesService = new DecodeMessageService();
+                    /** @var DecodedMessage $decodedMessages */
+                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+
+                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                        [
+                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                        ]);
+
+                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+
+                    $logger->info("Leaving callback...");
+                    $mqttClient->interrupt();
+                });
+
+            $capabilityService = new CapabilityService(new MqttMessagingService(self::$mqttClient));
+            $capabilityParameters = new CapabilityParameters();
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[0]);
+            $capabilityParameters->setApplicationMessageSeqNo(1);
+            $capabilityParameters->setApplicationId(FarmingSoftware::applicationId());
+            $capabilityParameters->setCertificationVersionId(FarmingSoftware::certificationVersionId());
+            $capabilityParameters->setOnboardResponse(self::$onboardResponse);
+            $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withShape(Direction::SEND)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withShape(Direction::RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[1]);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withShape(Direction::SEND_RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[2]);
+            $capabilityService->send($capabilityParameters);
+
+            $counter = 0;
+            do {
+                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                $counter++;
+            } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
+            self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
+            self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
+        }
+
+        /**
+         * @covers CapabilityService::send()
+         * @throws DataTransferException
+         * @throws MqttClientException
+         * @throws ProtocolViolationException
+         * @throws RepositoryException
+         */
+        function testGivenPdfCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
+        {
+            $logger = $this->getLogger();
+            $mqttClient = self::$mqttClient;
+            $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
+
+            self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                    $logger->info("We received a message on topic [{topic}]: {message}",
+                        [
+                            'topic' => $topic,
+                            'message' => $message
+                        ]);
+                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                    $receivedMessage = json_decode($message, true);
+
+                    $decodeMessagesService = new DecodeMessageService();
+                    /** @var DecodedMessage $decodedMessages */
+                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+
+                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                        [
+                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                        ]);
+
+                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+
+                    $logger->info("Leaving callback...");
+                    $mqttClient->interrupt();
+                });
+
+            $capabilityService = new CapabilityService(new MqttMessagingService(self::$mqttClient));
+            $capabilityParameters = new CapabilityParameters();
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[0]);
+            $capabilityParameters->setApplicationMessageSeqNo(1);
+            $capabilityParameters->setApplicationId(FarmingSoftware::applicationId());
+            $capabilityParameters->setCertificationVersionId(FarmingSoftware::certificationVersionId());
+            $capabilityParameters->setOnboardResponse(self::$onboardResponse);
+            $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withPdf(Direction::SEND)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withPdf(Direction::RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[1]);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withPdf(Direction::SEND_RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[2]);
+            $capabilityService->send($capabilityParameters);
+
+            $counter = 0;
+            do {
+                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                $counter++;
+            } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
+            self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
+            self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
+        }
+
+        /**
+         * @covers CapabilityService::send()
+         * @throws DataTransferException
+         * @throws MqttClientException
+         * @throws ProtocolViolationException
+         * @throws RepositoryException
+         */
+        function testGivenGpsInfoCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
+        {
+            $logger = $this->getLogger();
+            $mqttClient = self::$mqttClient;
+            $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
+
+            self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                    $logger->info("We received a message on topic [{topic}]: {message}",
+                        [
+                            'topic' => $topic,
+                            'message' => $message
+                        ]);
+                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                    $receivedMessage = json_decode($message, true);
+
+                    $decodeMessagesService = new DecodeMessageService();
+                    /** @var DecodedMessage $decodedMessages */
+                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+
+                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                        [
+                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                        ]);
+
+                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+
+                    $logger->info("Leaving callback...");
+                    $mqttClient->interrupt();
+                });
+
+            $capabilityService = new CapabilityService(new MqttMessagingService(self::$mqttClient));
+            $capabilityParameters = new CapabilityParameters();
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[0]);
+            $capabilityParameters->setApplicationMessageSeqNo(1);
+            $capabilityParameters->setApplicationId(FarmingSoftware::applicationId());
+            $capabilityParameters->setCertificationVersionId(FarmingSoftware::certificationVersionId());
+            $capabilityParameters->setOnboardResponse(self::$onboardResponse);
+            $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withGpsInfo(Direction::SEND)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withGpsInfo(Direction::RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[1]);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder->withGpsInfo(Direction::SEND_RECEIVE)->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[2]);
+            $capabilityService->send($capabilityParameters);
+
+            $counter = 0;
+            do {
+                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                $counter++;
+            } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
+            self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
+            self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
+        }
+
+        /**
+         * @covers CapabilityService::send()
+         * @throws DataTransferException
+         * @throws MqttClientException
+         * @throws ProtocolViolationException
+         * @throws RepositoryException
+         */
+        function testGivenAllCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
+        {
+            $logger = $this->getLogger();
+            $mqttClient = self::$mqttClient;
+            $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
+
+            self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                    $logger->info("We received a message on topic [{topic}]: {message}",
+                        [
+                            'topic' => $topic,
+                            'message' => $message
+                        ]);
+                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                    $receivedMessage = json_decode($message, true);
+
+                    $decodeMessagesService = new DecodeMessageService();
+                    /** @var DecodedMessage $decodedMessages */
+                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+
+                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                        [
+                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                        ]);
+
+                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+
+                    $logger->info("Leaving callback...");
+                    $mqttClient->interrupt();
+                });
+
+            $capabilityService = new CapabilityService(new MqttMessagingService(self::$mqttClient));
+            $capabilityParameters = new CapabilityParameters();
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[0]);
+            $capabilityParameters->setApplicationMessageSeqNo(1);
+            $capabilityParameters->setApplicationId(FarmingSoftware::applicationId());
+            $capabilityParameters->setCertificationVersionId(FarmingSoftware::certificationVersionId());
+            $capabilityParameters->setOnboardResponse(self::$onboardResponse);
+            $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder
+                ->withTaskdata(Direction::SEND)
+                ->withDeviceDescription(Direction::SEND)
+                ->withTimeLog(Direction::SEND)
+                ->withBmp(Direction::SEND)
+                ->withJpg(Direction::SEND)
+                ->withPng(Direction::SEND)
+                ->withShape(Direction::SEND)
+                ->withPdf(Direction::SEND)
+                ->withAvi(Direction::SEND)
+                ->withMp4(Direction::SEND)
+                ->withWmv(Direction::SEND)
+                ->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder
+                ->withTaskdata(Direction::RECEIVE)
+                ->withDeviceDescription(Direction::RECEIVE)
+                ->withTimeLog(Direction::RECEIVE)
+                ->withBmp(Direction::RECEIVE)
+                ->withJpg(Direction::RECEIVE)
+                ->withPng(Direction::RECEIVE)
+                ->withShape(Direction::RECEIVE)
+                ->withPdf(Direction::RECEIVE)
+                ->withAvi(Direction::RECEIVE)
+                ->withMp4(Direction::RECEIVE)
+                ->withWmv(Direction::RECEIVE)
+                ->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilityParameters->setApplicationMessageId($applicationMessageIds[1]);
+            $capabilityService->send($capabilityParameters);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder
+                ->withTaskdata(Direction::SEND_RECEIVE)
+                ->withDeviceDescription(Direction::SEND_RECEIVE)
+                ->withTimeLog(Direction::SEND_RECEIVE)
+                ->withBmp(Direction::SEND_RECEIVE)
+                ->withJpg(Direction::SEND_RECEIVE)
+                ->withPng(Direction::SEND_RECEIVE)
+                ->withShape(Direction::SEND_RECEIVE)
+                ->withPdf(Direction::SEND_RECEIVE)
+                ->withAvi(Direction::SEND_RECEIVE)
+                ->withMp4(Direction::SEND_RECEIVE)
+                ->withWmv(Direction::SEND_RECEIVE)
+                ->build();
             $capabilityParameters->setCapabilityParameters($capabilities);
             $capabilityParameters->setApplicationMessageId($applicationMessageIds[2]);
             $capabilityService->send($capabilityParameters);

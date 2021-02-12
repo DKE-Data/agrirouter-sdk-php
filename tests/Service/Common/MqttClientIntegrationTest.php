@@ -4,13 +4,12 @@ namespace Lib\Tests\Service\Common {
 
     use Exception;
     use Lib\Tests\Helper\Identifier;
-    use Lib\Tests\Helper\LoggerBuilder;
+    use Lib\Tests\Helper\MonologLoggerBuilder;
     use Lib\Tests\Helper\MqttClient;
     use Lib\Tests\Helper\OnboardResponseRepository;
     use Lib\Tests\Helper\PhpMqttClientBuilder;
     use PhpMqtt\Client\Exceptions\ProtocolNotSupportedException;
     use PHPUnit\Framework\TestCase;
-    use function PHPUnit\Framework\assertNotNull;
 
     class MqttClientIntegrationTest extends TestCase
     {
@@ -22,17 +21,19 @@ namespace Lib\Tests\Service\Common {
         public function testConnectMqttClientToFarmingSoftwareEndpoint()
         {
             $onboardResponse = OnboardResponseRepository::read(Identifier::FARMING_SOFTWARE_MQTT);
-            assertNotNull($onboardResponse->getConnectionCriteria());
+            self::assertNotNull($onboardResponse->getConnectionCriteria());
+
+            $loggerBuilder = new MonologLoggerBuilder();
+            $logger = $loggerBuilder->withTestConsoleDefaultValues("PhpMqttClient")->build();
 
             $phpMqttClientBuilder = new PhpMqttClientBuilder();
-
             $phpMqttClient = $phpMqttClientBuilder
-                ->withLogger(LoggerBuilder::createConsoleLogger())
+                ->withLogger($logger)
                 ->withOnboardResponse($onboardResponse)
                 ->build();
-            assertNotNull($phpMqttClient);
+            self::assertNotNull($phpMqttClient);
 
-            $phpMqttClient->connect($onboardResponse);
+            $phpMqttClient->connect();
             self::assertTrue($phpMqttClient->isConnected());
 
             $phpMqttClient->disconnect();
@@ -47,17 +48,19 @@ namespace Lib\Tests\Service\Common {
         public function testConnectMqttClientToCommunicationUnitEndpoint()
         {
             $onboardResponse = OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_MQTT);
-            assertNotNull($onboardResponse->getConnectionCriteria());
+            self::assertNotNull($onboardResponse->getConnectionCriteria());
+
+            $loggerBuilder = new MonologLoggerBuilder();
+            $logger = $loggerBuilder->withTestConsoleDefaultValues("PhpMqttClient")->build();
 
             $phpMqttClientBuilder = new PhpMqttClientBuilder();
-
             $phpMqttClient = $phpMqttClientBuilder
-                ->withLogger(LoggerBuilder::createConsoleLogger())
+                ->withLogger($logger)
                 ->withOnboardResponse($onboardResponse)
                 ->build();
-            assertNotNull($phpMqttClient);
+            self::assertNotNull($phpMqttClient);
 
-            $phpMqttClient->connect($onboardResponse);
+            $phpMqttClient->connect();
             self::assertTrue($phpMqttClient->isConnected());
 
             $phpMqttClient->disconnect();
