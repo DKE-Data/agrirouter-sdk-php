@@ -2,19 +2,16 @@
 
 namespace Lib\Tests\Service\Messaging\Cloud {
 
-    use Agrirouter\Cloud\Registration\OnboardingRequest\EndpointRegistrationDetails;
     use Agrirouter\Commons\Message;
     use Agrirouter\Commons\Messages;
     use App\Api\Exceptions\DecodeMessageException;
     use App\Api\Exceptions\OutboxException;
     use App\Service\Cloud\CloudOffboardService;
-    use App\Service\Cloud\CloudOnboardService;
     use App\Service\Common\DecodeMessageService;
     use App\Service\Common\HttpMessagingService;
     use App\Service\Common\UuidService;
     use App\Service\Messaging\Http\OutboxService;
     use App\Service\Parameters\CloudOffboardParameters;
-    use App\Service\Parameters\CloudOnboardParameters;
     use Exception;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
