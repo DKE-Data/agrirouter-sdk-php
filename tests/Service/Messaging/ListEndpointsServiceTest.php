@@ -2,6 +2,8 @@
 
 namespace Lib\Tests\Service\Messaging {
 
+    use Agrirouter\Commons\Message;
+    use Agrirouter\Commons\Messages;
     use Agrirouter\Request\Payload\Account\ListEndpointsQuery\Direction;
     use Agrirouter\Response\Payload\Account\ListEndpointsResponse;
     use App\Api\Exceptions\DecodeMessageException;
@@ -124,27 +126,22 @@ namespace Lib\Tests\Service\Messaging {
             $decodeMessagesService = new DecodeMessageService();
             $decodedMessages = $decodeMessagesService->decodeResponse($messages[0]->getCommand()->getMessage());
             self::assertNotNull($decodedMessages);
-            self::assertEquals(200, $decodedMessages->getResponseEnvelope()->getResponseCode());
+            self::assertEquals(400, $decodedMessages->getResponseEnvelope()->getResponseCode());
 
-            /** @var ListEndpointsResponse $decodedDetails */
+            /** @var Messages $decodedDetails */
             $decodedDetails = $decodeMessagesService->decodeDetails($decodedMessages->getResponsePayloadWrapper()->getDetails());
             self::assertNotNull($decodedDetails);
 
-            $endpoints = $decodedDetails->getEndpoints();
-            self::assertGreaterThan(0, $endpoints->count());
+            $agrirouterMessages = $decodedDetails->getMessages();
+            self::assertEquals(1, $agrirouterMessages->count());
 
-            $iterator = $endpoints->getIterator();
-            /** @var ListEndpointsResponse\Endpoint $endpoint */
-            foreach ($iterator as $endpoint) {
-                self::assertNotNull($endpoint);
-                self::assertNotNull($endpoint->getExternalId());
-                self::assertNotNull($endpoint->getEndpointId());
-                self::assertNotNull($endpoint->getEndpointName());
-                self::assertNotNull($endpoint->getEndpointType());
-                self::assertNotNull($endpoint->getMessageTypes());
-                self::assertNotNull($endpoint->getStatus());
+            $iterator = $agrirouterMessages->getIterator();
+            /** @var Message $message */
+            foreach ($iterator as $message) {
+                self::assertEquals("VAL_000002", $message->getMessageCode());
+                $expected = "Endpoint cannot sent Technical Message type iso:11783:-10:taskdata:zip.";
+                self::assertEquals($expected, $message->getMessage());
             }
         }
-
     }
 }
