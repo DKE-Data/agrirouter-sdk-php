@@ -30,19 +30,16 @@ namespace Lib\Tests\Helper {
 
         private PhpMqttClient $mqttClient;
         private ?LoggerInterface $logger;
-        private OnboardResponse $onboardResponse;
 
         /**
          * Constructor.
          * @param PhpMqttClient $mqttClient The PhpMqtt client.
-         * @param OnboardResponse $onboardResponse The onboard response with the connection parameters.
          * @param LoggerInterface|null $logger The logger used for logging.
          */
-        #[Pure] public function __construct(PhpMqttClient $mqttClient, OnboardResponse $onboardResponse, ?LoggerInterface $logger = null)
+        #[Pure] public function __construct(PhpMqttClient $mqttClient, ?LoggerInterface $logger = null)
         {
             $this->mqttClient = $mqttClient;
             $this->logger = $logger;
-            $this->onboardResponse = $onboardResponse;
         }
 
         /**
@@ -50,9 +47,9 @@ namespace Lib\Tests\Helper {
          * @throws ConfigurationInvalidException
          * @throws ConnectingToBrokerFailedException
          */
-        public function connect(): void
+        public function connect(OnboardResponse $onboardResponse): void
         {
-            $clientCertPath = CertificateService::createCertificateFile($this->onboardResponse);
+            $clientCertPath = CertificateService::createCertificateFile($onboardResponse);
             $mqttConnectionSettings = (new ConnectionSettings())
                 ->setConnectTimeout(self::MQTT_CONNECT_TIMEOUT)
                 ->setSocketTimeout(self::MQTT_SOCKET_TIMEOUT)
@@ -60,7 +57,7 @@ namespace Lib\Tests\Helper {
                 ->setKeepAliveInterval(self::MQTT_KEEP_ALIVE_INTERVAL)
                 ->setTlsClientCertificateFile($clientCertPath)
                 ->setTlsClientCertificateKeyFile($clientCertPath)
-                ->setTlsClientCertificateKeyPassphrase($this->onboardResponse->getAuthentication()->getSecret());
+                ->setTlsClientCertificateKeyPassphrase($onboardResponse->getAuthentication()->getSecret());
             $this->mqttClient->connect($mqttConnectionSettings, self::MQTT_USE_CLEAN_SESSION);
         }
 
@@ -123,29 +120,37 @@ namespace Lib\Tests\Helper {
          * Waits for a given time period until a new message arrives on the topic of the client.
          * Can be interrupted with a call of the interrupt() method of the client.
          * @param int $seconds Time to wait for messages in the outbox.
+         * @return bool Indicates whether the loop has been interrupted by some other handler.
          * @throws DataTransferException -
          * @throws MqttClientException -
          * @throws ProtocolViolationException -
          */
-        public function wait(int $seconds = 5): void
+        public function wait(int $seconds = 5): bool
         {
             $maxRuntime = (float)$seconds;
+            $wasInterrupted = true;
 
-            $this->mqttClient->registerLoopEventHandler($this->getLoopEventHandler($maxRuntime));
+            $this->mqttClient->registerLoopEventHandler($this->getLoopEventHandler($maxRuntime, $this->logger,$wasInterrupted));
             $this->mqttClient->loop(true);
             $this->mqttClient->unregisterLoopEventHandler();
+            return $wasInterrupted;
         }
 
         /**
          * Creates a callback function for the php mqtt client loop event handler. Normally the loop runs endless if not interrupted.
          * This callback interrupts the loop after the given amount of seconds.
          * @param float $maxRuntime Maximum time to wait in seconds.
+         * @param LoggerInterface $logger The psr compatible logger.
+         * @param bool $wasInterrupted Indicates whether the loop has been interrupted by some other handler.
          * @return callable - The closure for the LoopEventHandler of the php mqtt client.
          */
-        private function getLoopEventHandler(float &$maxRuntime): callable
+        private function getLoopEventHandler(float &$maxRuntime, LoggerInterface &$logger, bool &$wasInterrupted): callable
         {
-            return function (PhpMqttClient $client, float $elapsedTime) use (&$maxRuntime) {
+            return function (PhpMqttClient $client, float $elapsedTime) use (&$maxRuntime, &$logger,&$wasInterrupted) {
+                $wasInterrupted = true;
                 if ($elapsedTime >= $maxRuntime) {
+                    $logger->info("No Interrupt in loop received. Runtime: ".$elapsedTime);
+                    $wasInterrupted = false;
                     $client->interrupt();
                     return;
                 }

@@ -16,7 +16,6 @@ namespace Lib\Tests\Helper {
         private string $host;
         private string $clientId;
         private int $port;
-        private OnboardResponse $onboardResponse;
 
         /**
          * Sets the logger for the mqtt client.
@@ -36,8 +35,7 @@ namespace Lib\Tests\Helper {
          */
         public function withOnboardResponse(OnboardResponse $onboardResponse):self
         {
-            $this->onboardResponse = $onboardResponse;
-            $connectionCriteria = $this->onboardResponse->getConnectionCriteria();
+            $connectionCriteria = $onboardResponse->getConnectionCriteria();
             $this->host = $connectionCriteria->getHost();
             $this->port = (int)$connectionCriteria->getPort();
             $this->clientId = $connectionCriteria->getClientId();
@@ -59,7 +57,6 @@ namespace Lib\Tests\Helper {
                     port: $this->port,
                     clientId: $this->clientId,
                     logger: $this->logger)
-                , $this->onboardResponse
                 , $this->logger);
         }
     }

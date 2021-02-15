@@ -17,18 +17,25 @@ namespace Lib\Tests\Service\Common {
         /**
          * Sleep for a dedicated time and let the AR process the message.
          * @param int $seconds Seconds to sleep.
-         * @param MqttClient|null $mqttClient
-         * @throws DataTransferException
-         * @throws MqttClientException
-         * @throws ProtocolViolationException
          */
-        public static function letTheAgrirouterProcessTheMessage(int $seconds = 3, MqttClient $mqttClient = null)
+        public static function letTheAgrirouterProcessTheMessage(int $seconds = 3)
         {
-            if ($mqttClient !== null) {
-                $mqttClient->wait($seconds);
-            } else {
                 sleep($seconds);
-            }
+        }
+
+        /**
+         * Sleep for a dedicated time and let the AR process the mqtt message.
+         * @param int $seconds Seconds to sleep.
+         * @param MqttClient|null $mqttClient
+         * @return bool Was the loop interrupted by a callback handler.
+         * @throws DataTransferException -
+         * @throws MqttClientException -
+         * @throws ProtocolViolationException -
+         */
+        public static function letTheAgrirouterProcessTheMqttMessage(int $seconds = 3, MqttClient $mqttClient = null) : bool
+        {
+
+                return $mqttClient->wait($seconds);
         }
     }
 }

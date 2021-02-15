@@ -2,6 +2,8 @@
 
 namespace App\Api\Messaging {
 
+    use App\Dto\Onboard\OnboardResponse;
+
     /**
      * Interface to handle external MQTT client implementations.
      * @package App\Api\Common
@@ -10,8 +12,9 @@ namespace App\Api\Messaging {
     {
         /**
          * Connects the client to the agrirouter mqtt broker.
+         * @param OnboardResponse $onboardResponse The onboard response.
          */
-        public function connect(): void;
+        public function connect(OnboardResponse $onboardResponse): void;
 
         /**
          * Disconnects the client to the agrirouter mqtt broker.

@@ -52,7 +52,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
                 ->withOnboardResponse(self::$onboardResponse)->build();
 
             self::assertNotNull(self::$mqttClient);
-            self::$mqttClient->connect();
+            self::$mqttClient->connect(self::$onboardResponse);
             self::assertTrue(self::$mqttClient->isConnected());
         }
 
@@ -71,38 +71,43 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
          * @throws MqttClientException
          * @throws ProtocolViolationException
          * @throws RepositoryException
+         * @throws Exception
          */
         public function testGivenInvalidCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldStillAcceptTheMessage()
         {
             $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
+            $callbackException = null;
             self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
-                function (string $topic, string $message) use (&$mqttClient, &$logger) {
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$callbackException) {
                     $logger->info("We received a message on topic [{topic}]: {message}",
                         [
                             'topic' => $topic,
                             'message' => $message
                         ]);
+                    try {
+                        self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                        $receivedMessage = json_decode($message, true);
 
-                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
-                    $receivedMessage = json_decode($message, true);
+                        $decodeMessagesService = new DecodeMessageService();
+                        $decodedMessages = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+                        self::assertNotNull($decodedMessages);
+                        self::assertEquals(400, $decodedMessages->getResponseEnvelope()->getResponseCode());
 
-                    $decodeMessagesService = new DecodeMessageService();
-                    $decodedMessages = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
-                    self::assertNotNull($decodedMessages);
-                    self::assertEquals(400, $decodedMessages->getResponseEnvelope()->getResponseCode());
+                        /** @var Messages $decodedDetails */
+                        $decodedDetails = $decodeMessagesService->decodeDetails($decodedMessages->getResponsePayloadWrapper()->getDetails());
+                        self::assertNotNull($decodedDetails);
 
-                    /** @var Messages $decodedDetails */
-                    $decodedDetails = $decodeMessagesService->decodeDetails($decodedMessages->getResponsePayloadWrapper()->getDetails());
-                    self::assertNotNull($decodedDetails);
+                        $agrirouterMessages = $decodedDetails->getMessages();
+                        self::assertEquals(1, $agrirouterMessages->count());
 
-                    $agrirouterMessages = $decodedDetails->getMessages();
-                    self::assertEquals(1, $agrirouterMessages->count());
-
-                    $iterator = $agrirouterMessages->getIterator();
-                    /** @var Message $message */
-                    foreach ($iterator as $message) {
-                        self::assertEquals("Capability for That one is invalid! was ignored as it is not known to the certification.", $message->getMessage());
+                        $iterator = $agrirouterMessages->getIterator();
+                        /** @var Message $message */
+                        foreach ($iterator as $message) {
+                            self::assertEquals("Capability for That one is invalid! was ignored as it is not known to the certification.", $message->getMessage());
+                        }
+                    } catch (Exception $exception) {
+                        $callbackException = $exception;
                     }
                     $logger->info("Leaving callback...");
                     $mqttClient->interrupt();
@@ -123,41 +128,49 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $capabilityParameters->setCapabilityParameters($capabilities);
             $capabilityService->send($capabilityParameters);
 
-            SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            if ($callbackException !== null) {
+                throw($callbackException);
+            }
         }
 
         /**
          * @covers CapabilityService::send()
          * @throws DataTransferException
          * @throws MqttClientException
-         * @throws ProtocolViolationException
          * @throws RepositoryException
+         * @throws Exception
          */
         function testGivenEmptyCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
             $applicationMessageId = "";
+            $callbackException = null;
 
             self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
-                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageId) {
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$callbackException, &$applicationMessageId) {
                     $logger->info("We received a message on topic [{topic}]: {message}",
                         [
                             'topic' => $topic,
                             'message' => $message
                         ]);
-                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
-                    $receivedMessage = json_decode($message, true);
-                    $decodeMessagesService = new DecodeMessageService();
-                    /** @var DecodedMessage $decodedMessages */
-                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
-                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
-                        [
-                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
-                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
-                        ]);
-                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
-                    self::assertEquals($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageId);
+                    try {
+                        self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                        $receivedMessage = json_decode($message, true);
+                        $decodeMessagesService = new DecodeMessageService();
+                        /** @var DecodedMessage $decodedMessages */
+                        $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+                        $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                            [
+                                'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                                'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                            ]);
+                        self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                        self::assertEquals($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageId);
+                    } catch (Exception $exception) {
+                        $callbackException = $exception;
+                    }
                     $logger->info("Leaving callback...");
                     $mqttClient->interrupt();
                 });
@@ -175,7 +188,10 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $capabilityParameters->setCapabilityParameters($capabilityBuilder->build());
             $capabilityService->send($capabilityParameters);
 
-            SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            if ($callbackException !== null) {
+                throw($callbackException);
+            }
             self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
         }
 
@@ -183,39 +199,43 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
          * @covers CapabilityService::send()
          * @throws DataTransferException
          * @throws MqttClientException
-         * @throws ProtocolViolationException
          * @throws RepositoryException
+         * @throws Exception
          */
         function testGivenTaskDataCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
+            $callbackException = null;
             $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
 
             self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
-                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$callbackException, &$applicationMessageIds) {
                     $logger->info("We received a message on topic [{topic}]: {message}",
                         [
                             'topic' => $topic,
                             'message' => $message
                         ]);
-                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
-                    $receivedMessage = json_decode($message, true);
+                    try {
+                        self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                        $receivedMessage = json_decode($message, true);
 
-                    $decodeMessagesService = new DecodeMessageService();
-                    /** @var DecodedMessage $decodedMessages */
-                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+                        $decodeMessagesService = new DecodeMessageService();
+                        /** @var DecodedMessage $decodedMessages */
+                        $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
 
-                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
-                        [
-                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
-                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
-                        ]);
+                        $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                            [
+                                'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                                'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                            ]);
 
-                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
-                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
-                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
-
+                        self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                        self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                        unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+                    } catch (Exception $exception) {
+                        $callbackException = $exception;
+                    }
                     $logger->info("Leaving callback...");
                     $mqttClient->interrupt();
                 });
@@ -247,8 +267,11 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
                 $counter++;
+                if ($callbackException !== null) {
+                    throw($callbackException);
+                }
             } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
             self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
             self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
@@ -260,37 +283,42 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
          * @throws RepositoryException
          * @throws MqttClientException
          * @throws ProtocolViolationException
+         * @throws Exception
          */
         function testGivenDeviceDescriptionCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
+            $callbackException = null;
             $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
 
             self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
-                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$callbackException, &$applicationMessageIds) {
                     $logger->info("We received a message on topic [{topic}]: {message}",
                         [
                             'topic' => $topic,
                             'message' => $message
                         ]);
-                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
-                    $receivedMessage = json_decode($message, true);
+                    try {
+                        self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                        $receivedMessage = json_decode($message, true);
 
-                    $decodeMessagesService = new DecodeMessageService();
-                    /** @var DecodedMessage $decodedMessages */
-                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+                        $decodeMessagesService = new DecodeMessageService();
+                        /** @var DecodedMessage $decodedMessages */
+                        $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
 
-                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
-                        [
-                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
-                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
-                        ]);
+                        $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                            [
+                                'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                                'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                            ]);
 
-                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
-                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
-                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
-
+                        self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                        self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                        unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+                    } catch (Exception $exception) {
+                        $callbackException = $exception;
+                    }
                     $logger->info("Leaving callback...");
                     $mqttClient->interrupt();
                 });
@@ -322,8 +350,11 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
                 $counter++;
+                if ($callbackException !== null) {
+                    throw($callbackException);
+                }
             } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
             self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
             self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
@@ -335,37 +366,42 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
          * @throws MqttClientException
          * @throws ProtocolViolationException
          * @throws RepositoryException
+         * @throws Exception
          */
         function testGivenTimeLogCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
+            $callbackException = null;
             $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
 
             self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
-                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$callbackException, &$applicationMessageIds) {
                     $logger->info("We received a message on topic [{topic}]: {message}",
                         [
                             'topic' => $topic,
                             'message' => $message
                         ]);
-                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
-                    $receivedMessage = json_decode($message, true);
+                    try {
+                        self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                        $receivedMessage = json_decode($message, true);
 
-                    $decodeMessagesService = new DecodeMessageService();
-                    /** @var DecodedMessage $decodedMessages */
-                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+                        $decodeMessagesService = new DecodeMessageService();
+                        /** @var DecodedMessage $decodedMessages */
+                        $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
 
-                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
-                        [
-                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
-                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
-                        ]);
+                        $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                            [
+                                'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                                'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                            ]);
 
-                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
-                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
-                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
-
+                        self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                        self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                        unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+                    } catch (Exception $exception) {
+                        $callbackException = $exception;
+                    }
                     $logger->info("Leaving callback...");
                     $mqttClient->interrupt();
                 });
@@ -397,8 +433,11 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
                 $counter++;
+                if ($callbackException !== null) {
+                    throw($callbackException);
+                }
             } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
             self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
             self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
@@ -410,37 +449,42 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
          * @throws MqttClientException
          * @throws ProtocolViolationException
          * @throws RepositoryException
+         * @throws Exception
          */
         function testGivenImageCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
+            $callbackException = null;
             $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
 
             self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
-                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$callbackException, &$applicationMessageIds) {
                     $logger->info("We received a message on topic [{topic}]: {message}",
                         [
                             'topic' => $topic,
                             'message' => $message
                         ]);
-                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
-                    $receivedMessage = json_decode($message, true);
+                    try {
+                        self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                        $receivedMessage = json_decode($message, true);
 
-                    $decodeMessagesService = new DecodeMessageService();
-                    /** @var DecodedMessage $decodedMessages */
-                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+                        $decodeMessagesService = new DecodeMessageService();
+                        /** @var DecodedMessage $decodedMessages */
+                        $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
 
-                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
-                        [
-                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
-                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
-                        ]);
+                        $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                            [
+                                'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                                'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                            ]);
 
-                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
-                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
-                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
-
+                        self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                        self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                        unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+                    } catch (Exception $exception) {
+                        $callbackException = $exception;
+                    }
                     $logger->info("Leaving callback...");
                     $mqttClient->interrupt();
                 });
@@ -478,8 +522,11 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
                 $counter++;
+                if ($callbackException !== null) {
+                    throw($callbackException);
+                }
             } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
             self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
             self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
@@ -491,37 +538,42 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
          * @throws MqttClientException
          * @throws ProtocolViolationException
          * @throws RepositoryException
+         * @throws Exception
          */
         function testGivenVideoCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
+            $callbackException = null;
             $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
 
             self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
-                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$callbackException, &$applicationMessageIds) {
                     $logger->info("We received a message on topic [{topic}]: {message}",
                         [
                             'topic' => $topic,
                             'message' => $message
                         ]);
-                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
-                    $receivedMessage = json_decode($message, true);
+                    try {
+                        self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                        $receivedMessage = json_decode($message, true);
 
-                    $decodeMessagesService = new DecodeMessageService();
-                    /** @var DecodedMessage $decodedMessages */
-                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+                        $decodeMessagesService = new DecodeMessageService();
+                        /** @var DecodedMessage $decodedMessages */
+                        $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
 
-                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
-                        [
-                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
-                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
-                        ]);
+                        $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                            [
+                                'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                                'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                            ]);
 
-                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
-                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
-                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
-
+                        self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                        self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                        unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+                    } catch (Exception $exception) {
+                        $callbackException = $exception;
+                    }
                     $logger->info("Leaving callback...");
                     $mqttClient->interrupt();
                 });
@@ -559,8 +611,11 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
                 $counter++;
+                if ($callbackException !== null) {
+                    throw($callbackException);
+                }
             } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
             self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
             self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
@@ -572,37 +627,42 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
          * @throws MqttClientException
          * @throws ProtocolViolationException
          * @throws RepositoryException
+         * @throws Exception
          */
         function testGivenShapeCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
+            $callbackException = null;
             $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
 
             self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
-                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$callbackException, &$applicationMessageIds) {
                     $logger->info("We received a message on topic [{topic}]: {message}",
                         [
                             'topic' => $topic,
                             'message' => $message
                         ]);
-                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
-                    $receivedMessage = json_decode($message, true);
+                    try {
+                        self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                        $receivedMessage = json_decode($message, true);
 
-                    $decodeMessagesService = new DecodeMessageService();
-                    /** @var DecodedMessage $decodedMessages */
-                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+                        $decodeMessagesService = new DecodeMessageService();
+                        /** @var DecodedMessage $decodedMessages */
+                        $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
 
-                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
-                        [
-                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
-                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
-                        ]);
+                        $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                            [
+                                'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                                'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                            ]);
 
-                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
-                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
-                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
-
+                        self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                        self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                        unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+                    } catch (Exception $exception) {
+                        $callbackException = $exception;
+                    }
                     $logger->info("Leaving callback...");
                     $mqttClient->interrupt();
                 });
@@ -634,8 +694,11 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
                 $counter++;
+                if ($callbackException !== null) {
+                    throw($callbackException);
+                }
             } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
             self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
             self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
@@ -647,37 +710,42 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
          * @throws MqttClientException
          * @throws ProtocolViolationException
          * @throws RepositoryException
+         * @throws Exception
          */
         function testGivenPdfCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
+            $callbackException = null;
             $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
 
             self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
-                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$callbackException, &$applicationMessageIds) {
                     $logger->info("We received a message on topic [{topic}]: {message}",
                         [
                             'topic' => $topic,
                             'message' => $message
                         ]);
-                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
-                    $receivedMessage = json_decode($message, true);
+                    try {
+                        self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                        $receivedMessage = json_decode($message, true);
 
-                    $decodeMessagesService = new DecodeMessageService();
-                    /** @var DecodedMessage $decodedMessages */
-                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+                        $decodeMessagesService = new DecodeMessageService();
+                        /** @var DecodedMessage $decodedMessages */
+                        $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
 
-                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
-                        [
-                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
-                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
-                        ]);
+                        $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                            [
+                                'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                                'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                            ]);
 
-                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
-                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
-                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
-
+                        self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                        self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                        unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+                    } catch (Exception $exception) {
+                        $callbackException = $exception;
+                    }
                     $logger->info("Leaving callback...");
                     $mqttClient->interrupt();
                 });
@@ -709,8 +777,11 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
                 $counter++;
+                if ($callbackException !== null) {
+                    throw($callbackException);
+                }
             } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
             self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
             self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
@@ -722,37 +793,42 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
          * @throws MqttClientException
          * @throws ProtocolViolationException
          * @throws RepositoryException
+         * @throws Exception
          */
         function testGivenGpsInfoCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
+            $callbackException = null;
             $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
 
             self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
-                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$callbackException, &$applicationMessageIds) {
                     $logger->info("We received a message on topic [{topic}]: {message}",
                         [
                             'topic' => $topic,
                             'message' => $message
                         ]);
-                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
-                    $receivedMessage = json_decode($message, true);
+                    try {
+                        self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                        $receivedMessage = json_decode($message, true);
 
-                    $decodeMessagesService = new DecodeMessageService();
-                    /** @var DecodedMessage $decodedMessages */
-                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+                        $decodeMessagesService = new DecodeMessageService();
+                        /** @var DecodedMessage $decodedMessages */
+                        $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
 
-                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
-                        [
-                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
-                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
-                        ]);
+                        $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                            [
+                                'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                                'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                            ]);
 
-                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
-                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
-                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
-
+                        self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                        self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                        unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+                    } catch (Exception $exception) {
+                        $callbackException = $exception;
+                    }
                     $logger->info("Leaving callback...");
                     $mqttClient->interrupt();
                 });
@@ -784,8 +860,11 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
                 $counter++;
+                if ($callbackException !== null) {
+                    throw($callbackException);
+                }
             } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
             self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
             self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
@@ -797,37 +876,42 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
          * @throws MqttClientException
          * @throws ProtocolViolationException
          * @throws RepositoryException
+         * @throws Exception
          */
         function testGivenAllCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldAcceptTheMessage()
         {
             $logger = $this->getLogger();
             $mqttClient = self::$mqttClient;
+            $callbackException = null;
             $applicationMessageIds = [UuidService::newUuid(), UuidService::newUuid(), UuidService::newUuid()];
 
             self::$mqttClient->subscribe(self::$onboardResponse->getConnectionCriteria()->getCommands(),
-                function (string $topic, string $message) use (&$mqttClient, &$logger, &$applicationMessageIds) {
+                function (string $topic, string $message) use (&$mqttClient, &$logger, &$callbackException, &$applicationMessageIds) {
                     $logger->info("We received a message on topic [{topic}]: {message}",
                         [
                             'topic' => $topic,
                             'message' => $message
                         ]);
-                    self::assertNotEmpty($message, "No Message received from the agrirouter.");
-                    $receivedMessage = json_decode($message, true);
+                    try {
+                        self::assertNotEmpty($message, "No Message received from the agrirouter.");
+                        $receivedMessage = json_decode($message, true);
 
-                    $decodeMessagesService = new DecodeMessageService();
-                    /** @var DecodedMessage $decodedMessages */
-                    $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
+                        $decodeMessagesService = new DecodeMessageService();
+                        /** @var DecodedMessage $decodedMessages */
+                        $decodedMessage = $decodeMessagesService->decodeResponse($receivedMessage['command']['message']);
 
-                    $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
-                        [
-                            'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
-                            'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
-                        ]);
+                        $logger->info("Message decoded :\n-> Header: {header}\n->Payload: {payload}",
+                            [
+                                'header' => $decodedMessage->getResponseEnvelope()->serializeToJsonString(),
+                                'payload' => $decodedMessage->getResponsePayloadWrapper()->getDetails()->serializeToString()
+                            ]);
 
-                    self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
-                    self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
-                    unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
-
+                        self::assertTrue($decodedMessage->getResponseEnvelope()->getResponseCode() === 201);
+                        self::assertContains($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds);
+                        unset($applicationMessageIds[array_search($decodedMessage->getResponseEnvelope()->getApplicationMessageId(), $applicationMessageIds)]);
+                    } catch (Exception $exception) {
+                        $callbackException = $exception;
+                    }
                     $logger->info("Leaving callback...");
                     $mqttClient->interrupt();
                 });
@@ -895,8 +979,11 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                SleepTimer::letTheAgrirouterProcessTheMessage(mqttClient: self::$mqttClient);
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
                 $counter++;
+                if ($callbackException !== null) {
+                    throw($callbackException);
+                }
             } while ($counter < 3 || sizeof($applicationMessageIds) > 0);
             self::assertEmpty($applicationMessageIds, "Not all sent messages have been processed.");
             self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
@@ -909,7 +996,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
         protected function setUp(): void
         {
             if (!self::$mqttClient->isConnected()) {
-                self::$mqttClient->connect();
+                self::$mqttClient->connect(self::$onboardResponse);
             }
             self::assertTrue(self::$mqttClient->isConnected());
         }
@@ -923,11 +1010,10 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
         protected function tearDown(): void
         {
             if (!self::$mqttClient->isConnected()) {
-                self::$mqttClient->connect();
+                self::$mqttClient->connect(self::$onboardResponse);
             }
             self::$mqttClient->unsubscribe(self::$onboardResponse->getConnectionCriteria()->getCommands());
             self::assertTrue(self::$mqttClient->isConnected());
         }
-
     }
 }

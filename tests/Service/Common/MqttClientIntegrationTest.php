@@ -33,7 +33,7 @@ namespace Lib\Tests\Service\Common {
                 ->build();
             self::assertNotNull($phpMqttClient);
 
-            $phpMqttClient->connect();
+            $phpMqttClient->connect($onboardResponse);
             self::assertTrue($phpMqttClient->isConnected());
 
             $phpMqttClient->disconnect();
@@ -60,7 +60,7 @@ namespace Lib\Tests\Service\Common {
                 ->build();
             self::assertNotNull($phpMqttClient);
 
-            $phpMqttClient->connect();
+            $phpMqttClient->connect($onboardResponse);
             self::assertTrue($phpMqttClient->isConnected());
 
             $phpMqttClient->disconnect();
