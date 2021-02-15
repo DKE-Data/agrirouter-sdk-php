@@ -5,17 +5,22 @@ namespace Lib\Tests\Service\Messaging {
     use Agrirouter\Commons\Message;
     use Agrirouter\Commons\Messages;
     use Agrirouter\Request\Payload\Account\ListEndpointsQuery\Direction;
+    use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\PushNotification;
     use Agrirouter\Response\Payload\Account\ListEndpointsResponse;
+    use App\Api\Builder\CapabilityBuilder;
     use App\Api\Exceptions\DecodeMessageException;
     use App\Api\Exceptions\OutboxException;
     use App\Definitions\CapabilityTypeDefinitions;
     use App\Service\Common\DecodeMessageService;
     use App\Service\Common\HttpMessagingService;
     use App\Service\Common\UuidService;
+    use App\Service\Messaging\CapabilityService;
     use App\Service\Messaging\Http\OutboxService;
     use App\Service\Messaging\ListEndpointsService;
+    use App\Service\Parameters\CapabilityParameters;
     use App\Service\Parameters\ListEndpointsParameters;
     use Exception;
+    use Lib\Tests\Applications\CommunicationUnit;
     use Lib\Tests\Helper\GuzzleHttpClientBuilder;
     use Lib\Tests\Helper\Identifier;
     use Lib\Tests\Helper\OnboardResponseRepository;
@@ -96,6 +101,25 @@ namespace Lib\Tests\Service\Messaging {
         {
             $guzzleHttpClientBuilder = new GuzzleHttpClientBuilder();
             $httpMessagingService = new HttpMessagingService($guzzleHttpClientBuilder->build());
+            $capabilitiesService = new CapabilityService($httpMessagingService);
+
+            $capabilityParameters = new CapabilityParameters();
+            $capabilityParameters->setApplicationMessageId(UuidService::newUuid());
+            $capabilityParameters->setApplicationMessageSeqNo(1);
+            $capabilityParameters->setApplicationId(CommunicationUnit::applicationId());
+            $capabilityParameters->setCertificationVersionId(CommunicationUnit::certificationVersionId());
+            $capabilityParameters->setOnboardResponse(OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_HTTP));
+            $capabilityParameters->setEnablePushNotification(PushNotification::DISABLED);
+
+            $capabilityBuilder = new CapabilityBuilder();
+            $capabilities = $capabilityBuilder
+                ->withPdf(Direction::SEND_RECEIVE)
+                ->build();
+            $capabilityParameters->setCapabilityParameters($capabilities);
+            $capabilitiesService->send($capabilityParameters);
+
+
+
             $listEndpointsService = new ListEndpointsService($httpMessagingService);
 
             $listEndpointsParameters = new ListEndpointsParameters();
