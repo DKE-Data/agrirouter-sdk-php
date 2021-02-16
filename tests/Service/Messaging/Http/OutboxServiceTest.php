@@ -1,6 +1,6 @@
 <?php
 
-namespace Lib\Tests\Service\Messaging\Http\Http {
+namespace Lib\Tests\Service\Messaging\Http {
 
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\Capability;
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\Direction;
@@ -18,18 +18,12 @@ namespace Lib\Tests\Service\Messaging\Http\Http {
     use Lib\Tests\Helper\OnboardResponseRepository;
     use Lib\Tests\Service\AbstractIntegrationTestForServices;
     use Lib\Tests\Service\Common\SleepTimer;
-    use PhpMqtt\Client\Exceptions\DataTransferException;
-    use PhpMqtt\Client\Exceptions\MqttClientException;
-    use PhpMqtt\Client\Exceptions\ProtocolViolationException;
 
     class OutboxServiceTest extends AbstractIntegrationTestForServices
     {
         /**
          * @covers OutboxService::fetch()
          * @throws OutboxException
-         * @throws DataTransferException
-         * @throws MqttClientException
-         * @throws ProtocolViolationException
          * @throws Exception
          */
         function testGivenInvalidCapabilitiesWhenSendingCapabilitiesThenTheAgrirouterShouldStillAcceptTheMessage()
@@ -71,6 +65,5 @@ namespace Lib\Tests\Service\Messaging\Http\Http {
             self::assertNotNull($messages[0]->getCommand());
             self::assertNotNull($messages[0]->getCommand()->getMessage());
         }
-
     }
 }

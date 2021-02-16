@@ -1,6 +1,6 @@
 <?php
 
-namespace Lib\Tests\Service\Messaging\Http\Cloud {
+namespace Lib\Tests\Service\Messaging\Cloud {
 
     use Agrirouter\Cloud\Registration\OnboardingRequest\EndpointRegistrationDetails;
     use Agrirouter\Commons\Message;
@@ -82,6 +82,5 @@ namespace Lib\Tests\Service\Messaging\Http\Cloud {
                 self::assertEquals("The application is not a cloud application.", $message->getMessage());
             }
         }
-
     }
 }
