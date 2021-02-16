@@ -36,7 +36,7 @@ namespace App\Api\Messaging {
         public function unsubscribe(string $topic): void;
 
         /**
-         * Checks if the client is connected to the agrirouter.
+         * Checks if the client is connected.
          * @return bool True if the client is connected, false otherwise.
          */
         public function isConnected(): bool;
