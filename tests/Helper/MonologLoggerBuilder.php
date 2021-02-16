@@ -25,7 +25,7 @@ namespace Lib\Tests\Helper {
         /**
          * Sets the default values for creating a test logger.
          * @param string $channelName The channel name to use for the output
-         * @return $this -
+         * @return $this .
          */
         public function withTestConsoleDefaultValues(string $channelName): self
         {

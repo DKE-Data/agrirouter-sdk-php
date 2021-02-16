@@ -44,8 +44,8 @@ namespace Lib\Tests\Helper {
 
         /**
          * @inheritDoc
-         * @throws ConfigurationInvalidException
-         * @throws ConnectingToBrokerFailedException
+         * @throws ConfigurationInvalidException .
+         * @throws ConnectingToBrokerFailedException .
          */
         public function connect(OnboardResponse $onboardResponse): void
         {
@@ -63,7 +63,7 @@ namespace Lib\Tests\Helper {
 
         /**
          * @inheritDoc
-         * @throws DataTransferException
+         * @throws DataTransferException .
          */
         public function disconnect(): void
         {
@@ -72,8 +72,8 @@ namespace Lib\Tests\Helper {
 
         /**
          * @inheritDoc
-         * @throws DataTransferException
-         * @throws RepositoryException
+         * @throws DataTransferException .
+         * @throws RepositoryException .
          */
         public function subscribe(string $topic, callable $callback = null, int $qualityOfService = 2): void
         {
@@ -82,8 +82,8 @@ namespace Lib\Tests\Helper {
 
         /**
          * @inheritDoc
-         * @throws DataTransferException
-         * @throws RepositoryException
+         * @throws DataTransferException .
+         * @throws RepositoryException .
          */
         public function unsubscribe(string $topic): void
         {
@@ -100,8 +100,8 @@ namespace Lib\Tests\Helper {
 
         /**
          * @inheritDoc
-         * @throws DataTransferException
-         * @throws RepositoryException
+         * @throws DataTransferException .
+         * @throws RepositoryException .
          */
         public function publish(string $topic, string $message, int $qualityOfService = 0, bool $retain = false): void
         {
@@ -121,9 +121,9 @@ namespace Lib\Tests\Helper {
          * Can be interrupted with a call of the interrupt() method of the client.
          * @param int $seconds Time to wait for messages in the outbox.
          * @return bool Indicates whether the loop has been interrupted by some other handler.
-         * @throws DataTransferException -
-         * @throws MqttClientException -
-         * @throws ProtocolViolationException -
+         * @throws DataTransferException .
+         * @throws MqttClientException .
+         * @throws ProtocolViolationException .
          */
         public function wait(int $seconds = 5): bool
         {

@@ -18,7 +18,7 @@ namespace Lib\Tests\Helper {
 
         /**
          * Constructor.
-         * @param Client $httpClient -
+         * @param Client $httpClient .
          */
         public function __construct(Client $httpClient)
         {
