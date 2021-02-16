@@ -22,10 +22,10 @@ namespace App\Api\Messaging {
         public function disconnect(): void;
 
         /**
-         * Subscribes a client to an agrirouter topic
-         * @param string $topic The topic name to subscribe to.
-         * @param callable|null $callback Callback function for receiving messages if supported bei the client implementation, null otherwise.
-         * @param int $qualityOfService The qos parameter for the message handling.
+         * Subscribes a client to the agrirouter topic.
+         * @param string $topic The topic to subscribe to.
+         * @param callable|null $callback Callback function for receiving messages if supported by the client implementation, null otherwise.
+         * @param int $qualityOfService The QoS parameter for the message handling.
          */
         public function subscribe(string $topic, callable $callback = null, int $qualityOfService = 2): void;
 
