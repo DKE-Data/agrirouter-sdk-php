@@ -52,7 +52,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             self::$onboardResponse = OnboardResponseRepository::read(Identifier::COMMUNICATION_UNIT_MQTT);
             self::$mqttClient = (new PhpMqttClientBuilder())
                 ->withLogger($loggerBuilder->withTestConsoleDefaultValues("PhpMqttClient")->build())
-                ->withOnboardResponse(self::$onboardResponse)->build();
+                ->fromOnboardResponse(self::$onboardResponse)->build();
 
             self::assertNotNull(self::$mqttClient);
             self::$mqttClient->connect(self::$onboardResponse);
