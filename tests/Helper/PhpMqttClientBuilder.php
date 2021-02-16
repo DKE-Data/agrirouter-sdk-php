@@ -18,22 +18,11 @@ namespace Lib\Tests\Helper {
         private int $port;
 
         /**
-         * Sets the logger for the mqtt client.
-         * @param LoggerInterface $logger The psr compatible logger.
-         * @return $this -
-         */
-        public function withLogger(LoggerInterface $logger): self
-        {
-            $this->logger = $logger;
-            return $this;
-        }
-
-        /**
          * Sets the onboard response for the mqtt client.
          * @param OnboardResponse $onboardResponse The onboard response.
-         * @return $this -
+         * @return $this .
          */
-        public function withOnboardResponse(OnboardResponse $onboardResponse):self
+        public function fromOnboardResponse(OnboardResponse $onboardResponse):self
         {
             $connectionCriteria = $onboardResponse->getConnectionCriteria();
             $this->host = $connectionCriteria->getHost();
@@ -44,13 +33,23 @@ namespace Lib\Tests\Helper {
         }
 
         /**
-         * Get the MQTT client.
-         * @return MqttClient -
+         * Sets the logger for the mqtt client.
+         * @param LoggerInterface $logger The psr compatible logger.
+         * @return $this .
+         */
+        public function withLogger(LoggerInterface $logger): self
+        {
+            $this->logger = $logger;
+            return $this;
+        }
+
+        /**
+         * Build the MQTT client.
+         * @return MqttClient .
          * @throws ProtocolNotSupportedException
          */
         public function build(): MqttClient
         {
-
             return new MqttClient(
                 new \PhpMqtt\Client\MqttClient(
                     host: $this->host,
