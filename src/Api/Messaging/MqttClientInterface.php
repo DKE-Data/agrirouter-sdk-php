@@ -11,7 +11,7 @@ namespace App\Api\Messaging {
     interface MqttClientInterface
     {
         /**
-         * Connects the client to the agrirouter mqtt broker.
+         * Connects the client to the agrirouter MQTT broker.
          * @param OnboardResponse $onboardResponse The onboard response.
          */
         public function connect(OnboardResponse $onboardResponse): void;
