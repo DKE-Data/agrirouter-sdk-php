@@ -27,7 +27,7 @@ namespace Lib\Tests\Helper {
 
         /**
          * Creates a PSR compatible http client.
-         * @return Client -
+         * @return Client .
          */
         private function createHttpClient(): Client
         {
@@ -66,7 +66,7 @@ namespace Lib\Tests\Helper {
 
         /**
          * Get the HTTP client.
-         * @return HttpClient -
+         * @return HttpClient .
          */
         public function build(): HttpClient
         {
