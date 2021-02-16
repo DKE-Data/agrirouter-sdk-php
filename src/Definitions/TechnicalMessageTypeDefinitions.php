@@ -59,5 +59,10 @@ namespace App\Definitions {
          */
         public const CLOUD_ONBOARD_ENDPOINTS = "dke:cloud_onboard_endpoints";
 
+        /**
+         * Type 'dke:cloud_offboard_endpoints'.
+         */
+        public const CLOUD_OFFBOARD_ENDPOINTS = "dke:cloud_offboard_endpoints";
+
     }
 }
