@@ -20,7 +20,7 @@ namespace Lib\Tests\Service\Common {
          */
         public static function letTheAgrirouterProcessTheMessage(int $seconds = 3)
         {
-                sleep($seconds);
+            sleep($seconds);
         }
 
         /**
@@ -32,10 +32,9 @@ namespace Lib\Tests\Service\Common {
          * @throws MqttClientException -
          * @throws ProtocolViolationException -
          */
-        public static function letTheAgrirouterProcessTheMqttMessage(int $seconds = 3, MqttClient $mqttClient = null) : bool
+        public static function letTheAgrirouterProcessTheMqttMessage(int $seconds = 3, MqttClient $mqttClient = null): bool
         {
-
-                return $mqttClient->wait($seconds);
+            return $mqttClient->wait($seconds);
         }
     }
 }
