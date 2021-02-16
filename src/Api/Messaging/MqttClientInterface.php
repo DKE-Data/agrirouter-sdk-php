@@ -17,7 +17,7 @@ namespace App\Api\Messaging {
         public function connect(OnboardResponse $onboardResponse): void;
 
         /**
-         * Disconnects the client to the agrirouter mqtt broker.
+         * Disconnects the client to the agrirouter MQTT broker.
          */
         public function disconnect(): void;
 
