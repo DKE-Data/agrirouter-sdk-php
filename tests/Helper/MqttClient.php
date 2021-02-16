@@ -130,7 +130,7 @@ namespace Lib\Tests\Helper {
             $maxRuntime = (float)$seconds;
             $wasInterrupted = true;
 
-            $this->mqttClient->registerLoopEventHandler($this->getLoopEventHandler($maxRuntime, $this->logger,$wasInterrupted));
+            $this->mqttClient->registerLoopEventHandler($this->getLoopEventHandler($maxRuntime, $this->logger, $wasInterrupted));
             $this->mqttClient->loop(true);
             $this->mqttClient->unregisterLoopEventHandler();
             return $wasInterrupted;
@@ -146,10 +146,10 @@ namespace Lib\Tests\Helper {
          */
         private function getLoopEventHandler(float &$maxRuntime, LoggerInterface &$logger, bool &$wasInterrupted): callable
         {
-            return function (PhpMqttClient $client, float $elapsedTime) use (&$maxRuntime, &$logger,&$wasInterrupted) {
+            return function (PhpMqttClient $client, float $elapsedTime) use (&$maxRuntime, &$logger, &$wasInterrupted) {
                 $wasInterrupted = true;
                 if ($elapsedTime >= $maxRuntime) {
-                    $logger->info("No Interrupt in loop received. Runtime: ".$elapsedTime);
+                    $logger->info("No Interrupt in loop received. Runtime: " . $elapsedTime);
                     $wasInterrupted = false;
                     $client->interrupt();
                     return;
