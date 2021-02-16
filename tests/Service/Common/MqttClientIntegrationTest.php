@@ -29,7 +29,7 @@ namespace Lib\Tests\Service\Common {
             $phpMqttClientBuilder = new PhpMqttClientBuilder();
             $phpMqttClient = $phpMqttClientBuilder
                 ->withLogger($logger)
-                ->withOnboardResponse($onboardResponse)
+                ->fromOnboardResponse($onboardResponse)
                 ->build();
             self::assertNotNull($phpMqttClient);
 
@@ -56,7 +56,7 @@ namespace Lib\Tests\Service\Common {
             $phpMqttClientBuilder = new PhpMqttClientBuilder();
             $phpMqttClient = $phpMqttClientBuilder
                 ->withLogger($logger)
-                ->withOnboardResponse($onboardResponse)
+                ->fromOnboardResponse($onboardResponse)
                 ->build();
             self::assertNotNull($phpMqttClient);
 
