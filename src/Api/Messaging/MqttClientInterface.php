@@ -31,7 +31,7 @@ namespace App\Api\Messaging {
 
         /**
          * Unsubscribe from an agrirouter topic.
-         * @param string $topic The topic name to subscribe to.
+         * @param string $topic The topic name to unsubscribe from.
          */
         public function unsubscribe(string $topic): void;
 
