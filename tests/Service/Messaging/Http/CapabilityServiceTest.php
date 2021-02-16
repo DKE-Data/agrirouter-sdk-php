@@ -606,6 +606,5 @@ namespace Lib\Tests\Service\Messaging\Http {
             self::assertNotEmpty($messagingResult->getMessageIds());
             self::assertCount(1, $messagingResult->getMessageIds());
         }
-
     }
 }
