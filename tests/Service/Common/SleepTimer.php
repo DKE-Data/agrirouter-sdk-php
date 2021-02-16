@@ -28,9 +28,9 @@ namespace Lib\Tests\Service\Common {
          * @param int $seconds Seconds to sleep.
          * @param MqttClient|null $mqttClient
          * @return bool Was the loop interrupted by a callback handler.
-         * @throws DataTransferException -
-         * @throws MqttClientException -
-         * @throws ProtocolViolationException -
+         * @throws DataTransferException .
+         * @throws MqttClientException .
+         * @throws ProtocolViolationException .
          */
         public static function letTheAgrirouterProcessTheMqttMessage(int $seconds = 3, MqttClient $mqttClient = null): bool
         {
