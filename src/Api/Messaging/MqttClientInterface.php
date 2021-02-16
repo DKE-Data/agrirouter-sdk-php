@@ -45,7 +45,7 @@ namespace App\Api\Messaging {
          * Publishes a message on a given topic within the agrirouter.
          * @param string $topic The topic name.
          * @param string $message The message.
-         * @param int $qualityOfService The qos parameter for the message handling.
+         * @param int $qualityOfService The QoS parameter for the message handling.
          * @param bool $retain True if the broker should retain the last message and deliver it to new connected clients.
          */
         public function publish(string $topic, string $message, int $qualityOfService = 2, bool $retain = false): void;
