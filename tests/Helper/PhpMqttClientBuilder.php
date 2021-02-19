@@ -22,7 +22,7 @@ namespace Lib\Tests\Helper {
          * @param OnboardResponse $onboardResponse The onboard response.
          * @return $this .
          */
-        public function fromOnboardResponse(OnboardResponse $onboardResponse):self
+        public function fromOnboardResponse(OnboardResponse $onboardResponse): self
         {
             $connectionCriteria = $onboardResponse->getConnectionCriteria();
             $this->host = $connectionCriteria->getHost();

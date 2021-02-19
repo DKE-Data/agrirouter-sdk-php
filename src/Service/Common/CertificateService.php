@@ -3,6 +3,7 @@
 namespace App\Service\Common {
 
     use App\Dto\Onboard\OnboardResponse;
+    use Error;
 
     /**
      * Service to handle certificate information.
@@ -18,9 +19,16 @@ namespace App\Service\Common {
          */
         static function createCertificateFile(OnboardResponse $onboardResponse): string
         {
-            $filePath = sprintf("%s/%s", sys_get_temp_dir(), $onboardResponse->getSensorAlternateId());
+
+            try {
+                $fileName = $onboardResponse->getSensorAlternateId();
+            } catch (Error) {
+                $fileName = $onboardResponse->getDeviceAlternateId();
+            }
+
+            $filePath = sprintf("%s/%s", sys_get_temp_dir(), $fileName);
             if (!file_exists($filePath)) {
-                $filePath = tempnam(sys_get_temp_dir(), $onboardResponse->getSensorAlternateId());
+                $filePath = tempnam(sys_get_temp_dir(), $fileName);
                 $handle = fopen($filePath, "w");
                 fwrite($handle, $onboardResponse->getAuthentication()->getCertificate());
                 fclose($handle);

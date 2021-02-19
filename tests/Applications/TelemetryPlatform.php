@@ -60,7 +60,6 @@ class TelemetryPlatform
         return "3c3559c9-7062-4628-a4f7-c9f5aa07265f";
     }
 
-    //INTEGRATION TEST | TP - Version 1
     public static function certificationVersionId(): string
     {
         return "5e488554-d6bb-400c-9632-b3b4b35b07ca";

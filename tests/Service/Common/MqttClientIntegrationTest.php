@@ -66,6 +66,33 @@ namespace Lib\Tests\Service\Common {
             $phpMqttClient->disconnect();
             self::assertFalse($phpMqttClient->isConnected());
         }
+
+        /**
+         * @covers MqttClient::connect()
+         * @throws ProtocolNotSupportedException
+         * @throws Exception
+         */
+        public function testConnectMqttClientToTelemetryPlatformEndpoint()
+        {
+            $onboardResponse = OnboardResponseRepository::read(Identifier::TELEMETRY_PLATFORM_MQTT);
+            self::assertNotNull($onboardResponse->getConnectionCriteria());
+
+            $loggerBuilder = new MonologLoggerBuilder();
+            $logger = $loggerBuilder->withTestConsoleDefaultValues("PhpMqttClient")->build();
+
+            $phpMqttClientBuilder = new PhpMqttClientBuilder();
+            $phpMqttClient = $phpMqttClientBuilder
+                ->withLogger($logger)
+                ->fromOnboardResponse($onboardResponse)
+                ->build();
+            self::assertNotNull($phpMqttClient);
+
+            $phpMqttClient->connect($onboardResponse);
+            self::assertTrue($phpMqttClient->isConnected());
+
+            $phpMqttClient->disconnect();
+            self::assertFalse($phpMqttClient->isConnected());
+        }
     }
 }
 
