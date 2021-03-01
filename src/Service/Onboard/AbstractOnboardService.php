@@ -75,7 +75,11 @@ namespace App\Service\Onboard {
             $onboardRequest->setGatewayId($onboardParameters->getGatewayId());
             $onboardRequest->setCertificateType($onboardParameters->getCertificationType());
             $onboardRequest->setTimeZone(UtcDataService::timeZone($onboardParameters->getOffset()));
-            $onboardRequest->setUtcTimestamp(UtcDataService::now());
+            if ($onboardParameters->isUseCustomTimestamp()) {
+                $onboardRequest->setUtcTimestamp($onboardParameters->getUtcTimestamp());
+            } else {
+                $onboardRequest->setUtcTimestamp(UtcDataService::now());
+            }
             return $onboardRequest;
         }
 

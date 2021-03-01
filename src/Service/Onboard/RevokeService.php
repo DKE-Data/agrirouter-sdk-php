@@ -47,7 +47,11 @@ namespace App\Service\Onboard {
             $revokeRequest->setAccountId($revokeParameters->getAccountId());
             $revokeRequest->setEndpointIds($revokeParameters->getEndpointIds());
             $revokeRequest->setTimeZone(UtcDataService::timeZone($revokeParameters->getOffset()));
-            $revokeRequest->setUtcTimestamp(UtcDataService::now());
+            if($revokeParameters->isUseCustomTimestamp()){
+                $revokeRequest->setUtcTimestamp($revokeParameters->getUtcTimestamp());
+            }else{
+                $revokeRequest->setUtcTimestamp(UtcDataService::now());
+            }
 
             $requestBody = json_encode($revokeRequest);
             $headers = [
