@@ -1,6 +1,6 @@
 <?php
 
-namespace Lib\Tests\Service\Messaging {
+namespace Lib\Tests\Service\Messaging\Http {
 
     use Agrirouter\Commons\Message;
     use Agrirouter\Commons\Messages;
@@ -606,6 +606,5 @@ namespace Lib\Tests\Service\Messaging {
             self::assertNotEmpty($messagingResult->getMessageIds());
             self::assertCount(1, $messagingResult->getMessageIds());
         }
-
     }
 }

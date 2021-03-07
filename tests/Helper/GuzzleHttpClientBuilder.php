@@ -27,11 +27,12 @@ namespace Lib\Tests\Helper {
 
         /**
          * Creates a PSR compatible http client.
-         * @return Client -
+         * @return Client .
          */
         private function createHttpClient(): Client
         {
-            $logger = LoggerBuilder::createConsoleLogger();
+            $loggerBuilder = new MonologLoggerBuilder();
+            $logger = $loggerBuilder->withTestConsoleDefaultValues("GuzzleHttpClient")->build();
             return new Client([
                 'handler' => self::createHandlerStack($logger),
                 'verify' => false
@@ -65,7 +66,7 @@ namespace Lib\Tests\Helper {
 
         /**
          * Get the HTTP client.
-         * @return HttpClient -
+         * @return HttpClient .
          */
         public function build(): HttpClient
         {

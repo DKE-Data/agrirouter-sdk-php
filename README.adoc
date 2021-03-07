@@ -29,7 +29,12 @@ Feel free to get in touch by visiting our https://www.lmis.de[website] or contac
 
 This project contains the SDK for the communication with the agrirouter. Everything you need for the onboard process, secure communication and much more.
 
-== Modules
+== Requirements
+
+The SDK requires the `bcmath` extension to run properly (1), since we are using JSON encode and decode functionality.
+
+== Footnotes
+(1) https://github.com/protocolbuffers/protobuf/issues/4284[Why do we need "bcmath".]
 
 == External resources
 

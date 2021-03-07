@@ -21,8 +21,11 @@
     }
   },
   "require": {
-    "google/protobuf": "^3.11",
+    "ext-dom": "*",
+    "ext-bcmath": "*",
+    "ext-mbstring": "*",
     "ext-openssl": "*",
+    "google/protobuf": "^3.11",
     "psr/http-client": "^1.0.1",
     "psr/http-message": "^1.0.1",
     "psr/http-factory": "^1.0.1"

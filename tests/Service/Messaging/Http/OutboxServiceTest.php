@@ -21,7 +21,6 @@ namespace Lib\Tests\Service\Messaging\Http {
 
     class OutboxServiceTest extends AbstractIntegrationTestForServices
     {
-
         /**
          * @covers OutboxService::fetch()
          * @throws OutboxException
@@ -66,6 +65,5 @@ namespace Lib\Tests\Service\Messaging\Http {
             self::assertNotNull($messages[0]->getCommand());
             self::assertNotNull($messages[0]->getCommand()->getMessage());
         }
-
     }
 }

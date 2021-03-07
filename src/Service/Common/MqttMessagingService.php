@@ -5,7 +5,6 @@ namespace App\Service\Common {
     use App\Api\Messaging\MqttClientInterface;
     use App\Api\Service\Parameters\MessagingParameters;
     use App\Dto\Messaging\MessagingResult;
-    use PhpMqtt\Client\MessageProcessors\BaseMessageProcessor;
 
     /**
      * Service to send messages to the AR via MQTT.
@@ -34,7 +33,7 @@ namespace App\Service\Common {
         public function send($parameters): MessagingResult
         {
             $mqttPayload = json_encode($this->createMessageRequest($parameters));
-            $this->mqttClient->publish($parameters->getOnboardResponse()->getConnectionCriteria()->getMeasures(), $mqttPayload, BaseMessageProcessor::QOS_EXACTLY_ONCE, true);
+            $this->mqttClient->publish($parameters->getOnboardResponse()->getConnectionCriteria()->getMeasures(), $mqttPayload);
             $messagingResult = new MessagingResult();
             $messageIds = [];
             array_push($messageIds, $parameters->getApplicationMessageId());

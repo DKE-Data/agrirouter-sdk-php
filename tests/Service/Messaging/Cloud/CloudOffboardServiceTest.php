@@ -78,6 +78,5 @@ namespace Lib\Tests\Service\Messaging\Cloud {
                 self::assertEquals("The application is not a cloud application.", $message->getMessage());
             }
         }
-
     }
 }
