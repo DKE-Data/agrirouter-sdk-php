@@ -8,6 +8,9 @@ namespace App\Dto\Messaging {
      */
     class MessagingResult
     {
+        /**
+         * @var string[]
+         */
         private array $messageIds = [];
 
         public function getMessageIds(): array
@@ -15,6 +18,9 @@ namespace App\Dto\Messaging {
             return $this->messageIds;
         }
 
+        /**
+         * @param string[] $messageIds
+         */
         public function setMessageIds(array $messageIds): void
         {
             $this->messageIds = $messageIds;

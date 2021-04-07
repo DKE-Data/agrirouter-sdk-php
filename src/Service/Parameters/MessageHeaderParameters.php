@@ -15,6 +15,9 @@ namespace App\Service\Parameters {
         private ?string $technicalMessageType = null;
         private ?int $mode = null;
         private ?string $teamSetContextId = null;
+        /**
+         * @var string[]
+         */
         private ?array $recipients = null;
         private ?ChunkComponent $chunkComponent = null;
 
@@ -53,11 +56,17 @@ namespace App\Service\Parameters {
             $this->teamSetContextId = $teamSetContextId;
         }
 
+        /**
+         * @return string[]
+         */
         public function getRecipients(): array
         {
             return $this->recipients;
         }
 
+        /**
+         * @param string[] $recipients
+         */
         public function setRecipients(array $recipients): void
         {
             $this->recipients = $recipients;
@@ -72,7 +81,5 @@ namespace App\Service\Parameters {
         {
             $this->chunkComponent = $chunkComponent;
         }
-
-
     }
 }
