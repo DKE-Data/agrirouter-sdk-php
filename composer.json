@@ -21,6 +21,7 @@
     }
   },
   "require": {
+    "php": "8.*",
     "ext-dom": "*",
     "ext-bcmath": "*",
     "ext-mbstring": "*",
