@@ -11,13 +11,22 @@ namespace App\Service\Parameters {
     class FeedConfirmParameters extends MessageParameters
     {
 
+        /**
+         * @var string[]
+         */
         private array $messageIds = [];
 
+        /**
+         * @return string[]
+         */
         public function getMessageIds(): array
         {
             return $this->messageIds;
         }
 
+        /**
+         * @param string[] $messageIds
+         */
         public function setMessageIds(array $messageIds): void
         {
             $this->messageIds = $messageIds;

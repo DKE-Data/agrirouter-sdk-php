@@ -17,6 +17,10 @@ namespace App\Dto\Requests {
 
         private string $sensorAlternateId;
         private string $capabilityAlternateId;
+
+        /**
+         * @var string[]
+         */
         private array $messages;
 
         public function getSensorAlternateId(): string
@@ -39,11 +43,17 @@ namespace App\Dto\Requests {
             $this->capabilityAlternateId = $capabilityAlternateId;
         }
 
+        /**
+         * @return string[]
+         */
         public function getMessages(): array
         {
             return $this->messages;
         }
 
+        /**
+         * @param string[] $messages
+         */
         public function setMessages(array $messages): void
         {
             $this->messages = $messages;

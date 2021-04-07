@@ -17,6 +17,9 @@ namespace App\Dto\Requests {
         private const TIME_ZONE = 'timezone';
 
         private string $accountId;
+        /**
+         * @var string[]
+         */
         private array $endpointIds;
         private string $utcTimestamp;
         private string $timeZone;
@@ -42,11 +45,17 @@ namespace App\Dto\Requests {
             $this->accountId = $accountId;
         }
 
+        /**
+         * @return string[]
+         */
         public function getEndpointIds(): array
         {
             return $this->endpointIds;
         }
 
+        /**
+         * @param string[] $endpointIds
+         */
         public function setEndpointIds(array $endpointIds): void
         {
             $this->endpointIds = $endpointIds;

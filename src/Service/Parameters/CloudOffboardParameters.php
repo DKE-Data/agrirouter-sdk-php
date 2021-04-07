@@ -10,13 +10,22 @@ namespace App\Service\Parameters {
      */
     class CloudOffboardParameters extends MessageParameters
     {
+        /**
+         * @var string[]
+         */
         private array $endpoints = [];
 
+        /**
+         * @return string[]
+         */
         public function getEndpoints(): array
         {
             return $this->endpoints;
         }
 
+        /**
+         * @param string[] $endpoints
+         */
         public function setEndpoints(array $endpoints): void
         {
             $this->endpoints = $endpoints;
