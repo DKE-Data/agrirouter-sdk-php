@@ -19,13 +19,13 @@ namespace App\Dto\Requests {
         private const TIME_ZONE = 'timezone';
         private const CERTIFICATE_TYPE = 'certificateType';
 
-        private string $externalId;
-        private string $applicationId;
-        private string $certificationVersionId;
-        private string $gatewayId;
-        private string $utcTimestamp;
-        private string $timeZone;
-        private string $certificateType;
+        private ?string $externalId = null;
+        private ?string $applicationId = null;
+        private ?string $certificationVersionId = null;
+        private ?string $gatewayId = null;
+        private ?string $utcTimestamp = null;
+        private ?string $timeZone = null;
+        private ?string $certificateType = null;
 
         public function getExternalId(): string
         {

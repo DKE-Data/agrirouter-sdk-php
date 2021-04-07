@@ -8,14 +8,8 @@ namespace App\Dto\Onboard {
      */
     class AuthorizationUrlResult
     {
-        private ?string $authorizationUrl;
-        private ?string $state;
-
-        public function __construct(?string $authorizationUrl, ?string $state)
-        {
-            $this->authorizationUrl = $authorizationUrl;
-            $this->state = $state;
-        }
+        private ?string $authorizationUrl = null;
+        private ?string $state = null;
 
         public function getAuthorizationUrl(): ?string
         {

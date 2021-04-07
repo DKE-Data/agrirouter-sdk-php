@@ -9,8 +9,8 @@ namespace App\Service\Parameters {
      */
     class MessagePayloadParameters
     {
-        private string $typeUrl;
-        private string $value;
+        private ?string $typeUrl = null;
+        private ?string $value = null;
 
         public function getValue(): string
         {

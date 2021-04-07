@@ -12,11 +12,11 @@ namespace App\Service\Parameters {
      */
     class MessageHeaderParameters extends Parameters implements ValidatableInterface
     {
-        private string $technicalMessageType;
-        private int $mode;
-        private string $teamSetContextId;
-        private array $recipients;
-        private ChunkComponent $chunkComponent;
+        private ?string $technicalMessageType = null;
+        private ?int $mode = null;
+        private ?string $teamSetContextId = null;
+        private ?array $recipients = null;
+        private ?ChunkComponent $chunkComponent = null;
 
         public function validate(): void
         {

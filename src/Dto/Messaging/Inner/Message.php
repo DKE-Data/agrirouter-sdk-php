@@ -14,8 +14,8 @@ namespace App\Dto\Messaging\Inner {
         private const MESSAGE = "message";
         private const TIMESTAMP = "timestamp";
 
-        private string $content;
-        private string $timestamp;
+        private ?string $content = null;
+        private ?string $timestamp = null;
 
         public function getContent(): string
         {

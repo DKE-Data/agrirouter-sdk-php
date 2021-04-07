@@ -10,7 +10,7 @@ namespace App\Service\Parameters {
      */
     class SubscriptionParameters extends MessageParameters
     {
-        private array $subscriptionItems;
+        private ?array $subscriptionItems = null;
 
         public function getSubscriptionItems(): array
         {

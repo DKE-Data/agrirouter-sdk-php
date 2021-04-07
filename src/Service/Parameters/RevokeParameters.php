@@ -8,10 +8,10 @@ namespace App\Service\Parameters {
      */
     class RevokeParameters
     {
-        private string $accountId;
-        private array $endpointIds;
-        private string $applicationId;
-        private int $offset;
+        private ?string $accountId = null;
+        private ?array $endpointIds = null;
+        private ?string $applicationId = null;
+        private ?int $offset = null;
 
         public function getAccountId(): string
         {

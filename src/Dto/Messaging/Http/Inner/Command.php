@@ -14,7 +14,7 @@ namespace App\Dto\Messaging\Http\Inner {
     {
         private const MESSAGE = "message";
 
-        private string $message;
+        private ?string $message = null;
 
         public function jsonDeserialize(array|string $jsonData): JsonDeserializableInterface
         {

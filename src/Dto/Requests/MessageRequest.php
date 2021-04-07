@@ -15,9 +15,9 @@ namespace App\Dto\Requests {
         private const CAPABILITY_ALTERNATE_ID = 'capabilityAlternateId';
         private const MESSAGES = 'measures';
 
-        private string $sensorAlternateId;
-        private string $capabilityAlternateId;
-        private array $messages;
+        private ?string $sensorAlternateId = null;
+        private ?string $capabilityAlternateId = null;
+        private ?array $messages = null;
 
         public function getSensorAlternateId(): string
         {

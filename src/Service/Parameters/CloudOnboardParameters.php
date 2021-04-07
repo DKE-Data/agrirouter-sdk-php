@@ -10,7 +10,7 @@ namespace App\Service\Parameters {
      */
     class CloudOnboardParameters extends MessageParameters
     {
-        private array $onboardingRequests;
+        private ?array $onboardingRequests = null;
 
         public function getOnboardingRequests(): array
         {

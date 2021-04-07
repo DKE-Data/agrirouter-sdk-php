@@ -20,11 +20,11 @@ namespace App\Dto\Onboard {
         private const CONNECTION_CRITERIA = 'connectionCriteria';
         private const AUTHENTICATION = 'authentication';
 
-        private string $deviceAlternateId;
-        private string $capabilityAlternateId;
-        private string $sensorAlternateId;
-        private ConnectionCriteria $connectionCriteria;
-        private Authentication $authentication;
+        private ?string $deviceAlternateId = null;
+        private ?string $capabilityAlternateId = null;
+        private ?string $sensorAlternateId = null;
+        private ?ConnectionCriteria $connectionCriteria = null;
+        private ?Authentication $authentication = null;
 
         /**
          * Serializes the object data to a simple array
