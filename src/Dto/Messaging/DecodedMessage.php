@@ -11,8 +11,8 @@ namespace App\Dto\Messaging {
      */
     class DecodedMessage
     {
-        private ResponseEnvelope $responseEnvelope;
-        private ResponsePayloadWrapper $responsePayloadWrapper;
+        private ?ResponseEnvelope $responseEnvelope = null;
+        private ?ResponsePayloadWrapper $responsePayloadWrapper = null;
 
         public function getResponseEnvelope(): ResponseEnvelope
         {

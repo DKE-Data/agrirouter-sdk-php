@@ -18,9 +18,9 @@ namespace App\Dto\Onboard {
         private const SECRET = 'secret';
         private const CERTIFICATE = 'certificate';
 
-        private string $type;
-        private string $secret;
-        private string $certificate;
+        private ?string $type = null;
+        private ?string $secret = null;
+        private ?string $certificate = null;
 
 
         #[ArrayShape([self::TYPE => "string", self::SECRET => "string", self::CERTIFICATE => "string"])]

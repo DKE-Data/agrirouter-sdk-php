@@ -16,10 +16,10 @@ namespace App\Dto\Requests {
         private const UTC_TIMESTAMP = 'UTCTimestamp';
         private const TIME_ZONE = 'timezone';
 
-        private string $accountId;
-        private array $endpointIds;
-        private string $utcTimestamp;
-        private string $timeZone;
+        private ?string $accountId = null;
+        private ?array $endpointIds = null;
+        private ?string $utcTimestamp = null;
+        private ?string $timeZone = null;
 
         #[ArrayShape([self::ACCOUNT_ID => "string", self::ENDPOINT_IDS => "array", self::UTC_TIMESTAMP => "string", self::TIME_ZONE => "string"])]
         public function jsonSerialize(): array

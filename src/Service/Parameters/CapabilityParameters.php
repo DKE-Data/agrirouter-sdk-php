@@ -11,8 +11,8 @@ namespace App\Service\Parameters {
      */
     class CapabilityParameters extends MessageParameters
     {
-        private string $applicationId;
-        private string $certificationVersionId;
+        private ?string $applicationId = null;
+        private ?string $certificationVersionId = null;
         private int $enablePushNotification = PushNotification::DISABLED;
         private array $capabilityParameters = [];
 
