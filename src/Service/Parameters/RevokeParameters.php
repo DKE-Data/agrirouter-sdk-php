@@ -12,6 +12,8 @@ namespace App\Service\Parameters {
         private array $endpointIds;
         private string $applicationId;
         private int $offset;
+        private string $utcTimestamp;
+        private bool $useCustomTimestamp = false;
 
         public function getAccountId(): string
         {
@@ -51,6 +53,26 @@ namespace App\Service\Parameters {
         public function setOffset(int $offset): void
         {
             $this->offset = $offset;
+        }
+
+        public function getUtcTimestamp(): string
+        {
+            return $this->utcTimestamp;
+        }
+
+        public function setUtcTimestamp(string $utcTimestamp): void
+        {
+            $this->utcTimestamp = $utcTimestamp;
+        }
+
+        public function isUseCustomTimestamp(): bool
+        {
+            return $this->useCustomTimestamp;
+        }
+
+        public function setUseCustomTimestamp(bool $useCustomTimestamp): void
+        {
+            $this->useCustomTimestamp = $useCustomTimestamp;
         }
     }
 }

@@ -26,6 +26,19 @@ namespace App\Service\Common {
         }
 
         /**
+         * The AR requires a timestamp given in a special format:
+         *
+         * 2018-06-20T07:29:23.457Z
+         *
+         * @param DateTime $d Date to be formatted.
+         * @return string The current time.
+         */
+        public static function getAsTimestamp(DateTime $d): string
+        {
+            return $d->format("Y-m-d\TH:i:s.v\Z");
+        }
+
+        /**
          * Delivering the current time zone as a string representation.
          * @param int $offset .
          * @return string The current time zone.
