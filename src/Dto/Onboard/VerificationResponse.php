@@ -22,7 +22,6 @@ namespace App\Dto\Onboard {
          * Serializes the object data to a simple array
          * @return array Array with object data.
          */
-        #[ArrayShape([self::ACCOUNT_ID => "string"])]
         public function jsonSerialize(): array
         {
             return [

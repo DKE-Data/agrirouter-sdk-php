@@ -37,7 +37,6 @@ namespace App\Dto\Messaging\Inner {
             $this->timestamp = $timestamp;
         }
 
-        #[ArrayShape([self::MESSAGE => "string", self::TIMESTAMP => "string"])]
         public function jsonSerialize(): array
         {
             return [

@@ -21,7 +21,6 @@ namespace App\Dto\Requests {
         private string $utcTimestamp;
         private string $timeZone;
 
-        #[ArrayShape([self::ACCOUNT_ID => "string", self::ENDPOINT_IDS => "array", self::UTC_TIMESTAMP => "string", self::TIME_ZONE => "string"])]
         public function jsonSerialize(): array
         {
             return [

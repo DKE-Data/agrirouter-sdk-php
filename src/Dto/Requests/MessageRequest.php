@@ -49,7 +49,6 @@ namespace App\Dto\Requests {
             $this->messages = $messages;
         }
 
-        #[ArrayShape([self::SENSOR_ALTERNATE_ID => "string", self::CAPABILITY_ALTERNATE_ID => "string", self::MESSAGES => "array"])]
         public function jsonSerialize(): array
         {
             return [

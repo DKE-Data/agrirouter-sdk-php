@@ -23,7 +23,6 @@ namespace App\Dto\Onboard {
         private string $certificate;
 
 
-        #[ArrayShape([self::TYPE => "string", self::SECRET => "string", self::CERTIFICATE => "string"])]
         public function jsonSerialize(): array
         {
             return [

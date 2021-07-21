@@ -28,7 +28,6 @@ namespace App\Dto\Onboard {
         private string $port;
         private string $clientId;
 
-        #[ArrayShape([self::CLIENT_ID => "string", self::COMMANDS => "string", self::GATEWAY_ID => "string", self::HOST => "string", self::MEASURES => "string", self::PORT => "string"])]
         public function jsonSerialize(): array
         {
             return [

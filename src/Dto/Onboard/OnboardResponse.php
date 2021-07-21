@@ -30,8 +30,6 @@ namespace App\Dto\Onboard {
          * Serializes the object data to a simple array
          * @return array Array with object data.
          */
-        #[ArrayShape([self::AUTHENTICATION => Authentication::class, self::CAPABILITY_ALTERNATE_ID => "string",
-            self::CONNECTION_CRITERIA => ConnectionCriteria::class, self::DEVICE_ALTERNATE_ID => "string", self::SENSOR_ALTERNATE_ID => "string"])]
         public function jsonSerialize(): array
         {
             return [
