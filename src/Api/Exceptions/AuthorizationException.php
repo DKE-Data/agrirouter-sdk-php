@@ -17,7 +17,7 @@ namespace App\Api\Exceptions {
          * @param int $code The code.
          * @param Exception|null $previous Previous exception.
          */
-        #[Pure] public function __construct(string $message, int $code, Exception $previous = null)
+        public function __construct(string $message, int $code, Exception $previous = null)
         {
             parent::__construct($message, $code, $previous);
         }

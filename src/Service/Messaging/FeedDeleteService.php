@@ -35,7 +35,7 @@ namespace App\Service\Messaging {
          * Constructor.
          * @param MessagingServiceInterface $messagingService Service for message sending.
          */
-        #[Pure] public function __construct(MessagingServiceInterface $messagingService)
+        public function __construct(MessagingServiceInterface $messagingService)
         {
             $this->messagingService = $messagingService;
         }

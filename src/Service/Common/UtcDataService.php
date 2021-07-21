@@ -30,7 +30,7 @@ namespace App\Service\Common {
          * @param int $offset .
          * @return string The current time zone.
          */
-        #[Pure] public static function timeZone(int $offset): string
+        public static function timeZone(int $offset): string
         {
             return sprintf("%s%02d:00", ($offset >= 0) ? '+' : '-', abs($offset / 3600));
         }

@@ -15,7 +15,7 @@ namespace App\Api\Exceptions {
          * Constructor.
          * @param string $invalidParameter Invalid parameter
          */
-        #[Pure] public function __construct(string $invalidParameter)
+        public function __construct(string $invalidParameter)
         {
             parent::__construct("Parameters passed are not valid. The following parameter is invalid >>> $invalidParameter", ErrorCodes::PARAMETER_INVALID);
         }
