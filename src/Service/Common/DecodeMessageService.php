@@ -61,7 +61,7 @@ namespace App\Service\Common {
          * @throws Exception
          * @noinspection PhpMixedReturnTypeCanBeReducedInspection
          */
-        public function decodeDetails(Any $details): mixed
+        public function decodeDetails(Any $details)
         {
             switch ($details->getTypeUrl()) {
                 case TypeUrlService::getTypeUrl(Messages::class):

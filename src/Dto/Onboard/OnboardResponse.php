@@ -93,7 +93,11 @@ namespace App\Dto\Onboard {
             $this->sensorAlternateId = $sensorAlternateId;
         }
 
-        public function jsonDeserialize(array|string $jsonData): self
+        /**
+         * @param mixed[]|string $jsonData
+         * @return $this
+         */
+        public function jsonDeserialize($jsonData)
         {
             if (is_string($jsonData)) {
                 $decodedJsonDataArray = json_decode($jsonData, true);

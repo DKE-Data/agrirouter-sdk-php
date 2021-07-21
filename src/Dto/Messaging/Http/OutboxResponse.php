@@ -14,7 +14,10 @@ namespace App\Dto\Messaging\Http {
         private string $statusCode;
         private array $messages;
 
-        public function jsonDeserialize(array|string $jsonData): JsonDeserializableInterface
+        /**
+         * @param mixed[]|string $jsonData
+         */
+        public function jsonDeserialize($jsonData): JsonDeserializableInterface
         {
             if (is_string($jsonData)) {
                 $decodedJsonDataArray = json_decode($jsonData, true);

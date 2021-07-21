@@ -63,7 +63,11 @@ namespace App\Dto\Onboard {
             $this->certificate = $certificate;
         }
 
-        public function jsonDeserialize(string|array $jsonData): self
+        /**
+         * @param string|mixed[] $jsonData
+         * @return $this
+         */
+        public function jsonDeserialize($jsonData)
         {
             if (is_string($jsonData)) {
                 $decodedJsonDataArray = json_decode($jsonData, true);
