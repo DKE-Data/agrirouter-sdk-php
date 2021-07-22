@@ -2,7 +2,6 @@
 
 namespace App\Service\Common {
 
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Service to generate UUIDs.

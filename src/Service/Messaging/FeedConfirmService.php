@@ -16,7 +16,6 @@ namespace App\Service\Messaging {
     use App\Service\Parameters\FeedConfirmParameters;
     use App\Service\Parameters\MessageHeaderParameters;
     use App\Service\Parameters\MessagePayloadParameters;
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Service to send the message confirmations to the AR.

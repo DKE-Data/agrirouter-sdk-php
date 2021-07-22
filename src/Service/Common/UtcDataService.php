@@ -4,7 +4,6 @@ namespace App\Service\Common {
 
     use DateTime;
     use Google\Protobuf\Timestamp;
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Service to generate timestamps and hold UTC specific functions.

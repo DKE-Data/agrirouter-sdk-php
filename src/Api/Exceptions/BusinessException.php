@@ -3,7 +3,6 @@
 namespace App\Api\Exceptions {
 
     use Exception;
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Wrapper for all internal exceptions.

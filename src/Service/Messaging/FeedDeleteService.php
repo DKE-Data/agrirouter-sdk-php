@@ -18,7 +18,6 @@ namespace App\Service\Messaging {
     use App\Service\Parameters\FeedDeleteParameters;
     use App\Service\Parameters\MessageHeaderParameters;
     use App\Service\Parameters\MessagePayloadParameters;
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Service to send the delete message request to the AR.

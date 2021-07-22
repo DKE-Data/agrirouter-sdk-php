@@ -16,7 +16,6 @@ namespace App\Service\Messaging {
     use App\Service\Parameters\MessageHeaderParameters;
     use App\Service\Parameters\MessagePayloadParameters;
     use App\Service\Parameters\SubscriptionParameters;
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Service to send the subscriptions to the AR.

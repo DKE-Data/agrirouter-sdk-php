@@ -3,7 +3,6 @@
 namespace App\Api\Exceptions {
 
     use Exception;
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Will be thrown if there is an error while decoding a message from the AR.

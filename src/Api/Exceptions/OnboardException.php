@@ -2,7 +2,6 @@
 
 namespace App\Api\Exceptions {
 
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Will be thrown if there is an error during the onboard process.

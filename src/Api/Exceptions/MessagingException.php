@@ -2,7 +2,6 @@
 
 namespace App\Api\Exceptions {
 
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Generic messaging exception.

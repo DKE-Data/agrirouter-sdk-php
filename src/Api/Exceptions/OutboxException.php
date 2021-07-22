@@ -2,7 +2,6 @@
 
 namespace App\Api\Exceptions {
 
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Will be thrown if there is any problem during the interaction with the outbox.
