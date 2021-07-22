@@ -56,7 +56,7 @@ namespace App\Dto\Onboard {
                         $this->accountId = $fieldValue;
                         break;
                     default:
-                        $this->accountId = throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
+                        throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
                         break;
                 }
             }

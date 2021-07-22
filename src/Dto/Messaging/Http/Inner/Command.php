@@ -32,7 +32,7 @@ namespace App\Dto\Messaging\Http\Inner {
                         $this->message = $fieldValue;
                         break;
                     default:
-                        $this->message = throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
+                        throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
                         break;
                 }
             }
