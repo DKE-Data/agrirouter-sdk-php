@@ -126,7 +126,7 @@ namespace Lib\Tests\Service\Onboard {
 
             $sigVerifyResult = SignatureService::verifySignature(
                 urldecode($authResult->getState()).urldecode($authResult->getToken()),
-                urldecode($authResult->getSignature()),
+                base64_decode(urldecode($authResult->getSignature())),
                 $agrirouterPublicKey
             );
             $this->assertTrue($sigVerifyResult);
