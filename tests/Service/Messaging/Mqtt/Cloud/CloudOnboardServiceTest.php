@@ -117,7 +117,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt\Cloud {
 
             $cloudOnboardService->send($cloudOnboardParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }
