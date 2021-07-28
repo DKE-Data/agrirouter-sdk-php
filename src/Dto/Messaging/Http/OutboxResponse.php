@@ -12,7 +12,7 @@ namespace App\Dto\Messaging\Http {
     class OutboxResponse implements JsonDeserializableInterface
     {
         private string $statusCode;
-        private array $messages;
+        private array $messages = [];
 
         public function jsonDeserialize(array|string $jsonData): JsonDeserializableInterface
         {
