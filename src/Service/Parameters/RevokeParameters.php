@@ -9,6 +9,9 @@ namespace App\Service\Parameters {
     class RevokeParameters
     {
         private ?string $accountId = null;
+        /**
+         * @var string[]
+         */
         private ?array $endpointIds = null;
         private ?string $applicationId = null;
         private ?int $offset = null;
@@ -25,11 +28,17 @@ namespace App\Service\Parameters {
             $this->accountId = $accountId;
         }
 
+        /**
+         * @return string[]
+         */
         public function getEndpointIds(): array
         {
             return $this->endpointIds;
         }
 
+        /**
+         * @param string[] $endpointIds
+         */
         public function setEndpointIds(array $endpointIds): void
         {
             $this->endpointIds = $endpointIds;
