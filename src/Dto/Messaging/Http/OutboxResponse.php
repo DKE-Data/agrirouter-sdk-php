@@ -11,8 +11,8 @@ namespace App\Dto\Messaging\Http {
      */
     class OutboxResponse implements JsonDeserializableInterface
     {
-        private string $statusCode;
-        private array $messages = [];
+        private ?string $statusCode = null;
+        private ?array $messages = null;
 
         public function jsonDeserialize(array|string $jsonData): JsonDeserializableInterface
         {
