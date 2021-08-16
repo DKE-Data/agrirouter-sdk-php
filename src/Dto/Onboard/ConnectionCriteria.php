@@ -21,12 +21,12 @@ namespace App\Dto\Onboard {
         private const MEASURES = 'measures';
         private const PORT = 'port';
 
-        private string $gatewayId;
-        private string $measures;
-        private string $commands;
-        private string $host;
-        private string $port;
-        private string $clientId;
+        private ?string $gatewayId = null;
+        private ?string $measures = null;
+        private ?string $commands = null;
+        private ?string $host = null;
+        private ?string $port = null;
+        private ?string $clientId = null;
 
         public function jsonSerialize(): array
         {

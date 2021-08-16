@@ -2,6 +2,7 @@
 
 namespace App\Service\Parameters {
 
+    use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\Capability;
     use Agrirouter\Request\Payload\Endpoint\CapabilitySpecification\PushNotification;
     use App\Api\Service\Parameters\MessageParameters;
 
@@ -11,9 +12,12 @@ namespace App\Service\Parameters {
      */
     class CapabilityParameters extends MessageParameters
     {
-        private string $applicationId;
-        private string $certificationVersionId;
+        private ?string $applicationId = null;
+        private ?string $certificationVersionId = null;
         private int $enablePushNotification = PushNotification::DISABLED;
+        /**
+         * @var Capability[]
+         */
         private array $capabilityParameters = [];
 
         public function getApplicationId(): string
@@ -46,11 +50,17 @@ namespace App\Service\Parameters {
             $this->enablePushNotification = $enablePushNotification;
         }
 
+        /**
+         * @return Capability[]
+         */
         public function getCapabilityParameters(): array
         {
             return $this->capabilityParameters;
         }
 
+        /**
+         * @param Capability[] $capabilityParameters
+         */
         public function setCapabilityParameters(array $capabilityParameters): void
         {
             $this->capabilityParameters = $capabilityParameters;

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Service\Parameters {
 
@@ -8,13 +10,15 @@ namespace App\Service\Parameters {
      */
     class OnboardParameters
     {
-        private string $applicationId;
-        private string $uuid;
-        private string $certificationVersionId;
-        private string $gatewayId;
-        private string $certificationType;
-        private string $registrationCode;
-        private int $offset;
+        private ?string $applicationId = null;
+        private ?string $uuid = null;
+        private ?string $certificationVersionId = null;
+        private ?string $gatewayId = null;
+        private ?string $certificationType = null;
+        private ?string $registrationCode = null;
+        private ?int $offset = null;
+        private ?string $utcTimestamp = null;
+        private bool $useCustomTimestamp = false;
 
         public function getApplicationId(): string
         {
@@ -86,5 +90,24 @@ namespace App\Service\Parameters {
             $this->offset = $offset;
         }
 
+        public function getUtcTimestamp(): string
+        {
+            return $this->utcTimestamp;
+        }
+
+        public function setUtcTimestamp(string $utcTimestamp): void
+        {
+            $this->utcTimestamp = $utcTimestamp;
+        }
+
+        public function isUseCustomTimestamp(): bool
+        {
+            return $this->useCustomTimestamp;
+        }
+
+        public function setUseCustomTimestamp(bool $useCustomTimestamp): void
+        {
+            $this->useCustomTimestamp = $useCustomTimestamp;
+        }
     }
 }

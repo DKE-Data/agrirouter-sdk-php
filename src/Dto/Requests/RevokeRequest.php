@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Dto\Requests {
 
@@ -16,10 +18,13 @@ namespace App\Dto\Requests {
         private const UTC_TIMESTAMP = 'UTCTimestamp';
         private const TIME_ZONE = 'timezone';
 
-        private string $accountId;
-        private array $endpointIds;
-        private string $utcTimestamp;
-        private string $timeZone;
+        private ?string $accountId = null;
+        /**
+         * @var string[]
+         */
+        private ?array $endpointIds = null;
+        private ?string $utcTimestamp = null;
+        private ?string $timeZone = null;
 
         public function jsonSerialize(): array
         {
@@ -41,11 +46,17 @@ namespace App\Dto\Requests {
             $this->accountId = $accountId;
         }
 
+        /**
+         * @return string[]
+         */
         public function getEndpointIds(): array
         {
             return $this->endpointIds;
         }
 
+        /**
+         * @param string[] $endpointIds
+         */
         public function setEndpointIds(array $endpointIds): void
         {
             $this->endpointIds = $endpointIds;

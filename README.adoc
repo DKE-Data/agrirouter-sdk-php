@@ -29,6 +29,12 @@ Feel free to get in touch by visiting our https://www.lmis.de[website] or contac
 
 This project contains the SDK for the communication with the agrirouter. Everything you need for the onboard process, secure communication and much more.
 
+== Installation
+
+The necessary dependencies are installed via `composer`. Just run the following command to add the SDK to your project.
+
+`composer require dke-data/agrirouter-sdk-php`
+
 == Requirements
 
 The SDK requires the `bcmath` extension to run properly (1), since we are using JSON encode and decode functionality.

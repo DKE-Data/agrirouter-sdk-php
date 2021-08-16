@@ -11,8 +11,12 @@ namespace App\Dto\Messaging\Http {
      */
     class OutboxResponse implements JsonDeserializableInterface
     {
-        private string $statusCode;
-        private array $messages = [];
+        private ?string $statusCode = null;
+
+        /**
+         * @var string[]
+         */
+        private ?array $messages = null;
 
         /**
          * @param mixed[]|string $jsonData
@@ -51,6 +55,9 @@ namespace App\Dto\Messaging\Http {
             return $this->messages;
         }
 
+        /**
+         * @param string[] $messages
+         */
         public function setMessages(array $messages): void
         {
             $this->messages = $messages;

@@ -3,6 +3,7 @@
 namespace App\Service\Common {
 
     use DateTime;
+    use DateTimeZone;
     use Google\Protobuf\Timestamp;
 
     /**
@@ -20,7 +21,21 @@ namespace App\Service\Common {
          */
         public static function now(): string
         {
-            $d = new DateTime();
+            $d = new DateTime(null, new DateTimeZone('UTC'));
+            return $d->format("Y-m-d\TH:i:s.v\Z");
+        }
+
+        /**
+         * The AR requires a timestamp given in a special format:
+         *
+         * 2018-06-20T07:29:23.457Z
+         *
+         * @param DateTime $d Date to be formatted.
+         * @return string The current time.
+         */
+        public static function getAsTimestamp(DateTime $d): string
+        {
+            $d->setTimezone(new DateTimeZone('UTC'));
             return $d->format("Y-m-d\TH:i:s.v\Z");
         }
 

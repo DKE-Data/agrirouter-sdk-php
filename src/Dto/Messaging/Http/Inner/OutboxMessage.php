@@ -16,9 +16,9 @@ namespace App\Dto\Messaging\Http\Inner {
         private const SENSOR_ALTERNATE_ID = "sensorAlternateId";
         private const COMMAND = "command";
 
-        private string $capabilityAlternateId;
-        private string $sensorAlternateId;
-        private Command $command;
+        private ?string $capabilityAlternateId = null;
+        private ?string $sensorAlternateId = null;
+        private ?Command $command = null;
 
         /**
          * @param mixed[]|string $jsonData

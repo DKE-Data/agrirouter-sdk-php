@@ -11,8 +11,8 @@ namespace App\Service\Parameters {
     class ListEndpointsParameters extends MessageParameters
     {
 
-        private string $technicalMessageType;
-        private string $direction;
+        private ?string $technicalMessageType = null;
+        private ?string $direction = null;
         private bool $filtered = false;
 
         public function getTechnicalMessageType(): string

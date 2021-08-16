@@ -16,7 +16,7 @@ namespace App\Dto\Onboard {
     {
         private const ACCOUNT_ID = 'accountId';
 
-        private string $accountId;
+        private ?string $accountId = null;
 
         /**
          * Serializes the object data to a simple array

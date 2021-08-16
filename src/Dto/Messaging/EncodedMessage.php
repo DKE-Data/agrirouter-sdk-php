@@ -9,8 +9,8 @@ namespace App\Dto\Messaging {
     class EncodedMessage
     {
 
-        private string $id;
-        private string $content;
+        private ?string $id = null;
+        private ?string $content = null;
 
         public function getId(): string
         {

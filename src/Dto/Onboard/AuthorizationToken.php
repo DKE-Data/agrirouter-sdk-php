@@ -16,9 +16,9 @@ namespace App\Dto\Onboard {
         private const REGISTRATION_CODE = 'regcode';
         private const EXPIRES = 'expires';
 
-        private string $account;
-        private string $registrationCode;
-        private string $expires;
+        private ?string $account = null;
+        private ?string $registrationCode = null;
+        private ?string $expires = null;
 
         public function getAccount(): ?string
         {

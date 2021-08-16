@@ -13,11 +13,14 @@ namespace App\Service\Parameters {
      */
     class MessageHeaderParameters extends Parameters implements ValidatableInterface
     {
-        private string $technicalMessageType;
-        private int $mode;
-        private string $teamSetContextId;
-        private array $recipients;
-        private ChunkComponent $chunkComponent;
+        private ?string $technicalMessageType = null;
+        private ?int $mode = null;
+        private ?string $teamSetContextId = null;
+        /**
+         * @var string[]
+         */
+        private ?array $recipients = null;
+        private ?ChunkComponent $chunkComponent = null;
         private ?Metadata $metadata;
 
         public function validate(): void
@@ -55,11 +58,17 @@ namespace App\Service\Parameters {
             $this->teamSetContextId = $teamSetContextId;
         }
 
+        /**
+         * @return string[]
+         */
         public function getRecipients(): array
         {
             return $this->recipients;
         }
 
+        /**
+         * @param string[] $recipients
+         */
         public function setRecipients(array $recipients): void
         {
             $this->recipients = $recipients;
