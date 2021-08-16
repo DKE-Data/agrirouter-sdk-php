@@ -21,7 +21,7 @@ namespace App\Service\Parameters {
          */
         private ?array $recipients = null;
         private ?ChunkComponent $chunkComponent = null;
-        private ?Metadata $metadata;
+        private ?Metadata $metadata = null;
 
         public function validate(): void
         {
