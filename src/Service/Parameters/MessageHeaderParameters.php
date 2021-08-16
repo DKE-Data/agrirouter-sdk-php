@@ -3,6 +3,7 @@
 namespace App\Service\Parameters {
 
     use Agrirouter\Commons\ChunkComponent;
+    use Agrirouter\Commons\Metadata;
     use App\Api\Service\Parameters\Parameters;
     use App\Api\Service\Parameters\ValidatableInterface;
 
@@ -17,6 +18,7 @@ namespace App\Service\Parameters {
         private string $teamSetContextId;
         private array $recipients;
         private ChunkComponent $chunkComponent;
+        private ?Metadata $metadata;
 
         public function validate(): void
         {
@@ -73,6 +75,14 @@ namespace App\Service\Parameters {
             $this->chunkComponent = $chunkComponent;
         }
 
+        public function getMetadata(): ?Metadata
+        {
+            return $this->metadata;
+        }
 
+        public function setMetadata(Metadata $metadata): void
+        {
+            $this->metadata = $metadata;
+        }
     }
 }
