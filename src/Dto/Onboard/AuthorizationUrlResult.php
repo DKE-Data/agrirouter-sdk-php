@@ -11,6 +11,13 @@ namespace App\Dto\Onboard {
         private ?string $authorizationUrl = null;
         private ?string $state = null;
 
+        public function __construct(?string $authorizationUrl, ?string $state)
+        {
+            $this->authorizationUrl = $authorizationUrl;
+            $this->state = $state;
+        }
+
+
         public function getAuthorizationUrl(): ?string
         {
             return $this->authorizationUrl;
