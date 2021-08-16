@@ -43,6 +43,7 @@ namespace App\Service\Common {
             $requestEnvelope->setMode($messageHeaderParameters->getMode());
             $requestEnvelope->setTimestamp(UtcDataService::nowAsTimestamp());
             $requestEnvelope->setMetadata($messageHeaderParameters->getMetadata());
+            $requestEnvelope->setChunkInfo($messageHeaderParameters->getChunkComponent());
             return $requestEnvelope;
         }
 

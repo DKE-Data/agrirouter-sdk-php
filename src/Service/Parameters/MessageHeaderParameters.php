@@ -74,7 +74,7 @@ namespace App\Service\Parameters {
             $this->recipients = $recipients;
         }
 
-        public function getChunkComponent(): ChunkComponent
+        public function getChunkComponent(): ?ChunkComponent
         {
             return $this->chunkComponent;
         }
