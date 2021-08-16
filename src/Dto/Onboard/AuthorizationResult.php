@@ -13,6 +13,12 @@ namespace App\Dto\Onboard {
         private ?string $token = null;
         private ?string $error = null;
 
+        public function __construct(?string $authorizationUrl, ?string $state)
+        {
+            $this->authorizationUrl = $authorizationUrl;
+            $this->state = $state;
+        }
+
         public function getState(): ?string
         {
             return $this->state;
