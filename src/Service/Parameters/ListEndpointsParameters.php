@@ -15,7 +15,7 @@ namespace App\Service\Parameters {
         private ?string $direction = null;
         private bool $filtered = false;
 
-        public function getTechnicalMessageType(): string
+        public function getTechnicalMessageType(): ?string
         {
             return $this->technicalMessageType;
         }
@@ -25,7 +25,7 @@ namespace App\Service\Parameters {
             $this->technicalMessageType = $technicalMessageType;
         }
 
-        public function getDirection(): string
+        public function getDirection(): ?string
         {
             return $this->direction;
         }
