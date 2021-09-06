@@ -40,6 +40,7 @@ namespace App\Service\Common {
             $requestEnvelope->setApplicationMessageId(empty($messageHeaderParameters->getApplicationMessageId()) ? UuidService::newUuid() : $messageHeaderParameters->getApplicationMessageId());
             $requestEnvelope->setApplicationMessageSeqNo($messageHeaderParameters->getApplicationMessageSeqNo());
             $requestEnvelope->setTechnicalMessageType($messageHeaderParameters->getTechnicalMessageType());
+            $requestEnvelope->setRecipients($messageHeaderParameters->getRecipients());
             $requestEnvelope->setMode($messageHeaderParameters->getMode());
             $requestEnvelope->setTimestamp(UtcDataService::nowAsTimestamp());
             $requestEnvelope->setMetadata($messageHeaderParameters->getMetadata());
