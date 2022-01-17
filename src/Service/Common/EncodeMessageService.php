@@ -42,6 +42,8 @@ namespace App\Service\Common {
             $requestEnvelope->setTechnicalMessageType($messageHeaderParameters->getTechnicalMessageType());
             $requestEnvelope->setMode($messageHeaderParameters->getMode());
             $requestEnvelope->setTimestamp(UtcDataService::nowAsTimestamp());
+            $requestEnvelope->setMetadata($messageHeaderParameters->getMetadata());
+            $requestEnvelope->setChunkInfo($messageHeaderParameters->getChunkComponent());
             return $requestEnvelope;
         }
 
