@@ -21,7 +21,7 @@
     }
   },
   "require": {
-    "php": "8.*",
+    "php": ">=7.4",
     "ext-dom": "*",
     "ext-bcmath": "*",
     "ext-mbstring": "*",

@@ -3,7 +3,6 @@
 namespace App\Api\Exceptions {
 
     use Exception;
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Will be thrown if there is an error while decoding a message from the AR.
@@ -17,7 +16,7 @@ namespace App\Api\Exceptions {
          * @param int $code The code.
          * @param Exception|null $previous Previous exception.
          */
-        #[Pure] public function __construct(string $message, int $code, Exception $previous = null)
+        public function __construct(string $message, int $code, Exception $previous = null)
         {
             parent::__construct($message, $code, $previous);
         }

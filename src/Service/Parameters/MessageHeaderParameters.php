@@ -61,7 +61,7 @@ namespace App\Service\Parameters {
         /**
          * @return string[]
          */
-        public function getRecipients(): array
+        public function getRecipients(): ?array
         {
             return $this->recipients;
         }

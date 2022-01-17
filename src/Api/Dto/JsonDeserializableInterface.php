@@ -16,6 +16,6 @@ namespace App\Api\Dto {
          * @return self New onboard response created from data array
          * @throws JsonException Could be thrown if th entity can not be deserialized.
          */
-        public function jsonDeserialize(array|string $jsonData): self;
+        public function jsonDeserialize($jsonData);
     }
 }

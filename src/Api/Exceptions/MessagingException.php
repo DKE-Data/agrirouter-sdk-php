@@ -2,7 +2,6 @@
 
 namespace App\Api\Exceptions {
 
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Generic messaging exception.
@@ -16,7 +15,7 @@ namespace App\Api\Exceptions {
          * @param string $message The message.
          * @param int $code The code.
          */
-        #[Pure] public function __construct(string $message, int $code)
+        public function __construct(string $message, int $code)
         {
             parent::__construct($message, $code);
         }

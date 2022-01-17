@@ -5,7 +5,6 @@ namespace App\Service\Common {
     use DateTime;
     use DateTimeZone;
     use Google\Protobuf\Timestamp;
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Service to generate timestamps and hold UTC specific functions.
@@ -22,7 +21,7 @@ namespace App\Service\Common {
          */
         public static function now(): string
         {
-            $d = new DateTime(null, new DateTimeZone('UTC'));
+            $d = new DateTime('now', new DateTimeZone('UTC'));
             return $d->format("Y-m-d\TH:i:s.v\Z");
         }
 
@@ -45,7 +44,7 @@ namespace App\Service\Common {
          * @param int $offset .
          * @return string The current time zone.
          */
-        #[Pure] public static function timeZone(int $offset): string
+        public static function timeZone(int $offset): string
         {
             return sprintf("%s%02d:00", ($offset >= 0) ? '+' : '-', abs($offset / 3600));
         }

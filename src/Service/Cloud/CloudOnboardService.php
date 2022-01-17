@@ -16,7 +16,6 @@ namespace App\Service\Cloud {
     use App\Service\Parameters\CloudOnboardParameters;
     use App\Service\Parameters\MessageHeaderParameters;
     use App\Service\Parameters\MessagePayloadParameters;
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Service to send the cloud onboard message to the AR.
@@ -33,7 +32,7 @@ namespace App\Service\Cloud {
          * Constructor.
          * @param MessagingServiceInterface $messagingService Service for message sending.
          */
-        #[Pure] public function __construct(MessagingServiceInterface $messagingService)
+        public function __construct(MessagingServiceInterface $messagingService)
         {
             $this->messagingService = $messagingService;
         }

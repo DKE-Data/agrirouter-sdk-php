@@ -3,7 +3,6 @@
 namespace App\Api\Exceptions {
 
     use Exception;
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Wrapper for all internal exceptions.
@@ -17,7 +16,7 @@ namespace App\Api\Exceptions {
          * @param int $code Internal code.
          * @param Exception|null $previous Previous exception.
          */
-        #[Pure] public function __construct(string $message, int $code, Exception $previous = null)
+        public function __construct(string $message, int $code, Exception $previous = null)
         {
             parent::__construct($message,
                 $code, $previous);
