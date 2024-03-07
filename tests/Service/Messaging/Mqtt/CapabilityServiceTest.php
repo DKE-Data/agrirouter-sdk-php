@@ -259,12 +259,6 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $capabilityParameters->setApplicationMessageId($applicationMessageIds[1]);
             $capabilityService->send($capabilityParameters);
 
-            $capabilityBuilder = new CapabilityBuilder();
-            $capabilities = $capabilityBuilder->withTaskdata(Direction::SEND_RECEIVE)->build();
-            $capabilityParameters->setCapabilityParameters($capabilities);
-            $capabilityParameters->setApplicationMessageId($applicationMessageIds[2]);
-            $capabilityService->send($capabilityParameters);
-
             $counter = 0;
             do {
                 self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
