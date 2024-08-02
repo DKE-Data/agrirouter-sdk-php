@@ -16,7 +16,7 @@ namespace App\Dto\Requests {
         private const CERTIFICATION_VERSION_ID = 'certificationVersionId';
         private const GATEWAY_ID = 'gatewayId';
         private const UTC_TIMESTAMP = 'UTCTimestamp';
-        private const TIME_ZONE = 'timezone';
+        private const TIME_ZONE = 'timeZone';
         private const CERTIFICATE_TYPE = 'certificateType';
 
         private ?string $externalId = null;
