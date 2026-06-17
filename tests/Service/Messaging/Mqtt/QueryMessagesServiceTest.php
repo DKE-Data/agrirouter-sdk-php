@@ -106,7 +106,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $queryMessagesParameters->setOnboardResponse(self::$onboardResponse);
             $queryHeadersService->send($queryMessagesParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }
@@ -153,7 +153,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $queryMessagesParameters->setMessageIds([UuidService::newUuid()]);
             $queryHeadersService->send($queryMessagesParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }
@@ -200,7 +200,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $queryMessagesParameters->setSenders([UuidService::newUuid()]);
             $queryHeadersService->send($queryMessagesParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }
@@ -252,7 +252,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $queryMessagesParameters->setValidityPeriod($validityPeriod);
             $queryHeadersService->send($queryMessagesParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }

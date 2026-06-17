@@ -20,7 +20,10 @@ namespace App\Dto\Messaging\Http\Inner {
         private ?string $sensorAlternateId = null;
         private ?Command $command = null;
 
-        public function jsonDeserialize(array|string $jsonData): JsonDeserializableInterface
+        /**
+         * @param mixed[]|string $jsonData
+         */
+        public function jsonDeserialize($jsonData): JsonDeserializableInterface
         {
             if (is_string($jsonData)) {
                 $decodedJsonDataArray = json_decode($jsonData, true);

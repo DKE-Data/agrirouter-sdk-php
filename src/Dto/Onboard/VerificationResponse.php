@@ -22,7 +22,6 @@ namespace App\Dto\Onboard {
          * Serializes the object data to a simple array
          * @return array Array with object data.
          */
-        #[ArrayShape([self::ACCOUNT_ID => "string"])]
         public function jsonSerialize(): array
         {
             return [
@@ -40,7 +39,11 @@ namespace App\Dto\Onboard {
             $this->accountId = $accountId;
         }
 
-        public function jsonDeserialize(array|string $jsonData): self
+        /**
+         * @param mixed[]|string $jsonData
+         * @return $this
+         */
+        public function jsonDeserialize($jsonData)
         {
             if (is_string($jsonData)) {
                 $decodedJsonDataArray = json_decode($jsonData, true);
@@ -48,10 +51,14 @@ namespace App\Dto\Onboard {
                 $decodedJsonDataArray = $jsonData;
             }
             foreach ($decodedJsonDataArray as $fieldName => $fieldValue) {
-                $this->accountId = match ($fieldName) {
-                    self::ACCOUNT_ID => $fieldValue,
-                    default => throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA),
-                };
+                switch ($fieldName) {
+                    case self::ACCOUNT_ID:
+                        $this->accountId = $fieldValue;
+                        break;
+                    default:
+                        throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
+                        break;
+                }
             }
             return $this;
         }

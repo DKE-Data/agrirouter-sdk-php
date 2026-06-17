@@ -84,7 +84,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $logger = $loggerBuilder->withTestConsoleDefaultValues("TestClassSetup")->build();
             $counter = 0;
             while ($cleanupQueues) {
-                $cleanupQueues = SleepTimer::letTheAgrirouterProcessTheMqttMessage(2, mqttClient: self::$mqttClient);
+                $cleanupQueues = SleepTimer::letTheAgrirouterProcessTheMqttMessage(2, self::$mqttClient);
                 if ($cleanupQueues) $counter++;
             }
             $logger->info("Cleaned mqtt queue, removed " . $counter . " messages.");
@@ -156,7 +156,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $subscriptionParameters->setSubscriptionItems($subscriptionItems);
             $subscriptionService->send($subscriptionParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }
@@ -202,7 +202,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $subscriptionParameters->setSubscriptionItems($subscriptionItems);
             $subscriptionService->send($subscriptionParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }

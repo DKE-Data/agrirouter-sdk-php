@@ -104,7 +104,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $feedConfirmParameters->setMessageIds([UuidService::newUuid()]);
             $feedConfirmService->send($feedConfirmParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }
@@ -156,7 +156,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $feedConfirmParameters->setOnboardResponse(self::$onboardResponse);
             $feedConfirmService->send($feedConfirmParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }

@@ -17,7 +17,6 @@ namespace App\Service\Messaging {
     use App\Service\Parameters\MessageHeaderParameters;
     use App\Service\Parameters\MessagePayloadParameters;
     use App\Service\Parameters\QueryHeadersParameters;
-    use JetBrains\PhpStorm\Pure;
 
     /**
      * Service to fetch the message headers from the AR.
@@ -34,7 +33,7 @@ namespace App\Service\Messaging {
          * Constructor.
          * @param MessagingServiceInterface $messagingService Service for message sending.
          */
-        #[Pure] public function __construct(MessagingServiceInterface $messagingService)
+        public function __construct(MessagingServiceInterface $messagingService)
         {
             $this->messagingService = $messagingService;
         }

@@ -16,7 +16,10 @@ namespace App\Dto\Messaging\Http\Inner {
 
         private ?string $message = null;
 
-        public function jsonDeserialize(array|string $jsonData): JsonDeserializableInterface
+        /**
+         * @param mixed[]|string $jsonData
+         */
+        public function jsonDeserialize($jsonData): JsonDeserializableInterface
         {
             if (is_string($jsonData)) {
                 $decodedJsonDataArray = json_decode($jsonData, true);
@@ -24,10 +27,14 @@ namespace App\Dto\Messaging\Http\Inner {
                 $decodedJsonDataArray = $jsonData;
             }
             foreach ($decodedJsonDataArray as $fieldName => $fieldValue) {
-                $this->message = match ($fieldName) {
-                    self::MESSAGE => $fieldValue,
-                    default => throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA),
-                };
+                switch ($fieldName) {
+                    case self::MESSAGE:
+                        $this->message = $fieldValue;
+                        break;
+                    default:
+                        throw new JsonException("Unknown field '$fieldName' for class '" . get_class($this) . "'.", ErrorCodes::UNKNOWN_FIELD_IN_JSON_DATA);
+                        break;
+                }
             }
             return $this;
         }

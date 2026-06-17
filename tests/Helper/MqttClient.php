@@ -36,7 +36,7 @@ namespace Lib\Tests\Helper {
          * @param PhpMqttClient $mqttClient The PhpMqtt client.
          * @param LoggerInterface|null $logger The logger used for logging.
          */
-        #[Pure] public function __construct(PhpMqttClient $mqttClient, ?LoggerInterface $logger = null)
+        public function __construct(PhpMqttClient $mqttClient, ?LoggerInterface $logger = null)
         {
             $this->mqttClient = $mqttClient;
             $this->logger = $logger;
@@ -93,7 +93,7 @@ namespace Lib\Tests\Helper {
         /**
          * @inheritDoc
          */
-        #[Pure] public function isConnected(): bool
+        public function isConnected(): bool
         {
             return $this->mqttClient->isConnected();
         }

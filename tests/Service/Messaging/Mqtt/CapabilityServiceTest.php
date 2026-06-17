@@ -128,7 +128,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $capabilityParameters->setCapabilityParameters($capabilities);
             $capabilityService->send($capabilityParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }
@@ -188,7 +188,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $capabilityParameters->setCapabilityParameters($capabilityBuilder->build());
             $capabilityService->send($capabilityParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }
@@ -267,7 +267,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
                 $counter++;
                 if ($callbackException !== null) {
                     throw($callbackException);
@@ -350,7 +350,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
                 $counter++;
                 if ($callbackException !== null) {
                     throw($callbackException);
@@ -433,7 +433,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
                 $counter++;
                 if ($callbackException !== null) {
                     throw($callbackException);
@@ -522,7 +522,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
                 $counter++;
                 if ($callbackException !== null) {
                     throw($callbackException);
@@ -611,7 +611,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
                 $counter++;
                 if ($callbackException !== null) {
                     throw($callbackException);
@@ -694,7 +694,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
                 $counter++;
                 if ($callbackException !== null) {
                     throw($callbackException);
@@ -777,7 +777,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
                 $counter++;
                 if ($callbackException !== null) {
                     throw($callbackException);
@@ -860,7 +860,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
                 $counter++;
                 if ($callbackException !== null) {
                     throw($callbackException);
@@ -979,7 +979,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $counter = 0;
             do {
-                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+                self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
                 $counter++;
                 if ($callbackException !== null) {
                     throw($callbackException);

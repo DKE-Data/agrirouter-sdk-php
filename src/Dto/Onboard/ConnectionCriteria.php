@@ -28,7 +28,6 @@ namespace App\Dto\Onboard {
         private ?string $port = null;
         private ?string $clientId = null;
 
-        #[ArrayShape([self::CLIENT_ID => "string", self::COMMANDS => "string", self::GATEWAY_ID => "string", self::HOST => "string", self::MEASURES => "string", self::PORT => "string"])]
         public function jsonSerialize(): array
         {
             return [
@@ -102,7 +101,11 @@ namespace App\Dto\Onboard {
             $this->port = $port;
         }
 
-        public function jsonDeserialize(string|array $jsonData): self
+        /**
+         * @param string|mixed[] $jsonData
+         * @return $this
+         */
+        public function jsonDeserialize($jsonData)
         {
             if (is_string($jsonData)) {
                 $decodedJsonDataArray = json_decode($jsonData, true);

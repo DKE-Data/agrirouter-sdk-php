@@ -106,7 +106,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
 
             $feedDeleteService->send($feedDeleteParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }
@@ -159,7 +159,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $feedDeleteParameters->setMessageIds([UuidService::newUuid()]);
             $feedDeleteService->send($feedDeleteParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }
@@ -212,7 +212,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $feedDeleteParameters->setSenders([UuidService::newUuid()]);
             $feedDeleteService->send($feedDeleteParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }
@@ -270,7 +270,7 @@ namespace Lib\Tests\Service\Messaging\Mqtt {
             $feedDeleteParameters->setValidityPeriod($validityPeriod);
             $feedDeleteService->send($feedDeleteParameters);
 
-            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(mqttClient: self::$mqttClient));
+            self::assertTrue(SleepTimer::letTheAgrirouterProcessTheMqttMessage(3, self::$mqttClient));
             if ($callbackException !== null) {
                 throw($callbackException);
             }

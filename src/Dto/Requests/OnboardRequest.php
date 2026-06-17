@@ -97,7 +97,6 @@ namespace App\Dto\Requests {
             $this->certificateType = $certificateType;
         }
 
-        #[ArrayShape([self::ID => "string", self::APPLICATION_ID => "string", self::CERTIFICATION_VERSION_ID => "string", self::GATEWAY_ID => "string", self::UTC_TIMESTAMP => "string", self::TIME_ZONE => "string", self::CERTIFICATE_TYPE => "string"])]
         public function jsonSerialize(): array
         {
             return [

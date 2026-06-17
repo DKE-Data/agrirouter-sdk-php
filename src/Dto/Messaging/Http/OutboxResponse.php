@@ -18,7 +18,10 @@ namespace App\Dto\Messaging\Http {
          */
         private ?array $messages = null;
 
-        public function jsonDeserialize(array|string $jsonData): JsonDeserializableInterface
+        /**
+         * @param mixed[]|string $jsonData
+         */
+        public function jsonDeserialize($jsonData): JsonDeserializableInterface
         {
             if (is_string($jsonData)) {
                 $decodedJsonDataArray = json_decode($jsonData, true);
@@ -34,7 +37,7 @@ namespace App\Dto\Messaging\Http {
             return $this;
         }
 
-        public function getStatusCode(): string
+        public function getStatusCode(): ?string
         {
             return $this->statusCode;
         }
@@ -47,7 +50,7 @@ namespace App\Dto\Messaging\Http {
         /**
          * @return OutboxMessage[]
          */
-        public function getMessages(): array
+        public function getMessages(): ?array
         {
             return $this->messages;
         }
