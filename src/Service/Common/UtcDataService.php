@@ -22,7 +22,7 @@ namespace App\Service\Common {
          */
         public static function now(): string
         {
-            $d = new DateTime(null, new DateTimeZone('UTC'));
+            $d = new DateTime("now", new DateTimeZone('UTC'));
             return $d->format("Y-m-d\TH:i:s.v\Z");
         }
 
